@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowLeft, Heart, Share2, MessageCircle } from "lucide-react";
+import { ArrowLeft, Heart, Share2, MessageCircle, Flame, Clock } from "lucide-react";
 import { getCreatorByUsername, getCreatorWallPosts, mockCreators } from "@/lib/mockData";
 import { useState } from "react";
 
@@ -26,7 +26,13 @@ export default function WallPage({
   params: { username: string };
 }) {
   const creator = getCreatorByUsername(params.username) ?? mockCreators[0];
-  const posts = getCreatorWallPosts(creator.id);
+  const rawPosts = getCreatorWallPosts(creator.id);
+  const [sortBy, setSortBy] = useState<"top" | "new">("top");
+  const posts = [...rawPosts].sort((a, b) =>
+    sortBy === "top"
+      ? b.likes - a.likes
+      : b.timestamp.getTime() - a.timestamp.getTime()
+  );
   const [liked, setLiked] = useState<Set<string>>(new Set());
   const [copied, setCopied] = useState<string | null>(null);
 
@@ -100,6 +106,22 @@ export default function WallPage({
             </p>
           </div>
         </motion.div>
+
+        {/* SORT */}
+        <div className="flex gap-1 mb-6 bg-[#111] border border-white/5 rounded-xl p-1 w-fit">
+          {(["top", "new"] as const).map((s) => (
+            <button
+              key={s}
+              onClick={() => setSortBy(s)}
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium capitalize transition-all ${
+                sortBy === s ? "bg-white text-black shadow-sm" : "text-zinc-500"
+              }`}
+            >
+              {s === "top" ? <Flame className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
+              {s === "top" ? "Top" : "New"}
+            </button>
+          ))}
+        </div>
 
         {/* GRID */}
         <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">

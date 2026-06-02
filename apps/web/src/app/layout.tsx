@@ -41,6 +41,10 @@ export default function RootLayout({
           href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👁️</text></svg>"
         />
         <link rel="manifest" href="/manifest.json" />
+        <meta
+          name="talentapp:project_verification"
+          content="23966ed1b3b32e7785e33f7ec76f15390a10ad3ccfe4cb22af4368514a0bdc7b8ffcced5974c569221ec666f4e189e7597f8aafe96defa9cb6fc6a5b9a175686"
+        />
       </head>
       <body
         className={`${inter.className} bg-[#0a0a0a] text-white antialiased min-h-screen`}

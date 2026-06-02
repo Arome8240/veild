@@ -33,16 +33,16 @@ const config: HardhatUserConfig = {
     },
   },
   etherscan: {
-    apiKey: {
-      celo: process.env.CELOSCAN_API_KEY ?? "",
-      "celo-sepolia": process.env.CELOSCAN_API_KEY ?? "",
-    },
+    // Single Etherscan V2 API key — works for all EVM chains including Celo.
+    // Get yours at https://etherscan.io/myapikey (one key, all chains).
+    apiKey: process.env.ETHERSCAN_API_KEY ?? "",
     customChains: [
       {
         network: "celo",
         chainId: 42220,
         urls: {
-          apiURL: "https://api.celoscan.io/api",
+          // Etherscan V2 base URL — chainId is appended automatically by the plugin.
+          apiURL: "https://api.etherscan.io/v2/api",
           browserURL: "https://celoscan.io",
         },
       },
@@ -50,7 +50,7 @@ const config: HardhatUserConfig = {
         network: "celo-sepolia",
         chainId: 44787,
         urls: {
-          apiURL: "https://api-alfajores.celoscan.io/api",
+          apiURL: "https://api.etherscan.io/v2/api",
           browserURL: "https://alfajores.celoscan.io",
         },
       },

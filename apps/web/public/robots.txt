@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Creator walls and profiles are public
+Allow: /*/wall
+
+# Keep inbox and profile private from crawlers
+Disallow: /inbox
+Disallow: /profile

@@ -57,7 +57,17 @@ export default function CreatorProfilePage({
   const wallPosts = getCreatorWallPosts(creator.id).slice(0, 4);
 
   // ── MiniPay / wallet ────────────────────────────────────────────────────────
-  const { isMiniPay, address, isConnected, isConnecting, connectWallet } = useMiniPay();
+  const {
+    isMiniPay,
+    hasWallet,
+    address,
+    shortAddress,
+    isConnected,
+    isConnecting,
+    connectError,
+    connectWallet,
+    disconnect,
+  } = useMiniPay();
   const {
     sendMessage: sendOnChain,
     sendPriorityMessage: sendPriorityOnChain,
@@ -225,46 +235,76 @@ export default function CreatorProfilePage({
             <span className="text-white">{creator.name.split(" ")[0]}</span>
           </h2>
 
-          {/* MiniPay / wallet status banner */}
+          {/* ── Wallet status ─────────────────────────────────────────── */}
+
+          {/* MiniPay: auto-connected, show address */}
           {isMiniPay && isConnected && (
             <motion.div
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-2 mb-3 px-3 py-2 bg-green-500/10 border border-green-500/20 rounded-xl"
+              className="flex items-center gap-2.5 mb-3 px-3 py-2.5 bg-green-500/10 border border-green-500/20 rounded-xl"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-xs text-green-400 font-medium">
-                MiniPay connected · messages go on-chain
-              </span>
-              <span className="ml-auto text-[10px] text-green-400/60 font-mono truncate max-w-[100px]">
-                {address?.slice(0, 6)}…{address?.slice(-4)}
-              </span>
+              <span className="w-2 h-2 rounded-full bg-green-400 shrink-0 animate-pulse" />
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-semibold text-green-400 leading-tight">
+                  MiniPay
+                </p>
+                <p className="text-[10px] text-green-400/60 font-mono leading-tight">
+                  {address}
+                </p>
+              </div>
             </motion.div>
           )}
 
-          {!isMiniPay && !isConnected && (
+          {/* Regular wallet: connected, show address + disconnect */}
+          {!isMiniPay && isConnected && (
             <motion.div
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex items-center justify-between mb-3 px-3 py-2 bg-white/3 border border-white/8 rounded-xl"
+              className="flex items-center gap-2.5 mb-3 px-3 py-2.5 bg-violet-500/10 border border-violet-500/20 rounded-xl"
             >
-              <span className="text-xs text-zinc-500">
-                Connect wallet to send on-chain
-              </span>
+              <span className="w-2 h-2 rounded-full bg-violet-400 shrink-0" />
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-semibold text-violet-300 leading-tight">
+                  Wallet connected
+                </p>
+                <p className="text-[10px] text-violet-400/60 font-mono leading-tight">
+                  {address}
+                </p>
+              </div>
               <button
-                onClick={connectWallet}
-                disabled={isConnecting}
-                className="flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300 font-medium transition-colors"
+                onClick={() => disconnect()}
+                className="text-[10px] text-zinc-500 hover:text-zinc-300 shrink-0 transition-colors"
               >
-                <Wallet className="w-3 h-3" />
-                {isConnecting ? "Connecting…" : "Connect"}
+                Disconnect
               </button>
             </motion.div>
           )}
 
-          {contractError && (
+          {/* No wallet connected: show connect button */}
+          {!isConnected && (
+            <motion.button
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              onClick={connectWallet}
+              disabled={isConnecting}
+              className="w-full flex items-center justify-center gap-2 mb-3 px-3 py-2.5 bg-white/4 hover:bg-white/7 border border-white/10 hover:border-white/20 rounded-xl transition-all disabled:opacity-60"
+            >
+              <Wallet className="w-3.5 h-3.5 text-zinc-400" />
+              <span className="text-xs font-medium text-zinc-300">
+                {isConnecting
+                  ? "Connecting…"
+                  : hasWallet
+                  ? "Connect wallet to send on-chain"
+                  : "Install MetaMask to send on-chain"}
+              </span>
+            </motion.button>
+          )}
+
+          {(connectError || contractError) && (
             <p className="text-xs text-red-400 mb-2 px-1">
-              ⚠ {contractError.message?.slice(0, 80)}
+              ⚠{" "}
+              {(connectError?.message ?? contractError?.message ?? "").slice(0, 90)}
             </p>
           )}
 

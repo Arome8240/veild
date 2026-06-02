@@ -17,6 +17,11 @@
     "verify": "hardhat run scripts/verify.ts",
     "verify:testnet": "hardhat run scripts/verify.ts --network celo-sepolia",
     "verify:mainnet": "hardhat run scripts/verify.ts --network celo",
+    "simulate": "node --experimental-vm-modules scripts/simulate.js",
+    "simulate:dry": "node --experimental-vm-modules scripts/simulate.js --dry-run",
+    "simulate:register": "node --experimental-vm-modules scripts/simulate.js --phase register",
+    "simulate:run": "node --experimental-vm-modules scripts/simulate.js --phase simulate",
+    "sweep": "node --experimental-vm-modules scripts/sweep.ts",
     "clean": "hardhat clean"
   },
   "keywords": [
@@ -53,6 +58,7 @@
     "viem": "^2.0.0"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^5.0.0"
+    "@openzeppelin/contracts": "^5.0.0",
+    "mongoose": "^9.6.3"
   }
 }

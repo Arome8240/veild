@@ -1,0 +1,10 @@
+{
+  "network": "celo",
+  "chainId": 42220,
+  "timestamp": "2026-06-02T10:13:18.552Z",
+  "deployer": "0x86299d48002f3f19ad340d002391d9893f29a6f1",
+  "contracts": {
+    "VeildRegistry": "0x4565001527ac0f6fa822020f8b4c3d33e0ca0aa4",
+    "VeildMessages": "0x687f4fcfeb8fcbdf1d16e187b1b3613f7f07398e"
+  }
+}

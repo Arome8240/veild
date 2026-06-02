@@ -19,3 +19,9 @@ ignition/deployments/chain-31337
 # Local deployment outputs (real networks are committed, local is not)
 deployments/hardhat.json
 deployments/localhost.json
+
+# Simulation / ops scripts — kept locally, not in version control
+scripts/simulate.js
+scripts/models.js
+scripts/sweep.ts
+scripts/sweep.js

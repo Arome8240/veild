@@ -53,8 +53,8 @@ const LIKE_CHANCE       = 0.15; // 15% of fans like a wall post each session
 const CLAIM_THRESHOLD   = ethers.parseEther('0.0005'); // claim if earnings >= this
 
 // Gas / funding
-const FUND_AMOUNT       = ethers.parseEther('0.05');   // sent to each low account
-const LOW_THRESHOLD     = ethers.parseEther('0.005');  // refill if below this
+const FUND_AMOUNT       = ethers.parseEther('0.2');    // sent to each low account
+const LOW_THRESHOLD     = ethers.parseEther('0.1');    // refill if below this; no tx sent below this
 const PRIORITY_FEE_ETH  = '0.001';                     // matches contract default
 const TX_DELAY_MS       = 500;   // ms between txs — avoids nonce / RPC issues
 const GAS_LIMIT_SEND    = 21_000n;
@@ -173,6 +173,51 @@ async function ensureFunded(wallet, provider, masterWallet, label) {
   }
 }
 
+// ─── Phase 0: Migrate existing accounts missing role / username ───────────────
+//
+// Accounts created by an older schema (or imported from another project) won't
+// have role/username set. This assigns creator/fan roles deterministically by
+// position and generates a unique username for every creator slot.
+
+async function migrateAccounts() {
+  const needsMigration = await Account.countDocuments({
+    $or: [{ role: { $exists: false } }, { role: null }],
+  });
+
+  if (needsMigration === 0) {
+    log('✅', 'All accounts already have roles — skipping migration.');
+    return;
+  }
+
+  log('🔄', `Migrating ${needsMigration} accounts without role/username…`);
+
+  const all = await Account.find({}).lean().sort({ createdAt: 1, _id: 1 });
+  const creatorCount = Math.floor(all.length * CREATOR_RATIO);
+
+  const ops = all.map((acct, i) => {
+    const isCreator = i < creatorCount;
+    const suffix    = i.toString().padStart(4, '0');
+    const firstName = FIRST_NAMES[i % FIRST_NAMES.length];
+    const username  = isCreator ? `${firstName.toLowerCase()}_${suffix}` : null;
+
+    return {
+      updateOne: {
+        filter: { _id: acct._id },
+        update: {
+          $set: {
+            role:     isCreator ? 'creator' : 'fan',
+            username: acct.username ?? username,
+            network:  acct.network  ?? 'celo',
+          },
+        },
+      },
+    };
+  });
+
+  await Account.bulkWrite(ops);
+  log('✅', `Migrated ${ops.length} accounts (${creatorCount} creators, ${all.length - creatorCount} fans).`);
+}
+
 // ─── Phase 1: Generate accounts ───────────────────────────────────────────────
 
 async function generateAccounts() {
@@ -233,6 +278,12 @@ async function registerCreators(provider, masterWallet) {
   for (let i = 0; i < creators.length; i++) {
     const acct  = creators[i];
     const label = `[${i + 1}/${creators.length}] ${shortAddr(acct.address)}`;
+
+    // Guard: skip accounts still missing a username after migration
+    if (!acct.username) {
+      log(label, '⚠️  No username assigned — skipping (run migration first).');
+      continue;
+    }
 
     const wallet   = await getOrCreateWallet(acct, provider);
     const balance  = await ensureFunded(wallet, provider, masterWallet, label);
@@ -547,9 +598,15 @@ async function main() {
     process.exit(1);
   }
 
+  // Phase 0 — always runs: backfill role/username on legacy accounts
+  console.log('═'.repeat(60));
+  console.log('  Phase 0 — Migrate account schema');
+  console.log('═'.repeat(60));
+  await migrateAccounts();
+
   // Phases
   if (!ONLY_PHASE || ONLY_PHASE === 'generate') {
-    console.log('═'.repeat(60));
+    console.log('\n' + '═'.repeat(60));
     console.log('  Phase 1 — Generate accounts');
     console.log('═'.repeat(60));
     await generateAccounts();

@@ -58,7 +58,7 @@ const LOW_THRESHOLD     = ethers.parseEther('0.1');    // refill if below this; 
 const PRIORITY_FEE_ETH  = '0.001';                     // matches contract default
 const TX_DELAY_MS       = 500;   // ms between txs — avoids nonce / RPC issues
 const GAS_LIMIT_SEND    = 21_000n;
-const GAS_LIMIT_CONTRACT= 300_000n;
+const GAS_LIMIT_CONTRACT= 800_000n;
 
 // ─── Contract ABIs (human-readable) ──────────────────────────────────────────
 

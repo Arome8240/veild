@@ -3,6 +3,10 @@ export const CONTRACT_ADDRESSES = {
   "hardhat": {
     "VeildRegistry": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
     "VeildMessages": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512"
+  },
+  "celo": {
+    "VeildRegistry": "0x4565001527ac0f6fa822020f8b4c3d33e0ca0aa4",
+    "VeildMessages": "0x687f4fcfeb8fcbdf1d16e187b1b3613f7f07398e"
   }
 } as const;
 

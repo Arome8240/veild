@@ -40,6 +40,7 @@ export default function RootLayout({
           rel="icon"
           href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👁️</text></svg>"
         />
+        <link rel="manifest" href="/manifest.json" />
       </head>
       <body
         className={`${inter.className} bg-[#0a0a0a] text-white antialiased min-h-screen`}

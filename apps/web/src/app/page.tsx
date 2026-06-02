@@ -52,6 +52,23 @@ export default function HomePage() {
     setTimeout(() => setCopied(false), 2000);
   }
 
+  async function shareLink() {
+    const shareData = {
+      title: `Send ${ME.name} an anonymous message`,
+      text: "Ask me anything — I can't see who you are.",
+      url: `https://${profileUrl}`,
+    };
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch {
+        // user cancelled or API unavailable
+      }
+    }
+    copyLink();
+  }
+
   function toggleLike(id: string) {
     setLiked((prev) => {
       const n = new Set(prev);
@@ -134,7 +151,7 @@ export default function HomePage() {
           </div>
 
           <button
-            onClick={copyLink}
+            onClick={shareLink}
             className="w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/8 border border-white/8 text-zinc-300 text-xs font-medium py-2.5 rounded-xl transition-colors"
           >
             <Share2 className="w-3.5 h-3.5" />

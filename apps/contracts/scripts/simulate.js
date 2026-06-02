@@ -53,12 +53,12 @@ const LIKE_CHANCE       = 0.15; // 15% of fans like a wall post each session
 const CLAIM_THRESHOLD   = ethers.parseEther('0.0005'); // claim if earnings >= this
 
 // Gas / funding
-const FUND_AMOUNT       = ethers.parseEther('0.2');    // sent to each low account
-const LOW_THRESHOLD     = ethers.parseEther('0.1');    // refill if below this; no tx sent below this
+const FUND_AMOUNT       = ethers.parseEther('1.0');    // sent to each low account
+const LOW_THRESHOLD     = ethers.parseEther('0.5');    // refill if below this
 const PRIORITY_FEE_ETH  = '0.001';                     // matches contract default
 const TX_DELAY_MS       = 500;   // ms between txs — avoids nonce / RPC issues
 const GAS_LIMIT_SEND    = 21_000n;
-const GAS_LIMIT_CONTRACT= 800_000n;
+const GAS_BUFFER        = 130n;  // multiply estimated gas by 130/100 for 30% headroom
 
 // ─── Contract ABIs (human-readable) ──────────────────────────────────────────
 
@@ -346,9 +346,10 @@ async function registerCreators(provider, masterWallet) {
         }
 
         // ── 3. Send the real transaction ──────────────────────────────────────
+        const estimated = await registry.register.estimateGas(acct.username, name, bio, avatarCID, category);
         const tx = await registry.register(
           acct.username, name, bio, avatarCID, category,
-          { gasLimit: GAS_LIMIT_CONTRACT }
+          { gasLimit: estimated * GAS_BUFFER / 100n }
         );
         log(label, `register tx: ${tx.hash}`);
         const receipt = await tx.wait();
@@ -410,13 +411,15 @@ async function simulateFan(acct, registeredCreators, provider, masterWallet, ind
     if (!DRY_RUN) {
       let tx;
       if (isPriority) {
+        const estP = await messages.sendPriorityMessage.estimateGas(targetCreator.address, content, { value: ethers.parseEther(PRIORITY_FEE_ETH) });
         tx = await messages.sendPriorityMessage(targetCreator.address, content, {
           value:    ethers.parseEther(PRIORITY_FEE_ETH),
-          gasLimit: GAS_LIMIT_CONTRACT,
+          gasLimit: estP * GAS_BUFFER / 100n,
         });
       } else {
+        const estM = await messages.sendMessage.estimateGas(targetCreator.address, content);
         tx = await messages.sendMessage(targetCreator.address, content, {
-          gasLimit: GAS_LIMIT_CONTRACT,
+          gasLimit: estM * GAS_BUFFER / 100n,
         });
       }
       log(label, `${isPriority ? '⚡' : '✉️ '} ${action} → @${targetCreator.username} (${tx.hash.slice(0, 12)}…)`);
@@ -457,8 +460,9 @@ async function simulateFan(acct, registeredCreators, provider, masterWallet, ind
           const wallIndex = BigInt(Math.floor(Math.random() * wall.length));
           const alreadyLiked = await messages.hasLiked(likeTarget.address, wallIndex, acct.address);
           if (!alreadyLiked) {
+            const estL = await messages.likeWallPost.estimateGas(likeTarget.address, wallIndex);
             const tx = await messages.likeWallPost(likeTarget.address, wallIndex, {
-              gasLimit: GAS_LIMIT_CONTRACT,
+              gasLimit: estL * GAS_BUFFER / 100n,
             });
             const receipt = await tx.wait();
             log(label, `❤️  liked wall post #${wallIndex} of @${likeTarget.username}`);
@@ -519,11 +523,10 @@ async function simulateCreator(acct, provider, masterWallet, index, total) {
       const publish = coinFlip(PUBLISH_CHANCE);
 
       try {
+        const estR = await messages.replyToMessage.estimateGas(BigInt(msg._index), reply, publish);
         const tx = await messages.replyToMessage(
-          BigInt(msg._index),
-          reply,
-          publish,
-          { gasLimit: GAS_LIMIT_CONTRACT }
+          BigInt(msg._index), reply, publish,
+          { gasLimit: estR * GAS_BUFFER / 100n }
         );
         const receipt = await tx.wait();
         log(label, `💬 replied to msg #${msg._index}${publish ? ' (published to wall)' : ''} (${tx.hash.slice(0,12)}…)`);
@@ -544,7 +547,8 @@ async function simulateCreator(acct, provider, masterWallet, index, total) {
     const earnings = await messages.getEarnings(acct.address);
     if (earnings >= CLAIM_THRESHOLD) {
       try {
-        const tx = await messages.claimEarnings({ gasLimit: GAS_LIMIT_CONTRACT });
+        const estC = await messages.claimEarnings.estimateGas();
+        const tx = await messages.claimEarnings({ gasLimit: estC * GAS_BUFFER / 100n });
         const receipt = await tx.wait();
         log(label, `💰 claimed ${fmt(earnings)} CELO earnings`);
         await InteractionLog.create({

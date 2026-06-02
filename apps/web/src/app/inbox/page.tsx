@@ -346,16 +346,22 @@ export default function InboxPage() {
 
       <div className="max-w-lg mx-auto px-4">
         {/* STATS */}
-        <div className="grid grid-cols-2 gap-2 mt-4 mb-4">
+        <div className="grid grid-cols-3 gap-2 mt-4 mb-4">
           <div className="bg-[#111] border border-white/5 rounded-xl p-3 text-center">
             <p className="font-bold text-lg leading-none">{stats.totalMessages}</p>
-            <p className="text-zinc-600 text-[10px] mt-0.5">total messages</p>
+            <p className="text-zinc-600 text-[10px] mt-0.5">messages</p>
+          </div>
+          <div className="bg-[#111] border border-amber-400/10 rounded-xl p-3 text-center">
+            <p className="font-bold text-lg leading-none text-amber-300">
+              {messages.filter((m) => m.isPriority).length}
+            </p>
+            <p className="text-zinc-600 text-[10px] mt-0.5">priority</p>
           </div>
           <div className="bg-[#111] border border-white/5 rounded-xl p-3 text-center">
             <p className="font-bold text-lg leading-none text-green-400">
-              ${ME.earnings.toFixed(2)}
+              ${ME.earnings.toFixed(0)}
             </p>
-            <p className="text-zinc-600 text-[10px] mt-0.5">total earned</p>
+            <p className="text-zinc-600 text-[10px] mt-0.5">earned</p>
           </div>
         </div>
 

@@ -193,6 +193,44 @@ export default function ProfilePage() {
           </div>
         </motion.div>
 
+        {/* EARNINGS BREAKDOWN */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.16 }}
+          className="bg-[#111] border border-white/5 rounded-2xl overflow-hidden"
+        >
+          <div className="flex items-center gap-2 px-4 pt-4 pb-3 border-b border-white/5">
+            <DollarSign className="w-4 h-4 text-green-400" />
+            <span className="text-sm font-semibold">Earnings</span>
+          </div>
+          <div className="p-4 space-y-3">
+            {[
+              { label: "Priority messages", amount: ME.earnings * 0.62, count: Math.floor(stats.totalMessages * 0.35) },
+              { label: "Tips received", amount: ME.earnings * 0.28, count: 14 },
+              { label: "Wall engagement bonus", amount: ME.earnings * 0.1, count: null },
+            ].map((row) => (
+              <div key={row.label} className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-zinc-300">{row.label}</p>
+                  {row.count !== null && (
+                    <p className="text-[10px] text-zinc-600">{row.count} transactions</p>
+                  )}
+                </div>
+                <span className="font-semibold text-sm text-green-400">
+                  +${row.amount.toFixed(2)}
+                </span>
+              </div>
+            ))}
+            <div className="pt-2 border-t border-white/5 flex items-center justify-between">
+              <span className="text-xs font-semibold text-zinc-400">Total</span>
+              <span className="font-bold text-base text-green-300">
+                ${ME.earnings.toFixed(2)}
+              </span>
+            </div>
+          </div>
+        </motion.div>
+
         {/* OTHER CREATORS */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}

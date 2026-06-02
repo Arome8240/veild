@@ -1,5 +1,7 @@
 import type { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox-viem";
+import * as dotenv from "dotenv";
+dotenv.config();
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -14,14 +16,14 @@ const config: HardhatUserConfig = {
   networks: {
     // Celo Mainnet
     celo: {
-      url: "https://forno.celo.org",
-      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+      url: process.env.CELO_RPC_URL ?? "https://forno.celo.org",
+      accounts: process.env.PRIVATE_KEY ? [`0x${process.env.PRIVATE_KEY}`] : [],
       chainId: 42220,
     },
-    // Celo Alfajores / Sepolia Testnet
+    // Celo Alfajores Testnet
     "celo-sepolia": {
-      url: "https://alfajores-forno.celo-testnet.org",
-      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+      url: process.env.CELO_SEPOLIA_RPC_URL ?? "https://alfajores-forno.celo-testnet.org",
+      accounts: process.env.PRIVATE_KEY ? [`0x${process.env.PRIVATE_KEY}`] : [],
       chainId: 44787,
     },
     // Local development
@@ -32,8 +34,8 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: {
-      celo: process.env.CELOSCAN_API_KEY || "",
-      "celo-sepolia": process.env.CELOSCAN_API_KEY || "",
+      celo: process.env.CELOSCAN_API_KEY ?? "",
+      "celo-sepolia": process.env.CELOSCAN_API_KEY ?? "",
     },
     customChains: [
       {

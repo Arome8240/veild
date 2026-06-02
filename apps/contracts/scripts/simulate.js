@@ -180,33 +180,43 @@ async function ensureFunded(wallet, provider, masterWallet, label) {
 // position and generates a unique username for every creator slot.
 
 async function migrateAccounts() {
+  // Check for accounts missing role OR creators missing username.
+  // A previous partial run may have set role but left username null.
   const needsMigration = await Account.countDocuments({
-    $or: [{ role: { $exists: false } }, { role: null }],
+    $or: [
+      { role: { $exists: false } },
+      { role: null },
+      { role: 'creator', username: null },
+      { role: 'creator', username: { $exists: false } },
+    ],
   });
 
   if (needsMigration === 0) {
-    log('✅', 'All accounts already have roles — skipping migration.');
+    log('✅', 'All accounts already have role and username — skipping migration.');
     return;
   }
 
-  log('🔄', `Migrating ${needsMigration} accounts without role/username…`);
+  log('🔄', `Migrating ${needsMigration} accounts (missing role or username)…`);
 
-  const all = await Account.find({}).lean().sort({ createdAt: 1, _id: 1 });
+  // Sort by _id for a deterministic, stable ordering across runs.
+  const all = await Account.find({}).lean().sort({ _id: 1 });
   const creatorCount = Math.floor(all.length * CREATOR_RATIO);
 
   const ops = all.map((acct, i) => {
     const isCreator = i < creatorCount;
     const suffix    = i.toString().padStart(4, '0');
     const firstName = FIRST_NAMES[i % FIRST_NAMES.length];
-    const username  = isCreator ? `${firstName.toLowerCase()}_${suffix}` : null;
+    // Generate a username only for creator slots, never overwrite an existing one.
+    const generatedUsername = isCreator ? `${firstName.toLowerCase()}_${suffix}` : null;
 
     return {
       updateOne: {
         filter: { _id: acct._id },
         update: {
           $set: {
-            role:     isCreator ? 'creator' : 'fan',
-            username: acct.username ?? username,
+            role:     acct.role     ?? (isCreator ? 'creator' : 'fan'),
+            // Assign username if creator slot AND username not already set.
+            username: (isCreator && !acct.username) ? generatedUsername : (acct.username ?? null),
             network:  acct.network  ?? 'celo',
           },
         },
@@ -215,7 +225,15 @@ async function migrateAccounts() {
   });
 
   await Account.bulkWrite(ops);
-  log('✅', `Migrated ${ops.length} accounts (${creatorCount} creators, ${all.length - creatorCount} fans).`);
+
+  const creatorsMigrated = ops.filter(o => o.updateOne.update.$set.role === 'creator').length;
+  log('✅', `Done — ${creatorsMigrated} creators, ${ops.length - creatorsMigrated} fans.`);
+
+  // Sanity check: any creator still without a username?
+  const stillBroken = await Account.countDocuments({ role: 'creator', username: null });
+  if (stillBroken > 0) {
+    log('⚠️ ', `${stillBroken} creators still have no username after migration!`);
+  }
 }
 
 // ─── Phase 1: Generate accounts ───────────────────────────────────────────────
@@ -297,23 +315,39 @@ async function registerCreators(provider, masterWallet) {
     const lastName  = rand(LAST_NAMES);
     const name      = `${firstName} ${lastName}`;
 
+    const bio       = rand(BIOS);
+    const avatarCID = `https://api.dicebear.com/7.x/avataaars/svg?seed=${acct.username}`;
+    const category  = rand(CATEGORIES);
+
     try {
       if (!DRY_RUN) {
         const registry = new ethers.Contract(REGISTRY_ADDRESS, REGISTRY_ABI, wallet);
-        const alreadyReg = await registry.isRegistered(acct.address);
 
+        // ── 1. Check on-chain registration status ─────────────────────────────
+        const alreadyReg = await registry.isRegistered(acct.address);
         if (alreadyReg) {
-          log(label, 'Already registered on-chain.');
+          log(label, 'Already registered on-chain — updating DB.');
           await Account.updateOne({ address: acct.address }, { isRegistered: true });
           continue;
         }
 
+        // ── 2. callStatic preflight — decodes the exact revert reason ─────────
+        try {
+          await registry.register.staticCall(acct.username, name, bio, avatarCID, category);
+        } catch (staticErr) {
+          const reason = staticErr.errorName ?? staticErr.reason ?? staticErr.shortMessage ?? staticErr.message;
+          log(label, `⛔ preflight revert: ${reason} — skipping (no gas wasted)`);
+          await InteractionLog.create({
+            accountAddress: acct.address, actionType: 'register',
+            status: 'failed', errorMsg: `preflight: ${reason}`,
+            meta: { username: acct.username },
+          });
+          continue;
+        }
+
+        // ── 3. Send the real transaction ──────────────────────────────────────
         const tx = await registry.register(
-          acct.username,
-          name,
-          rand(BIOS),
-          `https://api.dicebear.com/7.x/avataaars/svg?seed=${acct.username}`,
-          rand(CATEGORIES),
+          acct.username, name, bio, avatarCID, category,
           { gasLimit: GAS_LIMIT_CONTRACT }
         );
         log(label, `register tx: ${tx.hash}`);
@@ -328,16 +362,18 @@ async function registerCreators(provider, masterWallet) {
           });
           log(label, `✅ Registered as @${acct.username}`);
         } else {
-          throw new Error('tx reverted');
+          throw new Error('tx reverted after send');
         }
       } else {
         log(label, `[dry-run] Would register @${acct.username}`);
       }
     } catch (err) {
-      log(label, `❌ ${err.shortMessage || err.message}`);
+      const reason = err.errorName ?? err.reason ?? err.shortMessage ?? err.message;
+      log(label, `❌ ${reason}`);
       await InteractionLog.create({
         accountAddress: acct.address, actionType: 'register',
-        status: 'failed', errorMsg: err.shortMessage || err.message,
+        status: 'failed', errorMsg: reason,
+        meta: { username: acct.username },
       });
     }
 

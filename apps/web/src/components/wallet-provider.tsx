@@ -1,46 +1,40 @@
 "use client";
 
-import { RainbowKitProvider, connectorsForWallets } from "@rainbow-me/rainbowkit";
-import "@rainbow-me/rainbowkit/styles.css";
-import { injectedWallet } from "@rainbow-me/rainbowkit/wallets";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { WagmiProvider, createConfig, http, useConnect } from "wagmi";
-import { celo, celoSepolia } from "wagmi/chains";
-import { ConnectButton } from "./connect-button";
+import { celo } from "wagmi/chains";
+import { injected } from "wagmi/connectors";
 
-const connectors = connectorsForWallets(
-  [
-    {
-      groupName: "Recommended",
-      wallets: [injectedWallet],
-    },
-  ],
-  {
-    appName: "my-celo-app",
-    projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
-  }
-);
+// ─── Wagmi config ─────────────────────────────────────────────────────────────
+// Single chain (Celo mainnet). Injected connector covers MiniPay and any
+// browser wallet. No WalletConnect needed — Veild runs primarily inside MiniPay.
 
-const wagmiConfig = createConfig({
-  chains: [celo, celoSepolia],
-  connectors,
+export const wagmiConfig = createConfig({
+  chains: [celo],
+  connectors: [injected()],
   transports: {
-    [celo.id]: http(),
-    [celoSepolia.id]: http(),
+    [celo.id]: http(
+      process.env.NEXT_PUBLIC_CELO_RPC_URL ?? "https://forno.celo.org"
+    ),
   },
   ssr: true,
 });
 
 const queryClient = new QueryClient();
 
-function WalletProviderInner({ children }: { children: React.ReactNode }) {
+// ─── MiniPay auto-connect ─────────────────────────────────────────────────────
+// When the app loads inside MiniPay, auto-connect without showing any modal.
+// window.ethereum.isMiniPay is set by MiniPay's injected provider.
+
+function MiniPayAutoConnect() {
   const { connect, connectors } = useConnect();
 
   useEffect(() => {
-    // Check if the app is running inside MiniPay
-    if (window.ethereum && window.ethereum.isMiniPay) {
-      // Find the injected connector, which is what MiniPay uses
+    const ethereum = (window as Window & { ethereum?: { isMiniPay?: boolean } })
+      .ethereum;
+
+    if (ethereum?.isMiniPay) {
       const injectedConnector = connectors.find((c) => c.id === "injected");
       if (injectedConnector) {
         connect({ connector: injectedConnector });
@@ -48,19 +42,17 @@ function WalletProviderInner({ children }: { children: React.ReactNode }) {
     }
   }, [connect, connectors]);
 
-  return <>{children}</>;
+  return null;
 }
 
-export function WalletProvider({ children }: { children: React.ReactNode }) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+// ─── Provider ─────────────────────────────────────────────────────────────────
 
+export function WalletProvider({ children }: { children: React.ReactNode }) {
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider>
-          <WalletProviderInner>{children}</WalletProviderInner>
-        </RainbowKitProvider>
+        <MiniPayAutoConnect />
+        {children}
       </QueryClientProvider>
     </WagmiProvider>
   );

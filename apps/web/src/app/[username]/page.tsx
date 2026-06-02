@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -13,12 +13,17 @@ import {
   Users,
   Heart,
   ChevronRight,
+  Wallet,
+  ExternalLink,
 } from "lucide-react";
 import {
   getCreatorByUsername,
   getCreatorWallPosts,
   mockCreators,
 } from "@/lib/mockData";
+import { useMiniPay } from "@/hooks/useMiniPay";
+import { useVeildContracts, usePriorityFee } from "@/hooks/useVeildContracts";
+import { formatEther, type Address } from "viem";
 
 function formatNumber(n: number) {
   if (n >= 1000) return (n / 1000).toFixed(1) + "k";
@@ -51,36 +56,82 @@ export default function CreatorProfilePage({
   const creator = getCreatorByUsername(params.username) ?? mockCreators[0];
   const wallPosts = getCreatorWallPosts(creator.id).slice(0, 4);
 
+  // ── MiniPay / wallet ────────────────────────────────────────────────────────
+  const { isMiniPay, address, isConnected, isConnecting, connectWallet } = useMiniPay();
+  const {
+    sendMessage: sendOnChain,
+    sendPriorityMessage: sendPriorityOnChain,
+    isPending,
+    isConfirming,
+    isConfirmed,
+    error: contractError,
+    reset: resetContract,
+  } = useVeildContracts();
+  const { data: priorityFeeOnChain } = usePriorityFee();
+
+  // ── Local state ─────────────────────────────────────────────────────────────
   const [message, setMessage] = useState("");
   const [isPriority, setIsPriority] = useState(false);
   const [sent, setSent] = useState(false);
-  const [sending, setSending] = useState(false);
   const [particles, setParticles] = useState<{ id: number; x: number; color: string }[]>([]);
 
   const charsLeft = MAX_CHARS - message.length;
-  const canSend = message.trim().length > 0 && !sent;
+  const canSend = message.trim().length > 0 && !sent && !isPending && !isConfirming;
 
   const COLORS = ["#7c3aed", "#a78bfa", "#34d399", "#fbbf24", "#f472b6"];
+  const priorityFee = priorityFeeOnChain ?? BigInt("1000000000000000"); // 0.001 CELO default
 
-  async function handleSend() {
+  // Show success when on-chain tx confirms
+  useEffect(() => {
+    if (isConfirmed && !sent) {
+      setSent(true);
+      const burst = Array.from({ length: 12 }, (_, i) => ({
+        id: i,
+        x: Math.random() * 200 - 100,
+        color: COLORS[i % COLORS.length],
+      }));
+      setParticles(burst);
+      setTimeout(() => setParticles([]), 900);
+      setTimeout(() => {
+        setSent(false);
+        setMessage("");
+        setIsPriority(false);
+        resetContract();
+      }, 3000);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isConfirmed]);
+
+  function handleSend() {
     if (!canSend) return;
-    setSending(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setSending(false);
-    setSent(true);
-    // burst particles
-    const burst = Array.from({ length: 12 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 200 - 100,
-      color: COLORS[i % COLORS.length],
-    }));
-    setParticles(burst);
-    setTimeout(() => setParticles([]), 900);
-    setTimeout(() => {
-      setSent(false);
-      setMessage("");
-      setIsPriority(false);
-    }, 3000);
+
+    const creatorAddr = "0x0000000000000000000000000000000000000000" as Address;
+    // In production: resolve creator's on-chain address from VeildRegistry
+    // using their username. Using a placeholder here until registry lookup
+    // is wired up per creator profile.
+
+    if (isConnected) {
+      if (isPriority) {
+        sendPriorityOnChain(creatorAddr, message, priorityFee);
+      } else {
+        sendOnChain(creatorAddr, message);
+      }
+    } else {
+      // Fallback: mock send for users not in MiniPay
+      setSent(true);
+      const burst = Array.from({ length: 12 }, (_, i) => ({
+        id: i,
+        x: Math.random() * 200 - 100,
+        color: COLORS[i % COLORS.length],
+      }));
+      setParticles(burst);
+      setTimeout(() => setParticles([]), 900);
+      setTimeout(() => {
+        setSent(false);
+        setMessage("");
+        setIsPriority(false);
+      }, 3000);
+    }
   }
 
   return (
@@ -173,6 +224,49 @@ export default function CreatorProfilePage({
             Send an anonymous message to{" "}
             <span className="text-white">{creator.name.split(" ")[0]}</span>
           </h2>
+
+          {/* MiniPay / wallet status banner */}
+          {isMiniPay && isConnected && (
+            <motion.div
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center gap-2 mb-3 px-3 py-2 bg-green-500/10 border border-green-500/20 rounded-xl"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+              <span className="text-xs text-green-400 font-medium">
+                MiniPay connected · messages go on-chain
+              </span>
+              <span className="ml-auto text-[10px] text-green-400/60 font-mono truncate max-w-[100px]">
+                {address?.slice(0, 6)}…{address?.slice(-4)}
+              </span>
+            </motion.div>
+          )}
+
+          {!isMiniPay && !isConnected && (
+            <motion.div
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center justify-between mb-3 px-3 py-2 bg-white/3 border border-white/8 rounded-xl"
+            >
+              <span className="text-xs text-zinc-500">
+                Connect wallet to send on-chain
+              </span>
+              <button
+                onClick={connectWallet}
+                disabled={isConnecting}
+                className="flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300 font-medium transition-colors"
+              >
+                <Wallet className="w-3 h-3" />
+                {isConnecting ? "Connecting…" : "Connect"}
+              </button>
+            </motion.div>
+          )}
+
+          {contractError && (
+            <p className="text-xs text-red-400 mb-2 px-1">
+              ⚠ {contractError.message?.slice(0, 80)}
+            </p>
+          )}
 
           {/* Quick prompts */}
           {!message && (
@@ -287,26 +381,31 @@ export default function CreatorProfilePage({
               <motion.button
                 key="send"
                 onClick={handleSend}
-                disabled={!canSend || sending}
+                disabled={!canSend}
                 whileTap={{ scale: 0.97 }}
                 className={`mt-3 w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold transition-all ${
-                  canSend && !sending
+                  canSend
                     ? isPriority
                       ? "bg-amber-500 hover:bg-amber-400 text-black shadow-lg shadow-amber-500/20"
                       : "bg-violet-700 hover:bg-violet-600 text-white shadow-lg shadow-violet-900/30"
                     : "bg-white/5 text-zinc-600 cursor-not-allowed"
                 }`}
               >
-                {sending ? (
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
-                    className="w-4 h-4 border-2 border-current border-t-transparent rounded-full"
-                  />
+                {isPending || isConfirming ? (
+                  <>
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+                      className="w-4 h-4 border-2 border-current border-t-transparent rounded-full"
+                    />
+                    {isPending ? "Confirm in wallet…" : "Confirming…"}
+                  </>
                 ) : (
                   <>
                     <Send className="w-4 h-4" />
-                    {isPriority ? "Send Priority Message" : "Send Anonymously"}
+                    {isPriority
+                      ? `Send Priority (+${formatEther(priorityFee)} CELO)`
+                      : "Send Anonymously"}
                   </>
                 )}
               </motion.button>
@@ -314,7 +413,9 @@ export default function CreatorProfilePage({
           </AnimatePresence>
 
           <p className="text-center text-xs text-zinc-600 mt-2">
-            Your identity is never revealed 🔒
+            {isConnected
+              ? "Sent on-chain — your address is not stored in the contract 🔒"
+              : "Your identity is never revealed 🔒"}
           </p>
         </motion.div>
 

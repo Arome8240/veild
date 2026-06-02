@@ -55,9 +55,12 @@ export default function CreatorProfilePage({
   const [isPriority, setIsPriority] = useState(false);
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
+  const [particles, setParticles] = useState<{ id: number; x: number; color: string }[]>([]);
 
   const charsLeft = MAX_CHARS - message.length;
   const canSend = message.trim().length > 0 && !sent;
+
+  const COLORS = ["#7c3aed", "#a78bfa", "#34d399", "#fbbf24", "#f472b6"];
 
   async function handleSend() {
     if (!canSend) return;
@@ -65,6 +68,14 @@ export default function CreatorProfilePage({
     await new Promise((r) => setTimeout(r, 800));
     setSending(false);
     setSent(true);
+    // burst particles
+    const burst = Array.from({ length: 12 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 200 - 100,
+      color: COLORS[i % COLORS.length],
+    }));
+    setParticles(burst);
+    setTimeout(() => setParticles([]), 900);
     setTimeout(() => {
       setSent(false);
       setMessage("");
@@ -245,10 +256,21 @@ export default function CreatorProfilePage({
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                className="mt-3 w-full flex items-center justify-center gap-2 bg-green-500/15 border border-green-500/30 text-green-400 py-3 rounded-xl text-sm font-medium"
+                className="relative mt-3 w-full flex items-center justify-center gap-2 bg-green-500/15 border border-green-500/30 text-green-400 py-3 rounded-xl text-sm font-medium overflow-hidden"
               >
                 <Check className="w-4 h-4" />
                 Message sent anonymously!
+                {/* Particle burst */}
+                {particles.map((p) => (
+                  <motion.span
+                    key={p.id}
+                    initial={{ opacity: 1, y: 0, x: 0, scale: 1 }}
+                    animate={{ opacity: 0, y: -60, x: p.x, scale: 0.3 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    className="absolute top-1/2 left-1/2 w-2 h-2 rounded-full pointer-events-none"
+                    style={{ backgroundColor: p.color }}
+                  />
+                ))}
               </motion.div>
             ) : (
               <motion.button

@@ -55,3 +55,12 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #7c3aed;
 }
+
+/* Safe-area support for notched/home-bar devices */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.bottom-nav-height {
+  height: calc(4rem + env(safe-area-inset-bottom, 0px));
+}

@@ -88,8 +88,21 @@ export default function ProfilePage() {
               </button>
             </div>
 
-            <h2 className="font-bold text-base leading-tight">{ME.name}</h2>
-            <p className="text-zinc-500 text-xs mb-2">@{ME.username}</p>
+            <div className="flex items-center gap-2 flex-wrap mb-0.5">
+              <h2 className="font-bold text-base leading-tight">{ME.name}</h2>
+              {ME.isVerified && (
+                <span className="text-[10px] font-semibold bg-violet-500/15 text-violet-300 border border-violet-500/25 px-2 py-0.5 rounded-full">
+                  ✓ Verified
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-2 mb-2">
+              <p className="text-zinc-500 text-xs">@{ME.username}</p>
+              <span className="text-zinc-700 text-xs">·</span>
+              <span className="text-xs text-zinc-600 bg-white/4 px-2 py-0.5 rounded-full border border-white/6">
+                {ME.category}
+              </span>
+            </div>
             <p className="text-zinc-400 text-sm leading-relaxed mb-3">{ME.bio}</p>
 
             <div className="flex items-center gap-1 bg-[#0a0a0a] border border-white/6 rounded-xl px-3 py-2">

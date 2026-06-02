@@ -125,10 +125,21 @@ export default function CreatorProfilePage({
             />
           </div>
           <div className="min-w-0">
-            <h1 className="font-bold text-lg sm:text-xl leading-tight">
-              {creator.name}
-            </h1>
-            <p className="text-zinc-500 text-sm">@{creator.username}</p>
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="font-bold text-lg sm:text-xl leading-tight">
+                {creator.name}
+              </h1>
+              {creator.isVerified && (
+                <span className="text-[10px] font-semibold bg-violet-500/15 text-violet-300 border border-violet-500/25 px-2 py-0.5 rounded-full">
+                  ✓ Verified
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              <p className="text-zinc-500 text-xs">@{creator.username}</p>
+              <span className="text-zinc-700 text-xs">·</span>
+              <span className="text-xs text-zinc-600">{creator.category}</span>
+            </div>
             <div className="flex items-center gap-3 mt-1.5">
               <span className="flex items-center gap-1 text-xs text-zinc-500">
                 <Users className="w-3 h-3" />

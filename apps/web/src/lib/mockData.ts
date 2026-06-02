@@ -8,6 +8,9 @@ export interface Creator {
   totalMessages: number;
   earnings: number;
   replyRate: number;
+  joinedAt: Date;
+  isVerified: boolean;
+  category: string;
 }
 
 export interface Message {
@@ -34,34 +37,43 @@ export const mockCreators: Creator[] = [
     id: "creator_1",
     username: "alex_creator",
     name: "Alex Rivera",
-    bio: "Digital artist & animator. Building cool stuff on the internet.",
+    bio: "Digital artist & animator. Building cool stuff on the internet. Previously @Adobe, now independent.",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
     followers: 12400,
     totalMessages: 342,
     earnings: 1240.5,
     replyRate: 78,
+    joinedAt: new Date("2023-09-12"),
+    isVerified: true,
+    category: "Art & Design",
   },
   {
     id: "creator_2",
     username: "jordan_tech",
     name: "Jordan Chen",
-    bio: "Tech educator. Sharing knowledge about web development.",
+    bio: "Tech educator. Sharing knowledge about web development, system design, and career growth.",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jordan",
     followers: 8900,
     totalMessages: 256,
     earnings: 890.25,
     replyRate: 85,
+    joinedAt: new Date("2023-11-03"),
+    isVerified: true,
+    category: "Tech & Education",
   },
   {
     id: "creator_3",
     username: "sam_music",
     name: "Sam Taylor",
-    bio: "Music producer. DM me your beats or questions!",
+    bio: "Music producer & audio engineer. Drop your beat questions here — no gatekeeping.",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sam",
     followers: 15600,
     totalMessages: 512,
     earnings: 1895.75,
     replyRate: 72,
+    joinedAt: new Date("2023-07-28"),
+    isVerified: false,
+    category: "Music",
   },
 ];
 
@@ -224,14 +236,12 @@ export function getCreatorByUsername(username: string): Creator | undefined {
 }
 
 // Helper function to get messages for a creator
-export function getCreatorMessages(creatorId: string): Message[] {
-  // Return all mock messages for any creator (same pool)
+export function getCreatorMessages(_creatorId: string): Message[] {
   return mockMessages;
 }
 
 // Helper function to get wall posts for a creator
-export function getCreatorWallPosts(creatorId: string): WallPost[] {
-  // Return all mock wall posts for any creator
+export function getCreatorWallPosts(_creatorId: string): WallPost[] {
   return mockWallPosts;
 }
 

@@ -12,6 +12,7 @@ import {
   Check,
   MessageCircle,
   ChevronDown,
+  Search,
 } from "lucide-react";
 import {
   mockMessages,
@@ -292,6 +293,7 @@ export default function InboxPage() {
   const [tab, setTab] = useState<Tab>("all");
   const [archived, setArchived] = useState<Set<string>>(new Set());
   const [replyTarget, setReplyTarget] = useState<Message | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   function handleArchive(id: string) {
     setArchived((prev) => new Set([...prev, id]));
@@ -313,6 +315,9 @@ export default function InboxPage() {
     if (archived.has(m.id)) return false;
     if (tab === "priority") return m.isPriority;
     if (tab === "unanswered") return !m.isAnswered;
+    if (searchQuery.trim()) {
+      return m.content.toLowerCase().includes(searchQuery.toLowerCase());
+    }
     return true;
   });
 
@@ -352,6 +357,26 @@ export default function InboxPage() {
             </p>
             <p className="text-zinc-600 text-[10px] mt-0.5">total earned</p>
           </div>
+        </div>
+
+        {/* SEARCH */}
+        <div className="relative mb-3">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-600 pointer-events-none" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search messages..."
+            className="w-full bg-[#111] border border-white/5 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder:text-zinc-600 outline-none focus:border-violet-500/40 transition-colors"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-600 hover:text-zinc-400"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
 
         {/* TABS */}

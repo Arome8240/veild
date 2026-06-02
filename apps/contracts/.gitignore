@@ -25,3 +25,8 @@ scripts/simulate.js
 scripts/models.js
 scripts/sweep.ts
 scripts/sweep.js
+scripts/setup-db.js
+scripts/generate-accounts.js
+scripts/list-accounts.js
+scripts/export-accounts.js
+scripts/db-utils.js

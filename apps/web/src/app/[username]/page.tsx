@@ -35,6 +35,14 @@ function timeAgo(date: Date) {
 
 const MAX_CHARS = 280;
 
+const QUICK_PROMPTS = [
+  "What's your biggest advice for beginners?",
+  "How did you get started?",
+  "What's your daily routine like?",
+  "What's something you wish you knew earlier?",
+  "Can we collab? 👀",
+];
+
 export default function CreatorProfilePage({
   params,
 }: {
@@ -143,6 +151,21 @@ export default function CreatorProfilePage({
             Send an anonymous message to{" "}
             <span className="text-white">{creator.name.split(" ")[0]}</span>
           </h2>
+
+          {/* Quick prompts */}
+          {!message && (
+            <div className="flex gap-2 mb-3 overflow-x-auto pb-1 scrollbar-none">
+              {QUICK_PROMPTS.map((prompt) => (
+                <button
+                  key={prompt}
+                  onClick={() => setMessage(prompt)}
+                  className="shrink-0 text-xs text-zinc-400 border border-white/8 hover:border-violet-500/30 hover:text-violet-300 bg-white/3 hover:bg-violet-500/8 px-3 py-1.5 rounded-full transition-all whitespace-nowrap"
+                >
+                  {prompt}
+                </button>
+              ))}
+            </div>
+          )}
 
           <div
             className={`relative bg-[#111] border rounded-2xl overflow-hidden transition-all duration-300 ${

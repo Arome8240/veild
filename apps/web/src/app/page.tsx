@@ -114,7 +114,14 @@ export default function HomePage() {
               <Image src={ME.avatar} alt={ME.name} fill className="object-cover" />
             </div>
             <div className="min-w-0">
-              <p className="font-semibold text-sm leading-tight">{ME.name}</p>
+              <div className="flex items-center gap-1.5">
+                <p className="font-semibold text-sm leading-tight">{ME.name}</p>
+                {ME.isVerified && (
+                  <span className="text-[9px] font-semibold text-violet-300 bg-violet-500/15 border border-violet-500/25 px-1.5 py-0.5 rounded-full">
+                    ✓
+                  </span>
+                )}
+              </div>
               <p className="text-zinc-500 text-xs">@{ME.username}</p>
             </div>
             <Link

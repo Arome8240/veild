@@ -81,10 +81,10 @@ export default function CreatorProfilePage({
             <span className="font-bold text-sm tracking-tight">veild</span>
           </Link>
           <Link
-            href="/dashboard"
+            href="/inbox"
             className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
           >
-            Dashboard
+            My inbox
           </Link>
         </div>
       </nav>

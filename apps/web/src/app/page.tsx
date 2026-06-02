@@ -1,362 +1,258 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import {
-  ArrowRight,
-  MessageCircle,
-  DollarSign,
-  Zap,
-  Eye,
+  Copy,
+  Check,
   Share2,
-  Lock,
-  TrendingUp,
+  MessageCircle,
+  Heart,
+  DollarSign,
+  Bell,
+  ChevronRight,
+  Zap,
+  ExternalLink,
 } from "lucide-react";
-import { mockCreators } from "@/lib/mockData";
+import {
+  mockCreators,
+  getCreatorWallPosts,
+  getCreatorStats,
+} from "@/lib/mockData";
+import { BottomNav } from "@/components/bottom-nav";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  show: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.1, duration: 0.5, ease: "easeOut" },
-  }),
-};
+const ME = mockCreators[0];
+const profileUrl = `veild.app/${ME.username}`;
 
-function formatNumber(n: number) {
+function timeAgo(date: Date) {
+  const diff = (Date.now() - date.getTime()) / 1000;
+  if (diff < 60) return "just now";
+  if (diff < 3600) return `${Math.floor(diff / 60)}m`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h`;
+  return `${Math.floor(diff / 86400)}d`;
+}
+
+function formatNum(n: number) {
   if (n >= 1000) return (n / 1000).toFixed(1) + "k";
   return n.toString();
 }
 
-export default function LandingPage() {
+export default function HomePage() {
+  const stats = getCreatorStats(ME.id);
+  const wallPosts = getCreatorWallPosts(ME.id);
+  const [copied, setCopied] = useState(false);
+  const [liked, setLiked] = useState<Set<string>>(new Set());
+  const unread = stats.unread;
+
+  function copyLink() {
+    if (navigator.clipboard) navigator.clipboard.writeText(`https://${profileUrl}`);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  function toggleLike(id: string) {
+    setLiked((prev) => {
+      const n = new Set(prev);
+      n.has(id) ? n.delete(id) : n.add(id);
+      return n;
+    });
+  }
+
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
-      {/* NAV */}
-      <nav className="sticky top-0 z-50 border-b border-white/5 bg-[#0a0a0a]/80 backdrop-blur-xl">
-        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 group">
-            <span className="text-lg">👁️</span>
-            <span className="font-bold text-lg tracking-tight text-white">
-              veild
-            </span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link
-              href="/dashboard"
-              className="text-sm text-zinc-400 hover:text-white transition-colors px-3 py-1.5"
-            >
-              Dashboard
-            </Link>
-            <Link
-              href="/alex_creator"
-              className="text-sm font-medium bg-violet-700 hover:bg-violet-600 transition-colors text-white px-4 py-1.5 rounded-full"
-            >
-              Claim your link
-            </Link>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-[#0a0a0a] text-white pb-24">
+      {/* STATUS BAR SPACER */}
+      <div className="h-safe-top" />
 
-      {/* HERO */}
-      <section className="relative pt-20 pb-24 px-4 overflow-hidden">
-        {/* Background glow */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-violet-700/10 rounded-full blur-[120px]" />
-        </div>
-
-        <div className="relative max-w-3xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="inline-flex items-center gap-2 px-3 py-1 mb-6 rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-400 text-xs font-medium"
-          >
-            <Zap className="w-3 h-3" />
-            Anonymous. Authentic. Yours.
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.1] mb-6"
-          >
-            Your fans have things{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-purple-300">
-              to say.
-            </span>
-            <br />
-            Anonymously.
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-zinc-400 text-lg leading-relaxed mb-8 max-w-xl mx-auto"
-          >
-            Veild gives creators a private inbox where fans can speak freely —
-            no handles, no followers, no judgment. Reply. Earn. Publish.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-3 justify-center items-center"
-          >
-            <Link
-              href="/alex_creator"
-              className="group w-full sm:w-auto flex items-center justify-center gap-2 bg-violet-700 hover:bg-violet-600 transition-all text-white font-semibold px-7 py-3.5 rounded-full text-sm shadow-lg shadow-violet-900/40"
-            >
-              Claim your Veild link
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-            </Link>
-            <Link
-              href="/alex_creator/wall"
-              className="w-full sm:w-auto flex items-center justify-center gap-2 border border-white/10 hover:border-white/20 hover:bg-white/5 transition-all text-zinc-300 font-medium px-7 py-3.5 rounded-full text-sm"
-            >
-              See how it works
-            </Link>
-          </motion.div>
-
-          {/* Social proof */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12 text-sm text-zinc-500"
-          >
-            {[
-              { label: "creators", value: "2,400+" },
-              { label: "messages sent", value: "50k+" },
-              { label: "earned", value: "$125k+" },
-            ].map((s) => (
-              <div key={s.label} className="flex items-center gap-2">
-                <span className="text-white font-semibold">{s.value}</span>
-                <span>{s.label}</span>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* CREATOR CARDS */}
-      <section className="px-4 py-16 max-w-6xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-10"
-        >
-          <p className="text-xs font-medium text-violet-400 uppercase tracking-widest mb-3">
-            Featured creators
-          </p>
-          <h2 className="text-2xl sm:text-3xl font-bold">
-            See what&apos;s possible
-          </h2>
-          <p className="text-zinc-500 mt-2 text-sm">
-            These creators are already building deeper connections with their
-            fans.
-          </p>
-        </motion.div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {mockCreators.map((creator, i) => (
-            <motion.div
-              key={creator.id}
-              custom={i}
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className="group relative bg-[#111] border border-white/5 rounded-2xl p-5 hover:border-violet-500/30 hover:shadow-lg hover:shadow-violet-900/20 transition-all cursor-pointer"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <div className="relative w-12 h-12 rounded-full overflow-hidden bg-[#1a1a1a] ring-2 ring-white/5 group-hover:ring-violet-500/30 transition-all shrink-0">
-                  <Image
-                    src={creator.avatar}
-                    alt={creator.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="min-w-0">
-                  <p className="font-semibold text-sm truncate">
-                    {creator.name}
-                  </p>
-                  <p className="text-zinc-500 text-xs truncate">
-                    @{creator.username}
-                  </p>
-                </div>
-              </div>
-
-              <p className="text-zinc-400 text-xs leading-relaxed mb-4 line-clamp-2">
-                {creator.bio}
-              </p>
-
-              <div className="grid grid-cols-3 gap-2 mb-4">
-                {[
-                  {
-                    icon: MessageCircle,
-                    value: formatNumber(creator.totalMessages),
-                    label: "messages",
-                  },
-                  {
-                    icon: DollarSign,
-                    value: `$${creator.earnings.toFixed(0)}`,
-                    label: "earned",
-                  },
-                  {
-                    icon: TrendingUp,
-                    value: `${creator.replyRate}%`,
-                    label: "reply rate",
-                  },
-                ].map((stat) => (
-                  <div
-                    key={stat.label}
-                    className="bg-white/3 rounded-xl p-2.5 text-center"
-                  >
-                    <p className="text-white font-bold text-sm">{stat.value}</p>
-                    <p className="text-zinc-600 text-[10px] mt-0.5">
-                      {stat.label}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              <Link
-                href={`/${creator.username}`}
-                className="block w-full text-center text-xs font-medium text-violet-400 border border-violet-500/20 hover:border-violet-500/50 hover:bg-violet-500/10 py-2 rounded-lg transition-all"
-              >
-                Send a message →
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section className="px-4 py-16 max-w-4xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
-        >
-          <p className="text-xs font-medium text-violet-400 uppercase tracking-widest mb-3">
-            How it works
-          </p>
-          <h2 className="text-2xl sm:text-3xl font-bold">
-            Simple as it sounds
-          </h2>
-        </motion.div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            {
-              icon: Share2,
-              step: "01",
-              title: "Share your link",
-              desc: "Post your unique Veild link anywhere — bio, story, newsletter.",
-            },
-            {
-              icon: Lock,
-              step: "02",
-              title: "Fans send messages",
-              desc: "Anyone can drop an anonymous message. No account required.",
-            },
-            {
-              icon: DollarSign,
-              step: "03",
-              title: "Earn on priority",
-              desc: "Fans pay $1 to jump the queue. You keep everything.",
-            },
-            {
-              icon: Eye,
-              step: "04",
-              title: "Reply & publish",
-              desc: "Reply privately or publish your answers to your public wall.",
-            },
-          ].map((item, i) => (
-            <motion.div
-              key={item.step}
-              custom={i}
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
-              className="relative bg-[#111] border border-white/5 rounded-2xl p-5"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
-                  <item.icon className="w-4 h-4 text-violet-400" />
-                </div>
-                <span className="text-3xl font-black text-white/5">
-                  {item.step}
+      {/* TOP BAR */}
+      <header className="sticky top-0 z-40 bg-[#0a0a0a]/90 backdrop-blur-xl border-b border-white/5">
+        <div className="max-w-lg mx-auto px-4 h-14 flex items-center justify-between">
+          <span className="font-bold text-base tracking-tight flex items-center gap-1.5">
+            <span>👁️</span> veild
+          </span>
+          <div className="flex items-center gap-2">
+            {unread > 0 && (
+              <Link href="/inbox" className="relative">
+                <Bell className="w-5 h-5 text-zinc-400" />
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-violet-600 rounded-full text-[9px] font-bold flex items-center justify-center">
+                  {unread}
                 </span>
+              </Link>
+            )}
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-lg mx-auto px-4">
+        {/* CREATOR CARD */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="mt-4 mb-4 bg-[#111] border border-white/5 rounded-2xl p-4"
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <div className="relative w-12 h-12 rounded-xl overflow-hidden shrink-0 ring-2 ring-white/5">
+              <Image src={ME.avatar} alt={ME.name} fill className="object-cover" />
+            </div>
+            <div className="min-w-0">
+              <p className="font-semibold text-sm leading-tight">{ME.name}</p>
+              <p className="text-zinc-500 text-xs">@{ME.username}</p>
+            </div>
+            <Link
+              href={`/${ME.username}`}
+              className="ml-auto flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300 border border-violet-500/25 px-2.5 py-1 rounded-full transition-colors"
+            >
+              Preview <ExternalLink className="w-2.5 h-2.5" />
+            </Link>
+          </div>
+
+          {/* Share link row */}
+          <div className="flex items-center gap-2 bg-[#0a0a0a] border border-white/8 rounded-xl px-3 py-2.5 mb-3">
+            <span className="text-zinc-500 text-xs font-mono flex-1 truncate">
+              {profileUrl}
+            </span>
+            <button
+              onClick={copyLink}
+              className={`shrink-0 text-xs font-medium px-2.5 py-1 rounded-lg transition-all ${
+                copied
+                  ? "bg-green-500/15 text-green-400"
+                  : "bg-violet-600 hover:bg-violet-500 text-white"
+              }`}
+            >
+              {copied ? (
+                <span className="flex items-center gap-1">
+                  <Check className="w-3 h-3" /> Copied
+                </span>
+              ) : (
+                <span className="flex items-center gap-1">
+                  <Copy className="w-3 h-3" /> Copy
+                </span>
+              )}
+            </button>
+          </div>
+
+          <button
+            onClick={copyLink}
+            className="w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/8 border border-white/8 text-zinc-300 text-xs font-medium py-2.5 rounded-xl transition-colors"
+          >
+            <Share2 className="w-3.5 h-3.5" />
+            Share your Veild link
+          </button>
+        </motion.div>
+
+        {/* STATS ROW */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.08 }}
+          className="grid grid-cols-3 gap-2 mb-6"
+        >
+          {[
+            { icon: MessageCircle, value: formatNum(stats.totalMessages), label: "messages", color: "violet" },
+            { icon: DollarSign, value: `$${ME.earnings.toFixed(0)}`, label: "earned", color: "green" },
+            { icon: Zap, value: `${stats.replyRate}%`, label: "reply rate", color: "amber" },
+          ].map((s) => (
+            <div
+              key={s.label}
+              className="bg-[#111] border border-white/5 rounded-xl p-3 text-center"
+            >
+              <p className="font-bold text-base leading-none mb-0.5">{s.value}</p>
+              <p className="text-zinc-600 text-[10px]">{s.label}</p>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* UNREAD BANNER */}
+        {unread > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.12 }}
+            className="mb-5"
+          >
+            <Link
+              href="/inbox"
+              className="flex items-center justify-between bg-violet-600/15 border border-violet-500/25 rounded-xl px-4 py-3 group"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 bg-violet-600 rounded-full flex items-center justify-center text-xs font-bold shrink-0">
+                  {unread}
+                </div>
+                <p className="text-sm font-medium text-violet-100">
+                  {unread} new{" "}
+                  {unread === 1 ? "message" : "messages"} waiting
+                </p>
               </div>
-              <p className="font-semibold text-sm mb-1.5">{item.title}</p>
-              <p className="text-zinc-500 text-xs leading-relaxed">{item.desc}</p>
+              <ChevronRight className="w-4 h-4 text-violet-400 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
+          </motion.div>
+        )}
+
+        {/* WALL FEED */}
+        <div className="mb-2 flex items-center justify-between">
+          <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">
+            Your wall
+          </h2>
+          <Link
+            href={`/${ME.username}/wall`}
+            className="text-xs text-violet-400 hover:text-violet-300 flex items-center gap-0.5 transition-colors"
+          >
+            See all <ChevronRight className="w-3 h-3" />
+          </Link>
+        </div>
+
+        <div className="space-y-3">
+          {wallPosts.map((post, i) => (
+            <motion.div
+              key={post.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 + i * 0.07, duration: 0.35 }}
+              className="bg-[#111] border border-white/5 rounded-2xl p-4 hover:border-white/10 transition-colors"
+            >
+              {/* Question */}
+              <div className="flex items-start gap-2 mb-3">
+                <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-[10px] font-medium text-zinc-500 shrink-0 mt-0.5">
+                  ?
+                </div>
+                <p className="text-zinc-300 text-sm leading-relaxed">
+                  {post.question}
+                </p>
+              </div>
+
+              {/* Answer */}
+              <div className="flex items-start gap-2 pl-1 border-l-2 border-violet-500/30 ml-3">
+                <div className="relative w-5 h-5 rounded-full overflow-hidden shrink-0 mt-0.5">
+                  <Image src={ME.avatar} alt={ME.name} fill className="object-cover" />
+                </div>
+                <p className="text-zinc-400 text-sm leading-relaxed">
+                  {post.answer}
+                </p>
+              </div>
+
+              {/* Footer */}
+              <div className="flex items-center gap-3 mt-3 ml-0.5">
+                <button
+                  onClick={() => toggleLike(post.id)}
+                  className={`flex items-center gap-1 text-xs transition-colors ${
+                    liked.has(post.id) ? "text-pink-400" : "text-zinc-600 hover:text-pink-400"
+                  }`}
+                >
+                  <Heart
+                    className={`w-3.5 h-3.5 ${liked.has(post.id) ? "fill-current" : ""}`}
+                  />
+                  {formatNum(post.likes + (liked.has(post.id) ? 1 : 0))}
+                </button>
+                <span className="text-zinc-700 text-xs">{timeAgo(post.timestamp)} ago</span>
+              </div>
             </motion.div>
           ))}
         </div>
-      </section>
+      </div>
 
-      {/* CTA BANNER */}
-      <section className="px-4 py-16 max-w-3xl mx-auto text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="relative bg-gradient-to-b from-violet-900/30 to-[#111] border border-violet-500/20 rounded-3xl px-8 py-12 overflow-hidden"
-        >
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-72 h-36 bg-violet-600/20 rounded-full blur-[80px]" />
-          </div>
-          <div className="relative">
-            <h2 className="text-2xl sm:text-3xl font-bold mb-3">
-              Ready to hear from your fans?
-            </h2>
-            <p className="text-zinc-400 mb-8 text-sm leading-relaxed">
-              Claim your free link and start receiving anonymous messages in
-              minutes.
-            </p>
-            <Link
-              href="/alex_creator"
-              className="inline-flex items-center gap-2 bg-violet-700 hover:bg-violet-600 transition-all text-white font-semibold px-8 py-3.5 rounded-full text-sm shadow-lg shadow-violet-900/40 group"
-            >
-              Claim your Veild link
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-            </Link>
-          </div>
-        </motion.div>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="border-t border-white/5 px-4 py-8 text-center text-zinc-600 text-xs">
-        <div className="flex items-center justify-center gap-2 mb-3">
-          <span>👁️</span>
-          <span className="font-bold text-zinc-400">veild</span>
-        </div>
-        <div className="flex items-center justify-center gap-4 mb-3">
-          <Link href="#" className="hover:text-zinc-400 transition-colors">
-            Privacy
-          </Link>
-          <Link href="#" className="hover:text-zinc-400 transition-colors">
-            Terms
-          </Link>
-          <Link href="/dashboard" className="hover:text-zinc-400 transition-colors">
-            Dashboard
-          </Link>
-        </div>
-        <p>© 2024 Veild. All rights reserved.</p>
-      </footer>
+      <BottomNav />
     </div>
   );
 }

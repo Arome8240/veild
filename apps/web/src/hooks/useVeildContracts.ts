@@ -1,49 +1,34 @@
 "use client";
 
 import { useWriteContract, useReadContract, useWaitForTransactionReceipt } from "wagmi";
-import { parseEther, type Address } from "viem";
-import {
-  VEILD_MESSAGES_ABI,
-  VEILD_REGISTRY_ABI,
-  MESSAGES_ADDRESS,
-  REGISTRY_ADDRESS,
-} from "@/lib/contracts";
+import { type Address } from "viem";
+import { veildRegistry, veildMessages } from "@/lib/contracts";
 
 /**
  * useVeildContracts
  *
- * Provides typed write helpers and read queries for both Veild contracts.
- * All writes go through wagmi's `useWriteContract` which routes through the
- * connected wallet (MiniPay's window.ethereum when inside MiniPay).
- *
- * MiniPay note: transactions are submitted as legacy type by MiniPay's
- * injected provider automatically — no special handling needed here.
+ * Write helpers and read queries for both Veild contracts, powered by veild-sdk.
+ * veildRegistry.celo / veildMessages.celo carry the address + ABI together so
+ * each contract call is a single spread instead of repeating address and abi.
  */
 export function useVeildContracts() {
   const { writeContract, data: txHash, isPending, error, reset } = useWriteContract();
-  const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
-    hash: txHash,
-  });
+  const { isLoading: isConfirming, isSuccess: isConfirmed } =
+    useWaitForTransactionReceipt({ hash: txHash });
 
-  // ─── Fan actions ────────────────────────────────────────────────────────────
+  // ─── Fan writes ─────────────────────────────────────────────────────────────
 
   function sendMessage(creatorAddress: Address, content: string) {
     writeContract({
-      address: MESSAGES_ADDRESS,
-      abi: VEILD_MESSAGES_ABI,
+      ...veildMessages.celo,
       functionName: "sendMessage",
       args: [creatorAddress, content],
     });
   }
 
-  function sendPriorityMessage(
-    creatorAddress: Address,
-    content: string,
-    fee: bigint
-  ) {
+  function sendPriorityMessage(creatorAddress: Address, content: string, fee: bigint) {
     writeContract({
-      address: MESSAGES_ADDRESS,
-      abi: VEILD_MESSAGES_ABI,
+      ...veildMessages.celo,
       functionName: "sendPriorityMessage",
       args: [creatorAddress, content],
       value: fee,
@@ -52,23 +37,17 @@ export function useVeildContracts() {
 
   function likeWallPost(creatorAddress: Address, wallIndex: bigint) {
     writeContract({
-      address: MESSAGES_ADDRESS,
-      abi: VEILD_MESSAGES_ABI,
+      ...veildMessages.celo,
       functionName: "likeWallPost",
       args: [creatorAddress, wallIndex],
     });
   }
 
-  // ─── Creator actions ────────────────────────────────────────────────────────
+  // ─── Creator writes ──────────────────────────────────────────────────────────
 
-  function replyToMessage(
-    messageIndex: bigint,
-    reply: string,
-    publishToWall: boolean
-  ) {
+  function replyToMessage(messageIndex: bigint, reply: string, publishToWall: boolean) {
     writeContract({
-      address: MESSAGES_ADDRESS,
-      abi: VEILD_MESSAGES_ABI,
+      ...veildMessages.celo,
       functionName: "replyToMessage",
       args: [messageIndex, reply, publishToWall],
     });
@@ -76,8 +55,7 @@ export function useVeildContracts() {
 
   function publishToWall(messageIndex: bigint) {
     writeContract({
-      address: MESSAGES_ADDRESS,
-      abi: VEILD_MESSAGES_ABI,
+      ...veildMessages.celo,
       functionName: "publishToWall",
       args: [messageIndex],
     });
@@ -85,8 +63,7 @@ export function useVeildContracts() {
 
   function archiveMessage(messageIndex: bigint) {
     writeContract({
-      address: MESSAGES_ADDRESS,
-      abi: VEILD_MESSAGES_ABI,
+      ...veildMessages.celo,
       functionName: "archiveMessage",
       args: [messageIndex],
     });
@@ -94,43 +71,33 @@ export function useVeildContracts() {
 
   function claimEarnings() {
     writeContract({
-      address: MESSAGES_ADDRESS,
-      abi: VEILD_MESSAGES_ABI,
+      ...veildMessages.celo,
       functionName: "claimEarnings",
       args: [],
     });
   }
 
   function registerCreator(
-    username: string,
-    name: string,
-    bio: string,
-    avatarCID: string,
-    category: string
+    username: string, name: string, bio: string,
+    avatarCID: string, category: string
   ) {
     writeContract({
-      address: REGISTRY_ADDRESS,
-      abi: VEILD_REGISTRY_ABI,
+      ...veildRegistry.celo,
       functionName: "register",
       args: [username, name, bio, avatarCID, category],
     });
   }
 
   return {
-    // State
     txHash,
-    isPending,       // tx submitted, waiting for wallet confirmation
-    isConfirming,    // tx in mempool, waiting for block
-    isConfirmed,     // tx mined successfully
+    isPending,
+    isConfirming,
+    isConfirmed,
     error,
     reset,
-
-    // Fan writes
     sendMessage,
     sendPriorityMessage,
     likeWallPost,
-
-    // Creator writes
     replyToMessage,
     publishToWall,
     archiveMessage,
@@ -139,12 +106,11 @@ export function useVeildContracts() {
   };
 }
 
-// ─── Read hooks (separate so components can use independently) ────────────────
+// ─── Read hooks ───────────────────────────────────────────────────────────────
 
 export function useCreatorProfile(address: Address | undefined) {
   return useReadContract({
-    address: REGISTRY_ADDRESS,
-    abi: VEILD_REGISTRY_ABI,
+    ...veildRegistry.celo,
     functionName: "getCreator",
     args: address ? [address] : undefined,
     query: { enabled: !!address },
@@ -153,8 +119,7 @@ export function useCreatorProfile(address: Address | undefined) {
 
 export function useIsRegistered(address: Address | undefined) {
   return useReadContract({
-    address: REGISTRY_ADDRESS,
-    abi: VEILD_REGISTRY_ABI,
+    ...veildRegistry.celo,
     functionName: "isRegistered",
     args: address ? [address] : undefined,
     query: { enabled: !!address },
@@ -163,8 +128,7 @@ export function useIsRegistered(address: Address | undefined) {
 
 export function useCreatorByUsername(username: string | undefined) {
   return useReadContract({
-    address: REGISTRY_ADDRESS,
-    abi: VEILD_REGISTRY_ABI,
+    ...veildRegistry.celo,
     functionName: "getCreatorByUsername",
     args: username ? [username] : undefined,
     query: { enabled: !!username },
@@ -173,8 +137,7 @@ export function useCreatorByUsername(username: string | undefined) {
 
 export function useInbox(creatorAddress: Address | undefined) {
   return useReadContract({
-    address: MESSAGES_ADDRESS,
-    abi: VEILD_MESSAGES_ABI,
+    ...veildMessages.celo,
     functionName: "getInbox",
     args: creatorAddress ? [creatorAddress] : undefined,
     query: { enabled: !!creatorAddress },
@@ -183,8 +146,7 @@ export function useInbox(creatorAddress: Address | undefined) {
 
 export function useWallPosts(creatorAddress: Address | undefined) {
   return useReadContract({
-    address: MESSAGES_ADDRESS,
-    abi: VEILD_MESSAGES_ABI,
+    ...veildMessages.celo,
     functionName: "getWall",
     args: creatorAddress ? [creatorAddress] : undefined,
     query: { enabled: !!creatorAddress },
@@ -193,8 +155,7 @@ export function useWallPosts(creatorAddress: Address | undefined) {
 
 export function useInboxStats(creatorAddress: Address | undefined) {
   return useReadContract({
-    address: MESSAGES_ADDRESS,
-    abi: VEILD_MESSAGES_ABI,
+    ...veildMessages.celo,
     functionName: "getInboxStats",
     args: creatorAddress ? [creatorAddress] : undefined,
     query: { enabled: !!creatorAddress },
@@ -203,8 +164,7 @@ export function useInboxStats(creatorAddress: Address | undefined) {
 
 export function useEarnings(creatorAddress: Address | undefined) {
   return useReadContract({
-    address: MESSAGES_ADDRESS,
-    abi: VEILD_MESSAGES_ABI,
+    ...veildMessages.celo,
     functionName: "getEarnings",
     args: creatorAddress ? [creatorAddress] : undefined,
     query: { enabled: !!creatorAddress },
@@ -213,8 +173,7 @@ export function useEarnings(creatorAddress: Address | undefined) {
 
 export function usePriorityFee() {
   return useReadContract({
-    address: MESSAGES_ADDRESS,
-    abi: VEILD_MESSAGES_ABI,
+    ...veildMessages.celo,
     functionName: "priorityFee",
     args: [],
   });
@@ -226,8 +185,7 @@ export function useHasLiked(
   userAddress: Address | undefined
 ) {
   return useReadContract({
-    address: MESSAGES_ADDRESS,
-    abi: VEILD_MESSAGES_ABI,
+    ...veildMessages.celo,
     functionName: "hasLiked",
     args:
       creatorAddress && wallIndex !== undefined && userAddress

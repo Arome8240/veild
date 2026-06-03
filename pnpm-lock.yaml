@@ -132,6 +132,9 @@ importers:
       tailwind-merge:
         specifier: ^2.0.0
         version: 2.6.1
+      veild-sdk:
+        specifier: link:/home/dev-arome/Documents/GitHub/veild-sdk
+        version: link:../../../veild-sdk
       viem:
         specifier: ^2.0.0
         version: 2.52.0(typescript@5.9.3)

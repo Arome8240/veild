@@ -133,8 +133,8 @@ importers:
         specifier: ^2.0.0
         version: 2.6.1
       veild-sdk:
-        specifier: link:/home/dev-arome/Documents/GitHub/veild-sdk
-        version: link:../../../veild-sdk
+        specifier: ^0.1.0
+        version: 0.1.0(viem@2.52.0)
       viem:
         specifier: ^2.0.0
         version: 2.52.0(typescript@5.9.3)
@@ -10656,6 +10656,14 @@ packages:
       proxy-compare: 2.6.0
       react: 18.3.1
       use-sync-external-store: 1.2.0(react@18.3.1)
+    dev: false
+
+  /veild-sdk@0.1.0(viem@2.52.0):
+    resolution: {integrity: sha512-mB8snpiX0PfXSneg/ojLtO6EvGhPeQKcpEVX9SPOje1+mrw2QlLaRIxTJU2KoDnOoZYw9E0eZtumT2lmiBD31g==}
+    peerDependencies:
+      viem: '>=2.0.0'
+    dependencies:
+      viem: 2.52.0(typescript@5.9.3)
     dev: false
 
   /viem@2.23.2(typescript@5.9.3):

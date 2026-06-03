@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Inbox, User } from "lucide-react";
-import { mockMessages } from "@/lib/mockData";
+import { useAccount } from "wagmi";
+import { useInboxStats } from "@/hooks/useVeildContracts";
+import type { Address } from "viem";
 
 const tabs = [
   { href: "/", icon: Home, label: "Home" },
@@ -11,10 +13,12 @@ const tabs = [
   { href: "/profile", icon: User, label: "Profile" },
 ];
 
-const unreadCount = mockMessages.filter((m) => !m.isAnswered).length;
-
 export function BottomNav() {
   const pathname = usePathname();
+  const { address } = useAccount();
+  const { data: stats } = useInboxStats(address as Address | undefined);
+
+  const unreadCount = stats ? Number(stats.unread) : 0;
 
   return (
     <nav
@@ -25,7 +29,8 @@ export function BottomNav() {
         {tabs.map(({ href, icon: Icon, label }) => {
           const active =
             href === "/" ? pathname === "/" : pathname.startsWith(href);
-          const badge = href === "/inbox" && unreadCount > 0 ? unreadCount : null;
+          const badge =
+            href === "/inbox" && unreadCount > 0 ? unreadCount : null;
 
           return (
             <Link

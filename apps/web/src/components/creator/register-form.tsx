@@ -122,7 +122,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
       <div className="flex gap-2.5 bg-blue-500/10 border border-blue-500/20 rounded-xl px-3.5 py-3">
         <Info className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" aria-hidden="true" />
         <p className="text-xs text-blue-300 leading-relaxed">
-          MiniPay may show <strong>"Unknown transaction"</strong> for this contract — that&apos;s normal.
+          MiniPay may show <strong>&ldquo;Unknown transaction&rdquo;</strong> for this contract &mdash; that&apos;s normal.
           Tap <strong>Send</strong> to confirm.
         </p>
       </div>

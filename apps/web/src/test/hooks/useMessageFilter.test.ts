@@ -87,8 +87,7 @@ describe("useMessageFilter", () => {
     const { result } = renderHook(() =>
       useMessageFilter(MESSAGES, "all", "")
     );
-    result.current.visible.forEach((m, i) => {
-      // Index should correspond to position in original rawMessages (skipping archived)
+    result.current.visible.forEach((m) => {
       expect(typeof m.index).toBe("number");
     });
   });

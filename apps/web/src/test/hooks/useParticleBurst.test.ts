@@ -18,7 +18,7 @@ describe("useParticleBurst", () => {
   it("each particle has id, x, and color from PARTICLE_COLORS", () => {
     const { result } = renderHook(() => useParticleBurst());
     act(() => { result.current.burst(); });
-    result.current.particles.forEach((p, i) => {
+    result.current.particles.forEach((p) => {
       expect(typeof p.id).toBe("number");
       expect(typeof p.x).toBe("number");
       expect(PARTICLE_COLORS).toContain(p.color);

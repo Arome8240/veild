@@ -2,65 +2,126 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Dark theme (default) ─────────────────────────────────────────────────── */
 @layer base {
   :root {
-    --background: 0 0% 4%;
-    --foreground: 0 0% 95%;
-    --card: 0 0% 7%;
-    --card-foreground: 0 0% 95%;
-    --popover: 0 0% 8%;
+    --background:         0 0% 4%;
+    --foreground:         0 0% 95%;
+    --card:               0 0% 7%;
+    --card-foreground:    0 0% 95%;
+    --popover:            0 0% 8%;
     --popover-foreground: 0 0% 95%;
-    --primary: 262 83% 58%;
+    --primary:            262 83% 58%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 10%;
+    --secondary:          0 0% 10%;
     --secondary-foreground: 0 0% 90%;
-    --muted: 0 0% 12%;
-    --muted-foreground: 0 0% 50%;
-    --accent: 262 83% 58%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
+    --muted:              0 0% 12%;
+    --muted-foreground:   0 0% 50%;
+    --accent:             262 83% 58%;
+    --accent-foreground:  0 0% 100%;
+    --destructive:        0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14%;
-    --input: 0 0% 10%;
-    --ring: 262 83% 58%;
-    --radius: 0.75rem;
+    --border:             0 0% 14%;
+    --input:              0 0% 10%;
+    --ring:               262 83% 58%;
+    --radius:             0.75rem;
+
+    /* Semantic surface tokens */
+    --surface-1: 0 0% 7%;
+    --surface-2: 0 0% 10%;
+    --surface-3: 0 0% 13%;
+
+    /* Scrollbar */
+    --scrollbar-track:  #111111;
+    --scrollbar-thumb:  #2a2a2a;
+    --scrollbar-active: #7c3aed;
+
+    /* Selection */
+    --selection-bg: rgba(124, 58, 237, 0.35);
   }
 }
 
+/* ─── Light theme ───────────────────────────────────────────────────────────── */
+@layer base {
+  [data-theme="light"],
+  .light {
+    --background:         0 0% 98%;
+    --foreground:         0 0% 8%;
+    --card:               0 0% 100%;
+    --card-foreground:    0 0% 8%;
+    --popover:            0 0% 100%;
+    --popover-foreground: 0 0% 8%;
+    --primary:            262 83% 52%;
+    --primary-foreground: 0 0% 100%;
+    --secondary:          0 0% 94%;
+    --secondary-foreground: 0 0% 20%;
+    --muted:              0 0% 92%;
+    --muted-foreground:   0 0% 45%;
+    --accent:             262 83% 52%;
+    --accent-foreground:  0 0% 100%;
+    --destructive:        0 84% 52%;
+    --destructive-foreground: 0 0% 100%;
+    --border:             0 0% 88%;
+    --input:              0 0% 94%;
+    --ring:               262 83% 52%;
+
+    --surface-1: 0 0% 100%;
+    --surface-2: 0 0% 96%;
+    --surface-3: 0 0% 92%;
+
+    --scrollbar-track:  #f0f0f0;
+    --scrollbar-thumb:  #cccccc;
+    --scrollbar-active: #7c3aed;
+
+    --selection-bg: rgba(124, 58, 237, 0.2);
+  }
+}
+
+/* ─── Base styles ───────────────────────────────────────────────────────────── */
 @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground antialiased;
-    background-color: #0a0a0a;
   }
 }
 
 ::selection {
-  background-color: rgba(124, 58, 237, 0.35);
-  color: #fff;
+  background-color: var(--selection-bg);
+  color: hsl(var(--foreground));
 }
 
-::-webkit-scrollbar {
-  width: 5px;
-}
-::-webkit-scrollbar-track {
-  background: #111;
-}
-::-webkit-scrollbar-thumb {
-  background: #2a2a2a;
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #7c3aed;
+/* ─── Scrollbar ─────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar           { width: 5px; }
+::-webkit-scrollbar-track     { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb     { background: var(--scrollbar-thumb); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-active); }
+
+/* ─── Safe-area (notch / home bar) ─────────────────────────────────────────── */
+.pb-safe             { padding-bottom: env(safe-area-inset-bottom, 0px); }
+.bottom-nav-height   { height: calc(4rem + env(safe-area-inset-bottom, 0px)); }
+
+/* ─── Focus visible (keyboard accessibility) ────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
 }
 
-/* Safe-area support for notched/home-bar devices */
-.pb-safe {
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+/* ─── Skip to content ───────────────────────────────────────────────────────── */
+.skip-to-content {
+  position: absolute;
+  top: -9999px;
+  left: 0.5rem;
+  z-index: 9999;
+  padding: 0.5rem 1rem;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
 }
-
-.bottom-nav-height {
-  height: calc(4rem + env(safe-area-inset-bottom, 0px));
+.skip-to-content:focus {
+  top: 0.5rem;
 }

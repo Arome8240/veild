@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useCurrentCreator } from "@/hooks/useCurrentCreator";
 import { useMiniPay } from "@/hooks/useMiniPay";
+import { CreatorSearch } from "@/components/creator/creator-search";
 import { BottomNav } from "@/components/bottom-nav";
 import { formatCELO, formatNumber, timeAgo, resolveAvatar } from "@/lib/utils";
 
@@ -183,6 +184,9 @@ export default function HomePage() {
             <Share2 className="w-3.5 h-3.5" /> Share your Veild link
           </button>
         </motion.div>
+
+        {/* SEARCH */}
+        <CreatorSearch />
 
         {/* STATS */}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.08 }}

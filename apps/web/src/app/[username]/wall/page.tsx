@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowLeft, Heart, Share2, MessageCircle, Flame, Clock, Loader2 } from "lucide-react";
 import { useAccount } from "wagmi";
 import { useCreatorByUsername, useWallPosts, useHasLiked, useVeildContracts } from "@/hooks/useVeildContracts";
-import { formatNumber, timeAgo, resolveAvatar } from "@/lib/utils";
+import { formatNumber, timeAgo } from "@/lib/utils";
+import { CreatorAvatar } from "@/components/creator/creator-avatar";
 import type { Address } from "viem";
 
 function WallSkeleton() {
@@ -77,9 +77,7 @@ function WallPostCard({
       {/* Answer */}
       <div className="border-t border-white/5 pt-4">
         <div className="flex items-center gap-2 mb-2">
-          <div className="relative w-5 h-5 rounded-full overflow-hidden shrink-0">
-            <Image src={creatorAvatar} alt={creatorName} fill className="object-cover" />
-          </div>
+          <CreatorAvatar avatarCID={creatorAvatar} name={creatorName} size="xxs" shape="circle" />
           <span className="text-[10px] font-medium text-violet-400">{creatorName.split(" ")[0]} replied</span>
         </div>
         <p className="text-zinc-300 text-sm leading-relaxed">{post.answer}</p>
@@ -134,7 +132,6 @@ export default function WallPage({ params }: { params: { username: string } }) {
       </div>
     );
 
-  const avatarUrl = resolveAvatar(creator.avatarCID, creator.username);
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
@@ -161,9 +158,7 @@ export default function WallPage({ params }: { params: { username: string } }) {
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
           className="flex items-center gap-4 mb-8"
         >
-          <div className="relative w-14 h-14 rounded-2xl overflow-hidden bg-[#1a1a1a] ring-2 ring-white/5 shrink-0">
-            <Image src={avatarUrl} alt={creator.name} fill className="object-cover" />
-          </div>
+          <CreatorAvatar avatarCID={creator.avatarCID} name={creator.name} size="lg" />
           <div>
             <div className="flex items-center gap-2">
               <h1 className="font-bold text-xl">{creator.name}</h1>
@@ -205,7 +200,7 @@ export default function WallPage({ params }: { params: { username: string } }) {
                 index={i}
                 creatorAddr={creatorAddr}
                 creatorName={creator.name}
-                creatorAvatar={avatarUrl}
+                creatorAvatar={creator.avatarCID}
               />
             ))}
           </div>

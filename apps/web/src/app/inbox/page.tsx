@@ -15,7 +15,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BottomNav } from "@/components/bottom-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { formatCELO, formatNumber, resolveAvatar } from "@/lib/utils";
+import { formatCELO, formatNumber } from "@/lib/utils";
 import type { InboxTab, IndexedMessage } from "@/types";
 import type { Address } from "viem";
 
@@ -35,7 +35,6 @@ export default function InboxPage() {
 
   const { visible, counts } = useMessageFilter(rawInbox, tab, search);
 
-  const avatarUrl   = resolveAvatar(profile?.avatarCID ?? "", profile?.username ?? "");
   const creatorName = profile?.name ?? "You";
 
   if (isLoading) {
@@ -215,7 +214,7 @@ export default function InboxPage() {
                 <MessageCard
                   key={m.id.toString()}
                   message={m}
-                  creatorAvatar={avatarUrl}
+                  creatorAvatar={profile?.avatarCID ?? ""}
                   creatorName={creatorName}
                   onReply={setReplyTarget}
                 />

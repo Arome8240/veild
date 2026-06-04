@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Copy, Check, Share2, ExternalLink,
@@ -15,12 +14,13 @@ import { useVeildContracts } from "@/hooks/useVeildContracts";
 import { RegisterForm } from "@/components/creator/register-form";
 import { BottomNav } from "@/components/bottom-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { formatCELO, formatNumber, resolveAvatar } from "@/lib/utils";
+import { formatCELO, formatNumber } from "@/lib/utils";
+import { CreatorAvatar } from "@/components/creator/creator-avatar";
 import { VEILD_APP_DOMAIN } from "@/constants/config";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 
 export default function ProfilePage() {
-  const { address, isConnected, connectWallet, isConnecting } = useMiniPay();
+  const { isConnected, connectWallet, isConnecting } = useMiniPay();
   const {
     profile, stats, earnings, wallPosts, isLoading, isRegistered, refetch,
   } = useCurrentCreator();
@@ -29,10 +29,6 @@ export default function ProfilePage() {
 
   const [showRegister, setShowRegister] = useState(false);
 
-  const avatarUrl = resolveAvatar(
-    profile?.avatarCID ?? "",
-    profile?.username ?? address ?? ""
-  );
   const profileUrl = profile?.username
     ? `${VEILD_APP_DOMAIN}/${profile.username}`
     : "";
@@ -153,12 +149,11 @@ export default function ProfilePage() {
             />
             <div className="px-4 pb-4 -mt-8">
               <div className="flex items-end justify-between mb-3">
-                <div className="relative w-16 h-16 rounded-2xl overflow-hidden ring-4 ring-card shrink-0">
-                  <Image
-                    src={avatarUrl}
-                    alt={`${profile.name}'s avatar`}
-                    fill
-                    className="object-cover"
+                <div className="ring-4 ring-card shrink-0">
+                  <CreatorAvatar
+                    avatarCID={profile.avatarCID}
+                    name={profile.name}
+                    size="lg"
                   />
                 </div>
                 {profileUrl && (

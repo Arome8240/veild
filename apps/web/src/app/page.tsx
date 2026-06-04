@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   Copy, Check, Share2, MessageCircle,
@@ -11,8 +10,9 @@ import {
 import { useCurrentCreator } from "@/hooks/useCurrentCreator";
 import { useMiniPay } from "@/hooks/useMiniPay";
 import { CreatorSearch } from "@/components/creator/creator-search";
+import { CreatorAvatar } from "@/components/creator/creator-avatar";
 import { BottomNav } from "@/components/bottom-nav";
-import { formatCELO, formatNumber, timeAgo, resolveAvatar } from "@/lib/utils";
+import { formatCELO, formatNumber, timeAgo } from "@/lib/utils";
 
 export default function HomePage() {
   const { address, isConnected, connectWallet, isConnecting } = useMiniPay();
@@ -47,8 +47,7 @@ export default function HomePage() {
     copyLink();
   }
 
-  const avatarUrl = resolveAvatar(profile?.avatarCID ?? "", profile?.username ?? address ?? "");
-  const unread    = stats ? Number(stats.unread) : 0;
+  const unread = stats ? Number(stats.unread) : 0;
 
   // ── Not connected ────────────────────────────────────────────────────────────
   if (!isConnected) {
@@ -146,9 +145,11 @@ export default function HomePage() {
           className="mt-4 mb-4 bg-[#111] border border-white/5 rounded-2xl p-4"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="relative w-12 h-12 rounded-xl overflow-hidden shrink-0 ring-2 ring-white/5">
-              <Image src={avatarUrl} alt={profile?.name ?? "You"} fill className="object-cover" />
-            </div>
+            <CreatorAvatar
+              avatarCID={profile?.avatarCID}
+              name={profile?.name ?? "You"}
+              size="md"
+            />
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
                 <p className="font-semibold text-sm leading-tight">{profile?.name ?? "Creator"}</p>
@@ -252,8 +253,13 @@ export default function HomePage() {
                   <p className="text-zinc-300 text-sm leading-relaxed">{post.question}</p>
                 </div>
                 <div className="flex items-start gap-2 pl-1 border-l-2 border-violet-500/30 ml-3">
-                  <div className="relative w-5 h-5 rounded-full overflow-hidden shrink-0 mt-0.5">
-                    <Image src={avatarUrl} alt={profile?.name ?? ""} fill className="object-cover" />
+                  <div className="mt-0.5">
+                    <CreatorAvatar
+                      avatarCID={profile?.avatarCID}
+                      name={profile?.name ?? "You"}
+                      size="xxs"
+                      shape="circle"
+                    />
                   </div>
                   <p className="text-zinc-400 text-sm leading-relaxed">{post.answer}</p>
                 </div>

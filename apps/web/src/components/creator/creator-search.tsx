@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Search, X, Loader2, MessageCircle, ArrowRight } from "lucide-react";
 import { useCreatorByUsername } from "@/hooks/useVeildContracts";
-import { resolveAvatar, formatNumber } from "@/lib/utils";
+import { formatNumber } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { CreatorAvatar } from "@/components/creator/creator-avatar";
 
 const DEBOUNCE_MS = 500;
 
@@ -105,15 +105,12 @@ export function CreatorSearch() {
               className="group mt-2 flex items-center gap-3 bg-card border border-border rounded-xl p-3.5 hover:border-primary/30 hover:bg-primary/5 transition-all"
               aria-label={`View ${creator.name}'s profile`}
             >
-              <div className="relative w-10 h-10 rounded-xl overflow-hidden bg-muted shrink-0 ring-1 ring-border">
-                <Image
-                  src={resolveAvatar(creator.avatarCID, creator.username)}
-                  alt={`${creator.name}'s avatar`}
-                  fill
-                  sizes="40px"
-                  className="object-cover"
-                />
-              </div>
+              <CreatorAvatar
+                avatarCID={creator.avatarCID}
+                name={creator.name}
+                size="sm"
+                className="shrink-0"
+              />
 
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-1.5 flex-wrap">

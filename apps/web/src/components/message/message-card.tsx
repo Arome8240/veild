@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import {
   Zap, Reply, Eye, Archive, ChevronDown, Loader2,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { CreatorAvatar } from "@/components/creator/creator-avatar";
 import { useVeildContracts } from "@/hooks/useVeildContracts";
 import { timeAgo, formatCELO } from "@/lib/utils";
 import type { IndexedMessage } from "@/types";
@@ -110,9 +110,7 @@ export function MessageCard({
         {message.isAnswered && message.reply && (
           <div className="bg-primary/5 border border-primary/15 rounded-xl px-3 py-2 mb-3">
             <div className="flex items-center gap-1.5 mb-1">
-              <div className="relative w-4 h-4 rounded-full overflow-hidden" aria-hidden="true">
-                <Image src={creatorAvatar} alt={`${creatorName}'s avatar`} fill className="object-cover" />
-              </div>
+              <CreatorAvatar avatarCID={creatorAvatar} name={creatorName} size="xxs" shape="circle" />
               <span className="text-[10px] text-primary font-medium">Your reply</span>
               {message.isPublished && (
                 <Badge variant="success">Published</Badge>

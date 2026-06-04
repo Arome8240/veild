@@ -16,7 +16,7 @@ import { WalletStatus } from "@/components/wallet/wallet-status";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { formatNumber, timeAgo, resolveAvatar, formatCELO } from "@/lib/utils";
+import { formatNumber, timeAgo, formatCELO } from "@/lib/utils";
 import {
   MAX_MESSAGE_CHARS,
   QUICK_PROMPTS,
@@ -128,7 +128,6 @@ export default function CreatorProfilePage({
     return <CreatorNotFound username={params.username} />;
   }
 
-  const avatarUrl      = resolveAvatar(creator.avatarCID, creator.username);
   const visibleWall    = wallPosts.slice(0, 4);
   const firstName      = creator.name.split(" ")[0];
 
@@ -169,7 +168,7 @@ export default function CreatorProfilePage({
           className="flex items-center gap-4 mb-8"
           aria-label="Creator profile"
         >
-          <CreatorAvatar src={avatarUrl} name={creator.name} size="lg" />
+          <CreatorAvatar avatarCID={creator.avatarCID} name={creator.name} size="lg" />
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <h1 className="font-bold text-lg sm:text-xl leading-tight">

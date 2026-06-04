@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { Heart, Share2, MessageCircle, Loader2 } from "lucide-react";
+import { CreatorAvatar } from "@/components/creator/creator-avatar";
 import { useAccount } from "wagmi";
 import { useHasLiked, useVeildContracts } from "@/hooks/useVeildContracts";
 import { useShare } from "@/hooks/useShare";
@@ -80,12 +80,7 @@ export function WallPostCard({
       {/* Answer */}
       <section aria-label="Creator reply" className="border-t border-border pt-4">
         <div className="flex items-center gap-2 mb-2">
-          <div
-            className="relative w-5 h-5 rounded-full overflow-hidden shrink-0"
-            aria-hidden="true"
-          >
-            <Image src={creatorAvatar} alt="" fill className="object-cover" />
-          </div>
+          <CreatorAvatar avatarCID={creatorAvatar} name={creatorName} size="xxs" shape="circle" />
           <span className="text-[10px] font-medium text-primary">
             {creatorName.split(" ")[0]} replied
           </span>

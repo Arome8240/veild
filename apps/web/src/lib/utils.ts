@@ -38,9 +38,44 @@ export function timeAgo(timestamp: number | bigint): string {
   return `${Math.floor(diff / 86400)}d ago`;
 }
 
-export function resolveAvatar(avatarCID: string, fallbackSeed?: string): string {
-  if (!avatarCID)
-    return `https://api.dicebear.com/7.x/avataaars/svg?seed=${fallbackSeed ?? "default"}`;
+/** Returns a real image URL only for actual uploads (IPFS or https).
+ *  Returns null when no real image is stored, so the UI shows initials. */
+export function resolveAvatar(avatarCID: string): string | null {
+  if (!avatarCID) return null;
   if (avatarCID.startsWith("http")) return avatarCID;
-  return `https://ipfs.io/ipfs/${avatarCID}`;
+  if (avatarCID.startsWith("Qm") || avatarCID.startsWith("bafy"))
+    return `https://ipfs.io/ipfs/${avatarCID}`;
+  return null;
+}
+
+/** Extract up to 2 uppercase initials from a display name. */
+export function getInitials(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "?";
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+/** Pastel-safe palette — readable with white text at all contrast levels. */
+const AVATAR_PALETTE = [
+  "#7c3aed", // violet
+  "#0ea5e9", // sky
+  "#10b981", // emerald
+  "#f59e0b", // amber
+  "#ef4444", // red
+  "#8b5cf6", // purple
+  "#06b6d4", // cyan
+  "#f97316", // orange
+  "#ec4899", // pink
+  "#14b8a6", // teal
+] as const;
+
+/** Deterministic color from any seed string (name, address, username). */
+export function getAvatarColor(seed: string): string {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) {
+    h = Math.imul(31, h) + seed.charCodeAt(i);
+    h |= 0;
+  }
+  return AVATAR_PALETTE[Math.abs(h) % AVATAR_PALETTE.length];
 }

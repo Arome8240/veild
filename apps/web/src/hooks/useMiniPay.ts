@@ -42,16 +42,10 @@ export function useMiniPay() {
     connect({ connector: injected() });
   }
 
-  // Short display form: 0x1234…5678
-  const shortAddress = address
-    ? `${address.slice(0, 6)}…${address.slice(-4)}`
-    : null;
-
   return {
     isMiniPay,
     hasWallet,
     address,
-    shortAddress,
     isConnected,
     isConnecting,
     connectError,

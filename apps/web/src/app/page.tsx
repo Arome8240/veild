@@ -5,8 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import {
-  Copy, Check, Share2, MessageCircle, DollarSign,
-  Bell, ChevronRight, Zap, ExternalLink, Loader2,
+  Copy, Check, Share2, MessageCircle,
+  Bell, ChevronRight, ExternalLink, Loader2,
 } from "lucide-react";
 import { useCurrentCreator } from "@/hooks/useCurrentCreator";
 import { useMiniPay } from "@/hooks/useMiniPay";
@@ -14,7 +14,7 @@ import { BottomNav } from "@/components/bottom-nav";
 import { formatCELO, formatNumber, timeAgo, resolveAvatar } from "@/lib/utils";
 
 export default function HomePage() {
-  const { address, isConnected, isMiniPay, connectWallet, isConnecting } = useMiniPay();
+  const { address, isConnected, connectWallet, isConnecting } = useMiniPay();
   const {
     profile, stats, earnings, wallPosts, isLoading, isRegistered,
   } = useCurrentCreator();

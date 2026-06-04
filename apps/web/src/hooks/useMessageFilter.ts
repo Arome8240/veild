@@ -9,12 +9,12 @@ import type { Message } from "veild-sdk";
  * Keeps filtering logic out of the inbox page component.
  */
 export function useMessageFilter(
-  rawMessages: Message[],
+  rawMessages: readonly Message[],
   tab: InboxTab,
   searchQuery: string
 ) {
   const indexed: IndexedMessage[] = useMemo(
-    () => rawMessages.map((m, index) => ({ ...m, index })),
+    () => Array.from(rawMessages).map((m, index) => ({ ...m, index })),
     [rawMessages]
   );
 

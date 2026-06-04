@@ -5,8 +5,15 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "../../node_modules/@types",
+      "../../node_modules/.pnpm/@types+react@18.3.30/node_modules/@types",
+      "../../node_modules/.pnpm/@types+react-dom@18.3.30/node_modules/@types",
+      "../../node_modules/.pnpm/@types+node@20.19.41/node_modules/@types"
+    ]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "vitest.config.ts", "src/test/**"]
 }

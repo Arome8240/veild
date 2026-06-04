@@ -43,7 +43,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           onClick={onSuccess}
           className="text-primary text-sm hover:text-primary/80 transition-colors"
         >
-          View profile →
+          View profile
         </button>
       </div>
     );
@@ -64,8 +64,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           htmlFor="reg-username"
           className="text-xs text-muted-foreground mb-1 block"
         >
-          Username <span aria-hidden="true">*</span>
-          <span className="sr-only">(required)</span>
+          Username (required)
         </label>
         <input
           id="reg-username"
@@ -99,8 +98,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           htmlFor="reg-name"
           className="text-xs text-muted-foreground mb-1 block"
         >
-          Display name <span aria-hidden="true">*</span>
-          <span className="sr-only">(required)</span>
+          Display name (required)
         </label>
         <input
           id="reg-name"

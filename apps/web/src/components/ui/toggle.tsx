@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 interface ToggleProps {
   checked: boolean;
-  onChange: (checked: boolean) => void;
+  onChange: (_value: boolean) => void;
   label?: string;
   disabled?: boolean;
   className?: string;

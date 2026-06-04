@@ -29,7 +29,7 @@ export function useCurrentCreator() {
   const { data: earnings, isLoading: loadingEarnings } = useEarnings(
     address as Address | undefined
   );
-  const { data: wallPosts, isLoading: loadingWall, refetch: refetchWall } =
+  const { data: wallPosts, refetch: refetchWall } =
     useWallPosts(address as Address | undefined);
 
   const isLoading =

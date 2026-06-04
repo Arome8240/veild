@@ -90,8 +90,7 @@ export function ReplySheet({ message, onClose }: ReplySheetProps) {
             onChange={(e) => setReply(e.target.value)}
             placeholder="Your reply…"
             rows={4}
-            autoFocus
-            aria-label="Reply text"
+            aria-label="Your reply to this message"
             className="w-full bg-background border border-input focus:border-ring rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground resize-none outline-none transition-colors leading-relaxed mb-3"
           />
 

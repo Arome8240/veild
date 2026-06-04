@@ -14,7 +14,7 @@ interface MessageCardProps {
   message: IndexedMessage;
   creatorAvatar: string;
   creatorName: string;
-  onReply: (message: IndexedMessage) => void;
+  onReply: (_msg: IndexedMessage) => void;
 }
 
 /**
@@ -111,7 +111,7 @@ export function MessageCard({
           <div className="bg-primary/5 border border-primary/15 rounded-xl px-3 py-2 mb-3">
             <div className="flex items-center gap-1.5 mb-1">
               <div className="relative w-4 h-4 rounded-full overflow-hidden" aria-hidden="true">
-                <Image src={creatorAvatar} alt="" fill className="object-cover" />
+                <Image src={creatorAvatar} alt={`${creatorName}'s avatar`} fill className="object-cover" />
               </div>
               <span className="text-[10px] text-primary font-medium">Your reply</span>
               {message.isPublished && (
@@ -126,7 +126,7 @@ export function MessageCard({
         <div className="flex items-center gap-1.5" role="group" aria-label="Message actions">
           {!message.isAnswered && (
             <button
-              onClick={() => onReply(message)}
+              onClick={() => onReply(message as IndexedMessage)}
               className="flex items-center gap-1 text-xs text-primary-foreground bg-primary hover:bg-primary/90 px-3 py-1.5 rounded-lg transition-colors font-medium"
               aria-label="Reply to this message"
             >

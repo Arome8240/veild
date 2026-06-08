@@ -6,10 +6,16 @@
 export {
   VEILD_REGISTRY_ABI,
   VEILD_MESSAGES_ABI,
+  VEILD_TIPS_ABI,
+  VEILD_SUBSCRIPTIONS_ABI,
+  VEILD_POOLS_ABI,
   CONTRACT_ADDRESSES,
   getAddresses,
   veildRegistry,
   veildMessages,
+  veildTips,
+  veildSubscriptions,
+  veildPools,
   VeildClient,
   createReadonlyClient,
   createTestnetClient,
@@ -20,10 +26,20 @@ export type {
   Message,
   WallPost,
   InboxStats,
+  Tip,
+  FanEntry,
+  SubscriptionTier,
+  Subscription,
+  Pool,
+  Contribution,
+  PoolStatus,
   RegisterCreatorParams,
   SendMessageParams,
   SendPriorityMessageParams,
   ReplyParams,
+  TipParams,
+  SubscribeParams,
+  CreatePoolParams,
   WriteResult,
   VeildClientConfig,
   ChainAddresses,
@@ -40,4 +56,19 @@ export const REGISTRY_ADDRESS = (
 export const MESSAGES_ADDRESS = (
   process.env.NEXT_PUBLIC_VEILD_MESSAGES_ADDRESS ??
   "0x687f4fcfeb8fcbdf1d16e187b1b3613f7f07398e"
+) as `0x${string}`;
+
+export const TIPS_ADDRESS = (
+  process.env.NEXT_PUBLIC_VEILD_TIPS_ADDRESS ??
+  "0x0000000000000000000000000000000000000000"
+) as `0x${string}`;
+
+export const SUBSCRIPTIONS_ADDRESS = (
+  process.env.NEXT_PUBLIC_VEILD_SUBSCRIPTIONS_ADDRESS ??
+  "0x0000000000000000000000000000000000000000"
+) as `0x${string}`;
+
+export const POOLS_ADDRESS = (
+  process.env.NEXT_PUBLIC_VEILD_POOLS_ADDRESS ??
+  "0x0000000000000000000000000000000000000000"
 ) as `0x${string}`;

@@ -11,6 +11,8 @@ import {
 import { useCurrentCreator } from "@/hooks/useCurrentCreator";
 import { useMiniPay } from "@/hooks/useMiniPay";
 import { useVeildContracts } from "@/hooks/useVeildContracts";
+import { useTipEarnings } from "@/hooks/useTips";
+import { useSubEarnings, useSubscriberCount } from "@/hooks/useSubscriptions";
 import { RegisterForm } from "@/components/creator/register-form";
 import { BottomNav } from "@/components/bottom-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -22,10 +24,15 @@ import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 export default function ProfilePage() {
   const { isConnected, connectWallet, isConnecting } = useMiniPay();
   const {
+    address: creatorAddr,
     profile, stats, earnings, wallPosts, isLoading, isRegistered, refetch,
   } = useCurrentCreator();
   const { claimEarnings, isPending: claimPending, isConfirmed: claimDone } =
     useVeildContracts();
+
+  const { data: tipEarnings = 0n }    = useTipEarnings(isRegistered ? creatorAddr : undefined);
+  const { data: subEarnings = 0n }    = useSubEarnings(isRegistered ? creatorAddr : undefined);
+  const { data: subscriberCount = 0n } = useSubscriberCount(isRegistered ? creatorAddr : undefined);
 
   const [showRegister, setShowRegister] = useState(false);
 
@@ -261,6 +268,39 @@ export default function ProfilePage() {
               </div>
             ))}
           </motion.dl>
+        )}
+
+        {/* TIPS & SUBSCRIPTIONS STATS */}
+        {isRegistered && (tipEarnings > 0n || subEarnings > 0n || subscriberCount > 0n) && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.1 }}
+            className="grid grid-cols-3 gap-2"
+            aria-label="Tips and subscriptions"
+          >
+            <div className="bg-card border border-border rounded-2xl p-4">
+              <div className="w-8 h-8 bg-pink-500/10 rounded-xl flex items-center justify-center mb-3" aria-hidden="true">
+                <DollarSign className="w-4 h-4 text-pink-400" />
+              </div>
+              <p className="font-bold text-sm leading-none">{formatCELO(tipEarnings)}</p>
+              <p className="text-muted-foreground text-xs mt-0.5">Tip earnings</p>
+            </div>
+            <div className="bg-card border border-border rounded-2xl p-4">
+              <div className="w-8 h-8 bg-violet-500/10 rounded-xl flex items-center justify-center mb-3" aria-hidden="true">
+                <DollarSign className="w-4 h-4 text-violet-400" />
+              </div>
+              <p className="font-bold text-sm leading-none">{formatCELO(subEarnings)}</p>
+              <p className="text-muted-foreground text-xs mt-0.5">Sub earnings</p>
+            </div>
+            <div className="bg-card border border-border rounded-2xl p-4">
+              <div className="w-8 h-8 bg-violet-500/10 rounded-xl flex items-center justify-center mb-3" aria-hidden="true">
+                <TrendingUp className="w-4 h-4 text-violet-400" />
+              </div>
+              <p className="font-bold text-sm leading-none">{formatNumber(subscriberCount)}</p>
+              <p className="text-muted-foreground text-xs mt-0.5">Subscribers</p>
+            </div>
+          </motion.div>
         )}
 
         {/* CLAIM EARNINGS */}

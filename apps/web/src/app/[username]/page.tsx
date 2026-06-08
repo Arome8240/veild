@@ -10,9 +10,13 @@ import {
 import { useVeildContracts, useCreatorByUsername, useWallPosts, usePriorityFee } from "@/hooks/useVeildContracts";
 import { useParticleBurst } from "@/hooks/useParticleBurst";
 import { useMiniPay } from "@/hooks/useMiniPay";
+import { useActivePools } from "@/hooks/usePools";
 import { CreatorNotFound } from "@/components/creator/creator-not-found";
 import { CreatorAvatar } from "@/components/creator/creator-avatar";
 import { WalletStatus } from "@/components/wallet/wallet-status";
+import { TipButton } from "@/components/creator/tip-button";
+import { SubscribeButton } from "@/components/creator/subscribe-button";
+import { PoolCard } from "@/components/creator/pool-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -41,7 +45,8 @@ export default function CreatorProfilePage({
   const priorityFee = priorityFeeOnChain ?? DEFAULT_PRIORITY_FEE_WEI;
 
   // ── Wallet & contract writes ──────────────────────────────────────────────
-  const { isConnected } = useMiniPay();
+  const { isConnected, address: fanAddress } = useMiniPay();
+  const { data: activePools = [] } = useActivePools(creatorAddr);
   const {
     sendMessage: sendOnChain,
     sendPriorityMessage: sendPriorityOnChain,
@@ -191,6 +196,14 @@ export default function CreatorProfilePage({
               <MessageCircle className="w-3 h-3" aria-hidden="true" />
               <span>{formatNumber(creator.totalMessages)} messages received</span>
             </p>
+            <div className="flex items-center gap-2 mt-2" aria-label="Fan actions">
+              <TipButton creatorAddress={creatorAddr} creatorName={creator.name} />
+              <SubscribeButton
+                creatorAddress={creatorAddr}
+                creatorName={creator.name}
+                fanAddress={fanAddress}
+              />
+            </div>
           </div>
         </motion.header>
 
@@ -461,6 +474,27 @@ export default function CreatorProfilePage({
               View full wall
               <ChevronRight className="w-4 h-4" aria-hidden="true" />
             </Link>
+          </motion.section>
+        )}
+        {/* ACTIVE POOLS */}
+        {activePools.length > 0 && (
+          <motion.section
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.3 }}
+            aria-label={`${firstName}'s question pools`}
+            className="mt-10"
+          >
+            <h2 className="font-semibold text-sm text-muted-foreground mb-4">
+              <span className="text-foreground">{firstName}&apos;s</span> open questions
+            </h2>
+            <ul className="space-y-3" aria-label="Active question pools">
+              {activePools.map((pool) => (
+                <li key={pool.id.toString()}>
+                  <PoolCard pool={pool} fanAddress={fanAddress} />
+                </li>
+              ))}
+            </ul>
           </motion.section>
         )}
       </div>

@@ -15,6 +15,7 @@ import { useTipEarnings } from "@/hooks/useTips";
 import { useSubEarnings, useSubscriberCount } from "@/hooks/useSubscriptions";
 import { RegisterForm } from "@/components/creator/register-form";
 import { ManageTiers } from "@/components/creator/manage-tiers";
+import { CreatePoolForm } from "@/components/creator/create-pool-form";
 import { BottomNav } from "@/components/bottom-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { formatCELO, formatNumber } from "@/lib/utils";
@@ -377,6 +378,17 @@ export default function ProfilePage() {
             transition={{ duration: 0.35, delay: 0.16 }}
           >
             <ManageTiers creatorAddress={creatorAddr} />
+          </motion.div>
+        )}
+
+        {/* CREATE POOL */}
+        {isRegistered && creatorAddr && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.18 }}
+          >
+            <CreatePoolForm creatorAddress={creatorAddr} />
           </motion.div>
         )}
       </div>

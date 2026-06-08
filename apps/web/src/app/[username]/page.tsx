@@ -17,6 +17,7 @@ import { WalletStatus } from "@/components/wallet/wallet-status";
 import { TipButton } from "@/components/creator/tip-button";
 import { SubscribeButton } from "@/components/creator/subscribe-button";
 import { PoolCard } from "@/components/creator/pool-card";
+import { TipLeaderboard } from "@/components/creator/tip-leaderboard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -476,6 +477,16 @@ export default function CreatorProfilePage({
             </Link>
           </motion.section>
         )}
+        {/* TIP LEADERBOARD */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.28 }}
+          className="mt-10"
+        >
+          <TipLeaderboard creatorAddress={creatorAddr} />
+        </motion.div>
+
         {/* ACTIVE POOLS */}
         {activePools.length > 0 && (
           <motion.section

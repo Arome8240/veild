@@ -12,7 +12,9 @@ import { useCurrentCreator } from "@/hooks/useCurrentCreator";
 import { useMiniPay } from "@/hooks/useMiniPay";
 import { useVeildContracts } from "@/hooks/useVeildContracts";
 import { useTipEarnings } from "@/hooks/useTips";
+import { useVeildTips } from "@/hooks/useTips";
 import { useSubEarnings, useSubscriberCount } from "@/hooks/useSubscriptions";
+import { useVeildSubscriptions } from "@/hooks/useSubscriptions";
 import { RegisterForm } from "@/components/creator/register-form";
 import { ManageTiers } from "@/components/creator/manage-tiers";
 import { CreatePoolForm } from "@/components/creator/create-pool-form";
@@ -35,6 +37,8 @@ export default function ProfilePage() {
   const { data: tipEarnings = 0n }    = useTipEarnings(isRegistered ? creatorAddr : undefined);
   const { data: subEarnings = 0n }    = useSubEarnings(isRegistered ? creatorAddr : undefined);
   const { data: subscriberCount = 0n } = useSubscriberCount(isRegistered ? creatorAddr : undefined);
+  const { claimTipEarnings, isPending: tipClaimPending, isConfirmed: tipClaimDone } = useVeildTips();
+  const { claimSubEarnings, isPending: subClaimPending, isConfirmed: subClaimDone } = useVeildSubscriptions();
 
   const [showRegister, setShowRegister] = useState(false);
 
@@ -306,20 +310,46 @@ export default function ProfilePage() {
         )}
 
         {/* CLAIM EARNINGS */}
-        {isRegistered && earnings > 0n && (
-          <motion.button
+        {isRegistered && (earnings > 0n || tipEarnings > 0n || subEarnings > 0n) && (
+          <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            onClick={() => claimEarnings()}
-            disabled={claimPending || claimDone}
-            aria-busy={claimPending}
-            className="w-full flex items-center justify-center gap-2 py-3 bg-green-500/10 border border-green-500/25 text-green-300 text-sm font-medium rounded-xl hover:bg-green-500/15 transition-all disabled:opacity-60"
+            className="space-y-2"
           >
-            {claimPending ? (
-              <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
-            ) : null}
-            {claimDone ? "Claimed!" : `Claim ${formatCELO(earnings)} CELO`}
-          </motion.button>
+            {earnings > 0n && (
+              <button
+                onClick={() => claimEarnings()}
+                disabled={claimPending || claimDone}
+                aria-busy={claimPending}
+                className="w-full flex items-center justify-center gap-2 py-3 bg-green-500/10 border border-green-500/25 text-green-300 text-sm font-medium rounded-xl hover:bg-green-500/15 transition-all disabled:opacity-60"
+              >
+                {claimPending ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> : null}
+                {claimDone ? "Claimed!" : `Claim ${formatCELO(earnings)} CELO (messages)`}
+              </button>
+            )}
+            {tipEarnings > 0n && (
+              <button
+                onClick={() => claimTipEarnings()}
+                disabled={tipClaimPending || tipClaimDone}
+                aria-busy={tipClaimPending}
+                className="w-full flex items-center justify-center gap-2 py-3 bg-pink-500/10 border border-pink-500/25 text-pink-300 text-sm font-medium rounded-xl hover:bg-pink-500/15 transition-all disabled:opacity-60"
+              >
+                {tipClaimPending ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> : null}
+                {tipClaimDone ? "Claimed!" : `Claim ${formatCELO(tipEarnings)} CELO (tips)`}
+              </button>
+            )}
+            {subEarnings > 0n && (
+              <button
+                onClick={() => claimSubEarnings()}
+                disabled={subClaimPending || subClaimDone}
+                aria-busy={subClaimPending}
+                className="w-full flex items-center justify-center gap-2 py-3 bg-violet-500/10 border border-violet-500/25 text-violet-300 text-sm font-medium rounded-xl hover:bg-violet-500/15 transition-all disabled:opacity-60"
+              >
+                {subClaimPending ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> : null}
+                {subClaimDone ? "Claimed!" : `Claim ${formatCELO(subEarnings)} CELO (subscriptions)`}
+              </button>
+            )}
+          </motion.div>
         )}
 
         {/* WALL PREVIEW */}

@@ -283,7 +283,7 @@ describe("VeildTips", function () {
       const after = await publicClient.getBalance({ address: alice.account.address });
 
       // should receive roughly 97% of the tip (minus gas)
-      expect(after).to.be.gt(before);
+      expect(after > before).to.be.true;
     });
 
     it("resets earnings to 0 after claim", async function () {
@@ -341,7 +341,7 @@ describe("VeildTips", function () {
       const before = await publicClient.getBalance({ address: owner.account.address });
       await tips.write.withdrawPlatformFees({ account: owner.account });
       const after = await publicClient.getBalance({ address: owner.account.address });
-      expect(after).to.be.gt(before);
+      expect(after > before).to.be.true;
     });
 
     it("reverts withdrawPlatformFees when balance is zero", async function () {

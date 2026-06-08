@@ -206,7 +206,7 @@ describe("VeildSubscriptions", function () {
       });
 
       const subAfter = await subscriptions.read.getSubscription([alice.account.address, charlie.account.address]);
-      expect(subAfter.expiresAt).to.be.gt(subBefore.expiresAt);
+      expect(subAfter.expiresAt > subBefore.expiresAt).to.be.true;
       expect(subAfter.renewals).to.equal(1n);
     });
 
@@ -348,7 +348,7 @@ describe("VeildSubscriptions", function () {
       await subscriptions.write.claimEarnings({ account: alice.account });
       const after = await publicClient.getBalance({ address: alice.account.address });
 
-      expect(after).to.be.gt(before);
+      expect(after > before).to.be.true;
     });
 
     it("resets earnings to zero after claim", async function () {
@@ -401,7 +401,7 @@ describe("VeildSubscriptions", function () {
       const before = await publicClient.getBalance({ address: owner.account.address });
       await subscriptions.write.withdrawPlatformFees({ account: owner.account });
       const after = await publicClient.getBalance({ address: owner.account.address });
-      expect(after).to.be.gt(before);
+      expect(after > before).to.be.true;
     });
 
     it("owner can pause and unpause", async function () {

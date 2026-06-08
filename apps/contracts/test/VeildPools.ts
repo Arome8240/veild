@@ -297,7 +297,7 @@ describe("VeildPools", function () {
       await pools.write.answerPool([0n, ANSWER], { account: alice.account });
       const after = await publicClient.getBalance({ address: alice.account.address });
 
-      expect(after).to.be.gt(before);
+      expect(after > before).to.be.true;
     });
 
     it("pool status changes to Answered", async function () {
@@ -442,7 +442,7 @@ describe("VeildPools", function () {
       await pools.write.claimRefund([0n, 0n], { account: charlie.account });
       const after = await publicClient.getBalance({ address: charlie.account.address });
 
-      expect(after).to.be.gt(before);
+      expect(after > before).to.be.true;
     });
 
     it("marks contribution as refunded", async function () {
@@ -533,7 +533,7 @@ describe("VeildPools", function () {
       const before = await publicClient.getBalance({ address: charlie.account.address });
       await pools.write.claimRefund([0n, 0n], { account: charlie.account });
       const after = await publicClient.getBalance({ address: charlie.account.address });
-      expect(after).to.be.gt(before);
+      expect(after > before).to.be.true;
     });
 
     it("owner can update platform fee", async function () {
@@ -561,7 +561,7 @@ describe("VeildPools", function () {
       const before = await publicClient.getBalance({ address: owner.account.address });
       await pools.write.withdrawPlatformFees({ account: owner.account });
       const after = await publicClient.getBalance({ address: owner.account.address });
-      expect(after).to.be.gt(before);
+      expect(after > before).to.be.true;
     });
 
     it("getActivePools returns only active pools for a creator", async function () {

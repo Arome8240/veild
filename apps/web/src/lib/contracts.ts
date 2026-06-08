@@ -9,6 +9,7 @@ export {
   VEILD_TIPS_ABI,
   VEILD_SUBSCRIPTIONS_ABI,
   VEILD_POOLS_ABI,
+  VEILD_BADGES_ABI,
   CONTRACT_ADDRESSES,
   getAddresses,
   veildRegistry,
@@ -16,6 +17,8 @@ export {
   veildTips,
   veildSubscriptions,
   veildPools,
+  veildBadges,
+  BADGE_IDS,
   VeildClient,
   createReadonlyClient,
   createTestnetClient,
@@ -33,6 +36,8 @@ export type {
   Pool,
   Contribution,
   PoolStatus,
+  BadgeId,
+  BadgeBitmap,
   RegisterCreatorParams,
   SendMessageParams,
   SendPriorityMessageParams,
@@ -70,5 +75,10 @@ export const SUBSCRIPTIONS_ADDRESS = (
 
 export const POOLS_ADDRESS = (
   process.env.NEXT_PUBLIC_VEILD_POOLS_ADDRESS ??
+  "0x0000000000000000000000000000000000000000"
+) as `0x${string}`;
+
+export const BADGES_ADDRESS = (
+  process.env.NEXT_PUBLIC_VEILD_BADGES_ADDRESS ??
   "0x0000000000000000000000000000000000000000"
 ) as `0x${string}`;

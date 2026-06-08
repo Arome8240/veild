@@ -14,6 +14,7 @@ import { useVeildContracts } from "@/hooks/useVeildContracts";
 import { useTipEarnings } from "@/hooks/useTips";
 import { useSubEarnings, useSubscriberCount } from "@/hooks/useSubscriptions";
 import { RegisterForm } from "@/components/creator/register-form";
+import { ManageTiers } from "@/components/creator/manage-tiers";
 import { BottomNav } from "@/components/bottom-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { formatCELO, formatNumber } from "@/lib/utils";
@@ -366,6 +367,17 @@ export default function ProfilePage() {
               </ul>
             )}
           </motion.section>
+        )}
+
+        {/* MANAGE SUBSCRIPTION TIERS */}
+        {isRegistered && creatorAddr && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.16 }}
+          >
+            <ManageTiers creatorAddress={creatorAddr} />
+          </motion.div>
         )}
       </div>
 

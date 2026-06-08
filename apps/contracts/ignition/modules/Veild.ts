@@ -9,6 +9,7 @@ import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
  *   3. VeildTips           — direct fan-to-creator tips      (needs Registry)
  *   4. VeildSubscriptions  — monthly subscription tiers      (needs Registry)
  *   5. VeildPools          — crowdfunded question pools      (needs Registry)
+ *   6. VeildBadges         — soulbound achievement badges    (no deps)
  *
  * Usage:
  *   pnpm run deploy                      # localhost
@@ -31,7 +32,10 @@ const VeildModule = buildModule("VeildModule", (m) => {
   // 5. Pools — depends on Registry
   const pools = m.contract("VeildPools", [registry]);
 
-  return { registry, messaging, tips, subscriptions, pools };
+  // 6. Badges — standalone (no Registry dep; owner controls awards)
+  const badges = m.contract("VeildBadges");
+
+  return { registry, messaging, tips, subscriptions, pools, badges };
 });
 
 export default VeildModule;

@@ -9,7 +9,7 @@
  * What this script does:
  *   1. Pre-flight: prints network, deployer, and balance
  *   2. Requires confirmation before deploying to mainnet
- *   3. Deploys all 5 contracts in dependency order
+ *   3. Deploys all 6 contracts in dependency order
  *   4. Saves full deployment info → deployments/{network}.json
  *   5. Writes deployments/addresses.ts so the frontend can import typed addresses
  *   6. On live networks: waits for 5 block confirmations then auto-verifies on Celoscan
@@ -50,6 +50,7 @@ interface ContractAddresses {
   VeildTips: string;
   VeildSubscriptions: string;
   VeildPools: string;
+  VeildBadges: string;
 }
 
 function saveDeployment(
@@ -173,24 +174,30 @@ async function main() {
   log(`  ✔  VeildSubscriptions → ${subscriptions.address}`);
 
   // ── 7. Deploy VeildPools ──────────────────────────────────────────────────
-  log("\n[5/5] Deploying VeildPools...");
+  log("\n[5/6] Deploying VeildPools...");
   const pools = await hre.viem.deployContract("VeildPools", [registry.address]);
   log(`  ✔  VeildPools     → ${pools.address}`);
 
-  // ── 8. Persist addresses ──────────────────────────────────────────────────
+  // ── 8. Deploy VeildBadges ─────────────────────────────────────────────────
+  log("\n[6/6] Deploying VeildBadges...");
+  const badges = await hre.viem.deployContract("VeildBadges");
+  log(`  ✔  VeildBadges    → ${badges.address}`);
+
+  // ── 9. Persist addresses ──────────────────────────────────────────────────
   const addrs: ContractAddresses = {
     VeildRegistry:      registry.address,
     VeildMessages:      messaging.address,
     VeildTips:          tips.address,
     VeildSubscriptions: subscriptions.address,
     VeildPools:         pools.address,
+    VeildBadges:        badges.address,
   };
   saveDeployment(networkName, chainId, deployerAddress, addrs);
 
-  // ── 9. Verify on live networks ────────────────────────────────────────────
+  // ── 10. Verify on live networks ───────────────────────────────────────────
   if (isLiveNetwork) {
     log("\nWaiting for 5 block confirmations...");
-    for (const c of [registry, messaging, tips, subscriptions, pools]) {
+    for (const c of [registry, messaging, tips, subscriptions, pools, badges]) {
       const tx = c.deploymentTransaction?.();
       if (tx?.hash) {
         await publicClient.waitForTransactionReceipt({ hash: tx.hash, confirmations: 5 });
@@ -202,9 +209,10 @@ async function main() {
     await verifyContract(tips.address,          [registry.address],        "VeildTips");
     await verifyContract(subscriptions.address, [registry.address],        "VeildSubscriptions");
     await verifyContract(pools.address,         [registry.address],        "VeildPools");
+    await verifyContract(badges.address,        [],                        "VeildBadges");
   }
 
-  // ── 10. Summary ───────────────────────────────────────────────────────────
+  // ── 11. Summary ───────────────────────────────────────────────────────────
   separator();
   log("  ✅  Deployment complete!");
   separator();

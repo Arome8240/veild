@@ -18,6 +18,7 @@ import { TipButton } from "@/components/creator/tip-button";
 import { SubscribeButton } from "@/components/creator/subscribe-button";
 import { PoolCard } from "@/components/creator/pool-card";
 import { TipLeaderboard } from "@/components/creator/tip-leaderboard";
+import { BadgeDisplay } from "@/components/creator/badge-display";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -204,6 +205,9 @@ export default function CreatorProfilePage({
                 creatorName={creator.name}
                 fanAddress={fanAddress}
               />
+            </div>
+            <div className="mt-2">
+              <BadgeDisplay holderAddress={creatorAddr} />
             </div>
           </div>
         </motion.header>

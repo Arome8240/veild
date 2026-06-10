@@ -40,12 +40,16 @@ export function timeAgo(timestamp: number | bigint): string {
 
 /** Returns a real image URL only for actual uploads (IPFS or https).
  *  Returns null when no real image is stored, so the UI shows initials. */
-export function resolveAvatar(avatarCID: string): string | null {
-  if (!avatarCID) return null;
+export function resolveAvatar(avatarCID: string, name?: string): string {
+  if (!avatarCID || avatarCID === "") {
+    const seed = encodeURIComponent(name ?? "anon");
+    return `https://api.dicebear.com/7.x/initials/svg?seed=${seed}`;
+  }
   if (avatarCID.startsWith("http")) return avatarCID;
   if (avatarCID.startsWith("Qm") || avatarCID.startsWith("bafy"))
     return `https://ipfs.io/ipfs/${avatarCID}`;
-  return null;
+  const seed = encodeURIComponent(name ?? avatarCID);
+  return `https://api.dicebear.com/7.x/initials/svg?seed=${seed}`;
 }
 
 /** Extract up to 2 uppercase initials from a display name. */

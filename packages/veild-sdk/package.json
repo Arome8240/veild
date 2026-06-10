@@ -1,0 +1,41 @@
+{
+  "name": "veild-sdk",
+  "version": "0.3.0",
+  "description": "Type-safe SDK for interacting with Veild smart contracts on Celo",
+  "author": "Veild",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "viem": ">=2.0.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0",
+    "viem": "^2.52.0"
+  },
+  "keywords": [
+    "veild",
+    "celo",
+    "web3",
+    "smart-contracts",
+    "sdk"
+  ]
+}

@@ -2,7 +2,7 @@
 
 import { useWriteContract, useReadContract, useWaitForTransactionReceipt } from "wagmi";
 import { type Address } from "viem";
-import { veildSubscriptions } from "@/lib/contracts";
+import { veildSubscriptions, type SubscriptionTier, type Subscription } from "@/lib/contracts";
 
 /**
  * useVeildSubscriptions — write actions for VeildSubscriptions.
@@ -81,49 +81,54 @@ export function useIsSubscribed(
   creatorAddress: Address | undefined,
   fanAddress: Address | undefined
 ) {
-  return useReadContract({
+  const result = useReadContract({
     ...veildSubscriptions.celo,
     functionName: "isSubscribed",
     args: creatorAddress && fanAddress ? [creatorAddress, fanAddress] : undefined,
     query: { enabled: !!creatorAddress && !!fanAddress },
   });
+  return { ...result, data: result.data as boolean | undefined };
 }
 
 export function useSubscriptionDetails(
   creatorAddress: Address | undefined,
   fanAddress: Address | undefined
 ) {
-  return useReadContract({
+  const result = useReadContract({
     ...veildSubscriptions.celo,
     functionName: "getSubscription",
     args: creatorAddress && fanAddress ? [creatorAddress, fanAddress] : undefined,
     query: { enabled: !!creatorAddress && !!fanAddress },
   });
+  return { ...result, data: result.data as Subscription | undefined };
 }
 
 export function useCreatorTiers(creatorAddress: Address | undefined) {
-  return useReadContract({
+  const result = useReadContract({
     ...veildSubscriptions.celo,
     functionName: "getTiers",
     args: creatorAddress ? [creatorAddress] : undefined,
     query: { enabled: !!creatorAddress },
   });
+  return { ...result, data: (result.data as SubscriptionTier[] | undefined) ?? [] };
 }
 
 export function useSubEarnings(creatorAddress: Address | undefined) {
-  return useReadContract({
+  const result = useReadContract({
     ...veildSubscriptions.celo,
     functionName: "getEarnings",
     args: creatorAddress ? [creatorAddress] : undefined,
     query: { enabled: !!creatorAddress },
   });
+  return { ...result, data: (result.data as bigint | undefined) ?? 0n };
 }
 
 export function useSubscriberCount(creatorAddress: Address | undefined) {
-  return useReadContract({
+  const result = useReadContract({
     ...veildSubscriptions.celo,
     functionName: "subscriberCount",
     args: creatorAddress ? [creatorAddress] : undefined,
     query: { enabled: !!creatorAddress },
   });
+  return { ...result, data: (result.data as bigint | undefined) ?? 0n };
 }

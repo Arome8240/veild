@@ -2,7 +2,7 @@
 
 import { useWriteContract, useReadContract, useWaitForTransactionReceipt } from "wagmi";
 import { type Address } from "viem";
-import { veildTips } from "@/lib/contracts";
+import { veildTips, type Tip, type FanEntry } from "@/lib/contracts";
 
 /**
  * useVeildTips — write actions for VeildTips (tip, claimEarnings).
@@ -47,46 +47,51 @@ export function useVeildTips() {
 // ─── Read hooks ───────────────────────────────────────────────────────────────
 
 export function useTipEarnings(creatorAddress: Address | undefined) {
-  return useReadContract({
+  const result = useReadContract({
     ...veildTips.celo,
     functionName: "getEarnings",
     args: creatorAddress ? [creatorAddress] : undefined,
     query: { enabled: !!creatorAddress },
   });
+  return { ...result, data: (result.data as bigint | undefined) ?? 0n };
 }
 
 export function useTips(creatorAddress: Address | undefined) {
-  return useReadContract({
+  const result = useReadContract({
     ...veildTips.celo,
     functionName: "getTips",
     args: creatorAddress ? [creatorAddress] : undefined,
     query: { enabled: !!creatorAddress },
   });
+  return { ...result, data: (result.data as Tip[] | undefined) ?? [] };
 }
 
 export function useTipCount(creatorAddress: Address | undefined) {
-  return useReadContract({
+  const result = useReadContract({
     ...veildTips.celo,
     functionName: "getTipCount",
     args: creatorAddress ? [creatorAddress] : undefined,
     query: { enabled: !!creatorAddress },
   });
+  return { ...result, data: (result.data as bigint | undefined) ?? 0n };
 }
 
 export function useTipLeaderboard(creatorAddress: Address | undefined) {
-  return useReadContract({
+  const result = useReadContract({
     ...veildTips.celo,
     functionName: "getLeaderboard",
     args: creatorAddress ? [creatorAddress] : undefined,
     query: { enabled: !!creatorAddress },
   });
+  return { ...result, data: (result.data as FanEntry[] | undefined) ?? [] };
 }
 
 export function useTotalTipped(creatorAddress: Address | undefined) {
-  return useReadContract({
+  const result = useReadContract({
     ...veildTips.celo,
     functionName: "getTotalTipped",
     args: creatorAddress ? [creatorAddress] : undefined,
     query: { enabled: !!creatorAddress },
   });
+  return { ...result, data: (result.data as bigint | undefined) ?? 0n };
 }

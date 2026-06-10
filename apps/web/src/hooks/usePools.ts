@@ -2,7 +2,7 @@
 
 import { useWriteContract, useReadContract, useWaitForTransactionReceipt } from "wagmi";
 import { type Address } from "viem";
-import { veildPools } from "@/lib/contracts";
+import { veildPools, type Pool, type Contribution } from "@/lib/contracts";
 
 /**
  * useVeildPools — write and read hooks for VeildPools.
@@ -81,30 +81,33 @@ export function useVeildPools() {
 // ─── Read hooks ───────────────────────────────────────────────────────────────
 
 export function usePool(poolId: bigint | undefined) {
-  return useReadContract({
+  const result = useReadContract({
     ...veildPools.celo,
     functionName: "getPool",
     args: poolId !== undefined ? [poolId] : undefined,
     query: { enabled: poolId !== undefined },
   });
+  return { ...result, data: result.data as Pool | undefined };
 }
 
 export function useActivePools(creatorAddress: Address | undefined) {
-  return useReadContract({
+  const result = useReadContract({
     ...veildPools.celo,
     functionName: "getActivePools",
     args: creatorAddress ? [creatorAddress] : undefined,
     query: { enabled: !!creatorAddress },
   });
+  return { ...result, data: (result.data as Pool[] | undefined) ?? [] };
 }
 
 export function usePoolContributions(poolId: bigint | undefined) {
-  return useReadContract({
+  const result = useReadContract({
     ...veildPools.celo,
     functionName: "getContributions",
     args: poolId !== undefined ? [poolId] : undefined,
     query: { enabled: poolId !== undefined },
   });
+  return { ...result, data: (result.data as Contribution[] | undefined) ?? [] };
 }
 
 export function usePoolCount() {

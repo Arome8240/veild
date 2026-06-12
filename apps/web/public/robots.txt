@@ -1,9 +1,17 @@
 User-agent: *
 Allow: /
 
-# Creator walls and profiles are public
+# Public creator profiles and walls
 Allow: /*/wall
+Allow: /discover
+Allow: /leaderboard
+Allow: /governance
+Allow: /auctions
 
-# Keep inbox and profile private from crawlers
+# Keep personal sections private from crawlers
 Disallow: /inbox
 Disallow: /profile
+Disallow: /settings
+Disallow: /analytics
+Disallow: /referral
+Disallow: /staking

@@ -8,21 +8,29 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
   title: {
-    default: "Veild — Anonymous Messages for Creators",
+    default: "Veild — On-chain Creator Economy",
     template: "%s — Veild",
   },
   description:
-    "Your fans have things to say. Anonymously. Give them a safe place to say it.",
+    "The on-chain creator economy. Tip, subscribe, gift, and message creators directly on CELO — no middlemen, no censorship.",
+  keywords: ["creator economy", "CELO", "web3", "tips", "subscriptions", "on-chain"],
   openGraph: {
-    title: "Veild — Anonymous Messages for Creators",
-    description: "Your fans have things to say. Anonymously.",
-    type: "website",
-    siteName: "Veild",
+    title:       "Veild — On-chain Creator Economy",
+    description: "Tip, subscribe, gift, and message creators directly on CELO.",
+    type:        "website",
+    siteName:    "Veild",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Veild" }],
+  },
+  twitter: {
+    card:        "summary_large_image",
+    title:       "Veild — On-chain Creator Economy",
+    description: "Tip, subscribe, gift, and message creators directly on CELO.",
+    images:      ["/og-image.png"],
   },
   appleWebApp: {
-    capable: true,
-    statusBarStyle: "black-translucent",
-    title: "Veild",
+    capable:         true,
+    statusBarStyle:  "black-translucent",
+    title:           "Veild",
   },
   metadataBase: new URL("https://veild.app"),
 };

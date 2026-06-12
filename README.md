@@ -1,58 +1,78 @@
-# my-celo-app
+# Veild
 
-A new Celo blockchain project
+**On-chain creator economy powered by CELO.**
 
-A modern Celo blockchain application built with Next.js, TypeScript, and Turborepo.
+Tip, subscribe, gift, and message creators directly — no middlemen, no censorship.
+
+## Features
+
+| Feature        | Contract             | Description                                           |
+|----------------|----------------------|-------------------------------------------------------|
+| Messages       | VeildMessages        | Anonymous fan messages with priority tipping          |
+| Tips           | VeildTips            | Direct CELO tips with 3% platform fee                 |
+| Subscriptions  | VeildSubscriptions   | Tiered monthly access on-chain                        |
+| Pools          | VeildPools           | Community funding rounds with goal tracking           |
+| Gifts          | VeildGifts           | Virtual gift sending (Rose, Rocket, Crown…)           |
+| Staking        | VeildStaking         | Stake CELO for discoverability boost                  |
+| Governance     | VeildGovernance      | On-chain proposal and voting system                   |
+| Auctions       | VeildAuction         | Timed CELO slot auctions                              |
+| Referrals      | VeildReferral        | Earn 0.001 CELO per referred creator                  |
+| Badges         | VeildBadges          | Soulbound achievement NFTs                            |
+
+## Monorepo Structure
+
+```
+veild/
+├── apps/
+│   ├── web/          Next.js 15 app (App Router)
+│   └── contracts/    Hardhat + Viem + Ignition
+└── packages/
+    └── veild-sdk/    TypeScript SDK (dual CJS/ESM)
+```
 
 ## Getting Started
 
-1. Install dependencies:
-   ```bash
-   pnpm install
-   ```
+```bash
+pnpm install
+pnpm dev           # Start web app at localhost:3000
+```
 
-2. Start the development server:
-   ```bash
-   pnpm dev
-   ```
+### Contracts
 
-3. Open [http://localhost:3000](http://localhost:3000) in your browser.
+```bash
+pnpm --filter contracts test        # Run all 28+ test suites
+pnpm --filter contracts compile     # Compile Solidity
+pnpm --filter contracts deploy:alfajores  # Deploy to Celo testnet
+```
 
-## Project Structure
+### SDK
 
-This is a monorepo managed by Turborepo with the following structure:
-
-- `apps/web` - Next.js application with embedded UI components and utilities
-- `apps/hardhat` - Smart contract development environment
-
-## Available Scripts
-
-- `pnpm dev` - Start development servers
-- `pnpm build` - Build all packages and apps
-- `pnpm lint` - Lint all packages and apps
-- `pnpm type-check` - Run TypeScript type checking
-
-### Smart Contract Scripts
-
-- `pnpm contracts:compile` - Compile smart contracts
-- `pnpm contracts:test` - Run smart contract tests
-- `pnpm contracts:deploy` - Deploy contracts to local network
-- `pnpm contracts:deploy:celo-sepolia` - Deploy to Celo Sepolia Testnet
-- `pnpm contracts:deploy:celo` - Deploy to Celo Mainnet
+```bash
+pnpm --filter veild-sdk build       # Build CJS + ESM bundles
+```
 
 ## Tech Stack
 
-- **Framework**: Next.js 14 with App Router
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **UI Components**: shadcn/ui
-- **Smart Contracts**: Hardhat with Viem
-- **Monorepo**: Turborepo
-- **Package Manager**: PNPM
+- **Frontend**: Next.js 15, TypeScript, Tailwind CSS, wagmi v2, viem v2
+- **Contracts**: Solidity ^0.8.28, Hardhat, OpenZeppelin, Hardhat Ignition
+- **SDK**: tsup (CJS + ESM), TypeScript
+- **Monorepo**: Turborepo + pnpm workspaces
+- **Chain**: CELO (mainnet + Alfajores testnet)
 
-## Learn More
+## Environment Variables
 
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Celo Documentation](https://docs.celo.org/)
-- [Turborepo Documentation](https://turbo.build/repo/docs)
-- [shadcn/ui Documentation](https://ui.shadcn.com/)
+Copy `apps/web/.env.example` and fill in contract addresses:
+
+```env
+NEXT_PUBLIC_VEILD_REGISTRY_ADDRESS=0x...
+NEXT_PUBLIC_VEILD_MESSAGES_ADDRESS=0x...
+# … see .env.example for full list
+```
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+MIT — see [LICENSE](LICENSE).

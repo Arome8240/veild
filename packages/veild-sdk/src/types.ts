@@ -184,6 +184,38 @@ export interface BadgeBitmap {
   poolAnswerer:    boolean;
 }
 
+// ─── VeildReferral types ──────────────────────────────────────────────────────
+
+export interface ReferrerStats {
+  totalReferrals: bigint;
+  pendingReward:  bigint;
+  claimedReward:  bigint;
+}
+
+// ─── VeildGifts types ─────────────────────────────────────────────────────────
+
+export interface GiftType {
+  name:   string;
+  price:  bigint;
+  active: boolean;
+}
+
+export interface GiftRecord {
+  sender:     Address;
+  giftTypeId: bigint;
+  amount:     bigint;
+  sentAt:     bigint;
+  message:    string;
+}
+
+// ─── VeildStaking types ───────────────────────────────────────────────────────
+
+export interface StakeInfo {
+  amount:                bigint;
+  withdrawRequestedAt:   bigint;
+  withdrawPending:       boolean;
+}
+
 // ─── VeildAuction types ───────────────────────────────────────────────────────
 
 /** Mirrors AuctionState enum in VeildAuction.sol */

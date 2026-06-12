@@ -19,6 +19,9 @@ import { VEILD_POOLS_ABI         } from "./abis/pools.js";
 import { VEILD_BADGES_ABI        } from "./abis/badges.js";
 import { VEILD_GOVERNANCE_ABI    } from "./abis/governance.js";
 import { VEILD_AUCTION_ABI       } from "./abis/auction.js";
+import { VEILD_REFERRAL_ABI      } from "./abis/referral.js";
+import { VEILD_GIFTS_ABI         } from "./abis/gifts.js";
+import { VEILD_STAKING_ABI       } from "./abis/staking.js";
 import { CONTRACT_ADDRESSES      } from "./addresses.js";
 
 export const veildRegistry = {
@@ -95,6 +98,39 @@ export const veildAuction = {
   alfajores: {
     address: CONTRACT_ADDRESSES[44787].auction,
     abi:     VEILD_AUCTION_ABI,
+  },
+} as const;
+
+export const veildReferral = {
+  celo: {
+    address: CONTRACT_ADDRESSES[42220].referral,
+    abi:     VEILD_REFERRAL_ABI,
+  },
+  alfajores: {
+    address: CONTRACT_ADDRESSES[44787].referral,
+    abi:     VEILD_REFERRAL_ABI,
+  },
+} as const;
+
+export const veildGifts = {
+  celo: {
+    address: CONTRACT_ADDRESSES[42220].gifts,
+    abi:     VEILD_GIFTS_ABI,
+  },
+  alfajores: {
+    address: CONTRACT_ADDRESSES[44787].gifts,
+    abi:     VEILD_GIFTS_ABI,
+  },
+} as const;
+
+export const veildStaking = {
+  celo: {
+    address: CONTRACT_ADDRESSES[42220].staking,
+    abi:     VEILD_STAKING_ABI,
+  },
+  alfajores: {
+    address: CONTRACT_ADDRESSES[44787].staking,
+    abi:     VEILD_STAKING_ABI,
   },
 } as const;
 

@@ -9,6 +9,9 @@ export interface ChainAddresses {
   badges:        Address;
   governance:    Address;
   auction:       Address;
+  referral:      Address;
+  gifts:         Address;
+  staking:       Address;
 }
 
 const ZERO = "0x0000000000000000000000000000000000000000" as Address;
@@ -26,6 +29,9 @@ export const CONTRACT_ADDRESSES: Record<number, ChainAddresses> = {
     badges:        ZERO,
     governance:    ZERO,
     auction:       ZERO,
+    referral:      ZERO,
+    gifts:         ZERO,
+    staking:       ZERO,
   },
   // Celo Alfajores Testnet — fill in after testnet deploy
   44787: {
@@ -37,6 +43,9 @@ export const CONTRACT_ADDRESSES: Record<number, ChainAddresses> = {
     badges:        ZERO,
     governance:    ZERO,
     auction:       ZERO,
+    referral:      ZERO,
+    gifts:         ZERO,
+    staking:       ZERO,
   },
 } as const;
 

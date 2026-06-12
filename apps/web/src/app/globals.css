@@ -102,6 +102,33 @@
 .pb-safe             { padding-bottom: env(safe-area-inset-bottom, 0px); }
 .bottom-nav-height   { height: calc(4rem + env(safe-area-inset-bottom, 0px)); }
 
+/* ─── OLED dark mode (true black) ───────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  [data-oled="true"] {
+    --background: 0 0% 0%;
+    --card:       0 0% 3%;
+    --popover:    0 0% 3%;
+    --secondary:  0 0% 5%;
+    --muted:      0 0% 6%;
+    --surface-1:  0 0% 3%;
+    --surface-2:  0 0% 5%;
+    --surface-3:  0 0% 7%;
+    --scrollbar-track: #000000;
+    --scrollbar-thumb: #1a1a1a;
+    --border:     0 0% 8%;
+  }
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration:   0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration:  0.01ms !important;
+    scroll-behavior:      auto !important;
+  }
+}
+
 /* ─── Focus visible (keyboard accessibility) ────────────────────────────────── */
 :focus-visible {
   outline: 2px solid hsl(var(--ring));

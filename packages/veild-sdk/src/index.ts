@@ -66,6 +66,16 @@ export type {
 } from "./types.js";
 export { BADGE_IDS } from "./types.js";
 
+// Utilities
+export {
+  bpsToPercent,
+  formatCELO,
+  abbreviateNumber,
+  timeAgo,
+  ipfsToHttp,
+  shortenAddress,
+} from "./utils.js";
+
 // Client
 export {
   VeildClient,

@@ -18,6 +18,7 @@ import { VEILD_SUBSCRIPTIONS_ABI } from "./abis/subscriptions.js";
 import { VEILD_POOLS_ABI         } from "./abis/pools.js";
 import { VEILD_BADGES_ABI        } from "./abis/badges.js";
 import { VEILD_GOVERNANCE_ABI    } from "./abis/governance.js";
+import { VEILD_AUCTION_ABI       } from "./abis/auction.js";
 import { CONTRACT_ADDRESSES      } from "./addresses.js";
 
 export const veildRegistry = {
@@ -83,6 +84,17 @@ export const veildBadges = {
   alfajores: {
     address: CONTRACT_ADDRESSES[44787].badges,
     abi:     VEILD_BADGES_ABI,
+  },
+} as const;
+
+export const veildAuction = {
+  celo: {
+    address: CONTRACT_ADDRESSES[42220].auction,
+    abi:     VEILD_AUCTION_ABI,
+  },
+  alfajores: {
+    address: CONTRACT_ADDRESSES[44787].auction,
+    abi:     VEILD_AUCTION_ABI,
   },
 } as const;
 

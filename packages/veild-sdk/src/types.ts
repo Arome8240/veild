@@ -184,6 +184,30 @@ export interface BadgeBitmap {
   poolAnswerer:    boolean;
 }
 
+// ─── VeildAuction types ───────────────────────────────────────────────────────
+
+/** Mirrors AuctionState enum in VeildAuction.sol */
+export type AuctionState = 0 | 1 | 2; // Active | Ended | Cancelled
+
+export interface Auction {
+  id:            bigint;
+  creator:       Address;
+  label:         string;
+  minBid:        bigint;
+  highestBid:    bigint;
+  highestBidder: Address;
+  startTime:     bigint;
+  endTime:       bigint;
+  state:         AuctionState;
+  claimed:       boolean;
+}
+
+export interface CreateAuctionParams {
+  label:    string;
+  minBid:   bigint;
+  duration: bigint;
+}
+
 // ─── VeildGovernance types ────────────────────────────────────────────────────
 
 /** Mirrors ProposalState enum in VeildGovernance.sol */

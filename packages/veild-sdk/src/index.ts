@@ -6,6 +6,7 @@ export { VEILD_SUBSCRIPTIONS_ABI } from "./abis/subscriptions.js";
 export { VEILD_POOLS_ABI         } from "./abis/pools.js";
 export { VEILD_BADGES_ABI        } from "./abis/badges.js";
 export { VEILD_GOVERNANCE_ABI   } from "./abis/governance.js";
+export { VEILD_AUCTION_ABI      } from "./abis/auction.js";
 
 // Addresses
 export { CONTRACT_ADDRESSES, getAddresses } from "./addresses.js";
@@ -20,6 +21,7 @@ export {
   veildPools,
   veildBadges,
   veildGovernance,
+  veildAuction,
 } from "./contracts.js";
 
 // TypeScript types
@@ -44,6 +46,9 @@ export type {
   TipParams,
   SubscribeParams,
   CreatePoolParams,
+  AuctionState,
+  Auction,
+  CreateAuctionParams,
   ProposalState,
   Proposal,
   CreateProposalParams,

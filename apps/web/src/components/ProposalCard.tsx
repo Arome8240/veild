@@ -38,7 +38,7 @@ export function ProposalCard({ proposalId, voter, onVote }: Props) {
   const isActive   = state === 0;
   const total      = (forVotes ?? 0n) + (againstVotes ?? 0n);
   const forPct     = total > 0n ? Number((forVotes ?? 0n) * 100n / total) : 0;
-  const deadline   = new Date(Number(proposal.deadline) * 1000);
+  const deadline   = new Date(Number(proposal.endTime) * 1000);
 
   return (
     <article className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3">

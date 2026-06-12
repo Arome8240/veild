@@ -11,6 +11,7 @@ import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
  *   5. VeildPools          — crowdfunded question pools      (needs Registry)
  *   6. VeildBadges         — soulbound achievement badges    (no deps)
  *   7. VeildGovernance     — proposal and voting contract    (no deps)
+ *   8. VeildAuction        — timed slot bidding             (needs Registry)
  *
  * Usage:
  *   pnpm run deploy                      # localhost
@@ -39,7 +40,10 @@ const VeildModule = buildModule("VeildModule", (m) => {
   // 7. Governance — standalone (no Registry dep; anyone can propose)
   const governance = m.contract("VeildGovernance");
 
-  return { registry, messaging, tips, subscriptions, pools, badges, governance };
+  // 8. Auction — depends on Registry (checks creator registration)
+  const auctionContract = m.contract("VeildAuction", [registry]);
+
+  return { registry, messaging, tips, subscriptions, pools, badges, governance, auctionContract };
 });
 
 export default VeildModule;

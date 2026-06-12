@@ -52,6 +52,7 @@ interface ContractAddresses {
   VeildPools: string;
   VeildBadges: string;
   VeildGovernance: string;
+  VeildAuction: string;
 }
 
 function saveDeployment(
@@ -185,11 +186,16 @@ async function main() {
   log(`  ✔  VeildBadges    → ${badges.address}`);
 
   // ── 9. Deploy VeildGovernance ─────────────────────────────────────────────
-  log("\n[7/7] Deploying VeildGovernance...");
+  log("\n[7/8] Deploying VeildGovernance...");
   const governance = await hre.viem.deployContract("VeildGovernance");
   log(`  ✔  VeildGovernance → ${governance.address}`);
 
-  // ── 10. Persist addresses ─────────────────────────────────────────────────
+  // ── 10. Deploy VeildAuction ───────────────────────────────────────────────
+  log("\n[8/8] Deploying VeildAuction...");
+  const auctionContract = await hre.viem.deployContract("VeildAuction", [registry.address]);
+  log(`  ✔  VeildAuction   → ${auctionContract.address}`);
+
+  // ── 11. Persist addresses ─────────────────────────────────────────────────
   const addrs: ContractAddresses = {
     VeildRegistry:      registry.address,
     VeildMessages:      messaging.address,
@@ -198,13 +204,14 @@ async function main() {
     VeildPools:         pools.address,
     VeildBadges:        badges.address,
     VeildGovernance:    governance.address,
+    VeildAuction:       auctionContract.address,
   };
   saveDeployment(networkName, chainId, deployerAddress, addrs);
 
   // ── 10. Verify on live networks ───────────────────────────────────────────
   if (isLiveNetwork) {
     log("\nWaiting for 5 block confirmations...");
-    for (const c of [registry, messaging, tips, subscriptions, pools, badges, governance]) {
+    for (const c of [registry, messaging, tips, subscriptions, pools, badges, governance, auctionContract]) {
       const tx = c.deploymentTransaction?.();
       if (tx?.hash) {
         await publicClient.waitForTransactionReceipt({ hash: tx.hash, confirmations: 5 });
@@ -218,6 +225,7 @@ async function main() {
     await verifyContract(pools.address,         [registry.address],        "VeildPools");
     await verifyContract(badges.address,        [],                        "VeildBadges");
     await verifyContract(governance.address,    [],                        "VeildGovernance");
+    await verifyContract(auctionContract.address, [registry.address],      "VeildAuction");
   }
 
   // ── 11. Summary ───────────────────────────────────────────────────────────

@@ -19,6 +19,16 @@ export {
   veildPools,
   veildBadges,
   BADGE_IDS,
+  VEILD_GOVERNANCE_ABI,
+  VEILD_AUCTION_ABI,
+  VEILD_REFERRAL_ABI,
+  VEILD_GIFTS_ABI,
+  VEILD_STAKING_ABI,
+  veildGovernance,
+  veildAuction,
+  veildReferral,
+  veildGifts,
+  veildStaking,
   VeildClient,
   createReadonlyClient,
   createTestnetClient,
@@ -38,6 +48,16 @@ export type {
   PoolStatus,
   BadgeId,
   BadgeBitmap,
+  Proposal,
+  ProposalState,
+  CreateProposalParams,
+  Auction,
+  AuctionState,
+  CreateAuctionParams,
+  ReferrerStats,
+  GiftType,
+  GiftRecord,
+  StakeInfo,
   RegisterCreatorParams,
   SendMessageParams,
   SendPriorityMessageParams,
@@ -80,5 +100,30 @@ export const POOLS_ADDRESS = (
 
 export const BADGES_ADDRESS = (
   process.env.NEXT_PUBLIC_VEILD_BADGES_ADDRESS ??
+  "0x0000000000000000000000000000000000000000"
+) as `0x${string}`;
+
+export const GOVERNANCE_ADDRESS = (
+  process.env.NEXT_PUBLIC_VEILD_GOVERNANCE_ADDRESS ??
+  "0x0000000000000000000000000000000000000000"
+) as `0x${string}`;
+
+export const AUCTION_ADDRESS = (
+  process.env.NEXT_PUBLIC_VEILD_AUCTION_ADDRESS ??
+  "0x0000000000000000000000000000000000000000"
+) as `0x${string}`;
+
+export const REFERRAL_ADDRESS = (
+  process.env.NEXT_PUBLIC_VEILD_REFERRAL_ADDRESS ??
+  "0x0000000000000000000000000000000000000000"
+) as `0x${string}`;
+
+export const GIFTS_ADDRESS = (
+  process.env.NEXT_PUBLIC_VEILD_GIFTS_ADDRESS ??
+  "0x0000000000000000000000000000000000000000"
+) as `0x${string}`;
+
+export const STAKING_ADDRESS = (
+  process.env.NEXT_PUBLIC_VEILD_STAKING_ADDRESS ??
   "0x0000000000000000000000000000000000000000"
 ) as `0x${string}`;

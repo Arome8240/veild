@@ -9,7 +9,8 @@ export { VEILD_GOVERNANCE_ABI   } from "./abis/governance.js";
 export { VEILD_AUCTION_ABI      } from "./abis/auction.js";
 export { VEILD_REFERRAL_ABI     } from "./abis/referral.js";
 export { VEILD_GIFTS_ABI        } from "./abis/gifts.js";
-export { VEILD_STAKING_ABI      } from "./abis/staking.js";
+export { VEILD_STAKING_ABI          } from "./abis/staking.js";
+export { VEILD_FEE_DISTRIBUTOR_ABI  } from "./abis/feeDistributor.js";
 
 // Addresses
 export { CONTRACT_ADDRESSES, getAddresses } from "./addresses.js";

@@ -67,6 +67,21 @@ export type {
 } from "./types.js";
 export { BADGE_IDS } from "./types.js";
 
+// Validation
+export {
+  MAX_USERNAME_LEN,
+  MAX_BIO_LEN,
+  MIN_USERNAME_LEN,
+  validateUsername,
+  validateBio,
+  validateProposalTitle,
+  validateProposalDescription,
+  validateAuctionLabel,
+  validateGiftMessage,
+  validateTipMessage,
+  validatePositiveAmount,
+} from "./validation.js";
+
 // Constants
 export {
   PLATFORM_FEE_BPS,

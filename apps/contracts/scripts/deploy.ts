@@ -53,6 +53,9 @@ interface ContractAddresses {
   VeildBadges: string;
   VeildGovernance: string;
   VeildAuction: string;
+  VeildReferral: string;
+  VeildGifts: string;
+  VeildStaking: string;
 }
 
 function saveDeployment(
@@ -191,11 +194,26 @@ async function main() {
   log(`  ✔  VeildGovernance → ${governance.address}`);
 
   // ── 10. Deploy VeildAuction ───────────────────────────────────────────────
-  log("\n[8/8] Deploying VeildAuction...");
+  log("\n[8/11] Deploying VeildAuction...");
   const auctionContract = await hre.viem.deployContract("VeildAuction", [registry.address]);
   log(`  ✔  VeildAuction   → ${auctionContract.address}`);
 
-  // ── 11. Persist addresses ─────────────────────────────────────────────────
+  // ── 11. Deploy VeildReferral ──────────────────────────────────────────────
+  log("\n[9/11] Deploying VeildReferral...");
+  const referral = await hre.viem.deployContract("VeildReferral", [registry.address]);
+  log(`  ✔  VeildReferral  → ${referral.address}`);
+
+  // ── 12. Deploy VeildGifts ─────────────────────────────────────────────────
+  log("\n[10/11] Deploying VeildGifts...");
+  const giftContract = await hre.viem.deployContract("VeildGifts", [registry.address]);
+  log(`  ✔  VeildGifts     → ${giftContract.address}`);
+
+  // ── 13. Deploy VeildStaking ───────────────────────────────────────────────
+  log("\n[11/11] Deploying VeildStaking...");
+  const staking = await hre.viem.deployContract("VeildStaking", [registry.address]);
+  log(`  ✔  VeildStaking   → ${staking.address}`);
+
+  // ── 14. Persist addresses ─────────────────────────────────────────────────
   const addrs: ContractAddresses = {
     VeildRegistry:      registry.address,
     VeildMessages:      messaging.address,
@@ -205,13 +223,16 @@ async function main() {
     VeildBadges:        badges.address,
     VeildGovernance:    governance.address,
     VeildAuction:       auctionContract.address,
+    VeildReferral:      referral.address,
+    VeildGifts:         giftContract.address,
+    VeildStaking:       staking.address,
   };
   saveDeployment(networkName, chainId, deployerAddress, addrs);
 
   // ── 10. Verify on live networks ───────────────────────────────────────────
   if (isLiveNetwork) {
     log("\nWaiting for 5 block confirmations...");
-    for (const c of [registry, messaging, tips, subscriptions, pools, badges, governance, auctionContract]) {
+    for (const c of [registry, messaging, tips, subscriptions, pools, badges, governance, auctionContract, referral, giftContract, staking]) {
       const tx = c.deploymentTransaction?.();
       if (tx?.hash) {
         await publicClient.waitForTransactionReceipt({ hash: tx.hash, confirmations: 5 });
@@ -226,6 +247,9 @@ async function main() {
     await verifyContract(badges.address,        [],                        "VeildBadges");
     await verifyContract(governance.address,    [],                        "VeildGovernance");
     await verifyContract(auctionContract.address, [registry.address],      "VeildAuction");
+    await verifyContract(referral.address,        [registry.address],      "VeildReferral");
+    await verifyContract(giftContract.address,    [registry.address],      "VeildGifts");
+    await verifyContract(staking.address,         [registry.address],      "VeildStaking");
   }
 
   // ── 11. Summary ───────────────────────────────────────────────────────────

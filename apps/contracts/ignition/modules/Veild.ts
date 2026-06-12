@@ -12,6 +12,9 @@ import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
  *   6. VeildBadges         — soulbound achievement badges    (no deps)
  *   7. VeildGovernance     — proposal and voting contract    (no deps)
  *   8. VeildAuction        — timed slot bidding             (needs Registry)
+ *   9. VeildReferral       — referral tracking + rewards     (needs Registry)
+ *  10. VeildGifts          — virtual gift sending            (needs Registry)
+ *  11. VeildStaking        — visibility boost staking        (needs Registry)
  *
  * Usage:
  *   pnpm run deploy                      # localhost
@@ -43,7 +46,16 @@ const VeildModule = buildModule("VeildModule", (m) => {
   // 8. Auction — depends on Registry (checks creator registration)
   const auctionContract = m.contract("VeildAuction", [registry]);
 
-  return { registry, messaging, tips, subscriptions, pools, badges, governance, auctionContract };
+  // 9. Referral — depends on Registry
+  const referral = m.contract("VeildReferral", [registry]);
+
+  // 10. Gifts — depends on Registry
+  const giftContract = m.contract("VeildGifts", [registry]);
+
+  // 11. Staking — depends on Registry
+  const staking = m.contract("VeildStaking", [registry]);
+
+  return { registry, messaging, tips, subscriptions, pools, badges, governance, auctionContract, referral, giftContract, staking };
 });
 
 export default VeildModule;

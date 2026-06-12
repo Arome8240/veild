@@ -184,6 +184,28 @@ export interface BadgeBitmap {
   poolAnswerer:    boolean;
 }
 
+// ─── VeildGovernance types ────────────────────────────────────────────────────
+
+/** Mirrors ProposalState enum in VeildGovernance.sol */
+export type ProposalState = 0 | 1 | 2 | 3 | 4; // Active | Passed | Defeated | Cancelled | Executed
+
+export interface Proposal {
+  id:           bigint;
+  proposer:     Address;
+  title:        string;
+  description:  string;
+  forVotes:     bigint;
+  againstVotes: bigint;
+  startTime:    bigint;
+  endTime:      bigint;
+  state:        ProposalState;
+}
+
+export interface CreateProposalParams {
+  title:       string;
+  description: string;
+}
+
 // ─── Result types ──────────────────────────────────────────────────────────────
 
 export interface WriteResult {

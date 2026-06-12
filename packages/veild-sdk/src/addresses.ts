@@ -7,6 +7,7 @@ export interface ChainAddresses {
   subscriptions: Address;
   pools:         Address;
   badges:        Address;
+  governance:    Address;
 }
 
 const ZERO = "0x0000000000000000000000000000000000000000" as Address;
@@ -17,11 +18,12 @@ export const CONTRACT_ADDRESSES: Record<number, ChainAddresses> = {
   42220: {
     registry:      "0x4565001527ac0f6fa822020f8b4c3d33e0ca0aa4",
     messages:      "0x687f4fcfeb8fcbdf1d16e187b1b3613f7f07398e",
-    // Fill these in after deploying the v0.3.0 contracts
+    // Fill these in after deploying the v0.3.0+ contracts
     tips:          ZERO,
     subscriptions: ZERO,
     pools:         ZERO,
     badges:        ZERO,
+    governance:    ZERO,
   },
   // Celo Alfajores Testnet — fill in after testnet deploy
   44787: {
@@ -31,6 +33,7 @@ export const CONTRACT_ADDRESSES: Record<number, ChainAddresses> = {
     subscriptions: ZERO,
     pools:         ZERO,
     badges:        ZERO,
+    governance:    ZERO,
   },
 } as const;
 

@@ -1,14 +1,14 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 import { WagmiProvider, createConfig, http, useConnect } from "wagmi";
 import { celo } from "wagmi/chains";
 import { injected } from "wagmi/connectors";
+import { ChainContextProvider } from "@/lib/chain-context";
+import { useStacksWallet } from "@/hooks/useStacksWallet";
 
 // ─── Wagmi config ─────────────────────────────────────────────────────────────
-// Single chain (Celo mainnet). Injected connector covers MiniPay and any
-// browser wallet. No WalletConnect needed — Veild runs primarily inside MiniPay.
 
 export const wagmiConfig = createConfig({
   chains: [celo],
@@ -24,8 +24,6 @@ export const wagmiConfig = createConfig({
 const queryClient = new QueryClient();
 
 // ─── MiniPay auto-connect ─────────────────────────────────────────────────────
-// When the app loads inside MiniPay, auto-connect without showing any modal.
-// window.ethereum.isMiniPay is set by MiniPay's injected provider.
 
 function MiniPayAutoConnect() {
   const { connect, connectors } = useConnect();
@@ -45,14 +43,30 @@ function MiniPayAutoConnect() {
   return null;
 }
 
+// ─── Bridge: reads Stacks wallet state and feeds it into ChainContextProvider ──
+
+function ChainBridge({ children }: { children: ReactNode }) {
+  const { address: stacksAddress, isConnected: isStacksConnected } =
+    useStacksWallet();
+
+  return (
+    <ChainContextProvider
+      stacksAddress={stacksAddress}
+      isStacksConnected={isStacksConnected}
+    >
+      {children}
+    </ChainContextProvider>
+  );
+}
+
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
-export function WalletProvider({ children }: { children: React.ReactNode }) {
+export function WalletProvider({ children }: { children: ReactNode }) {
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <MiniPayAutoConnect />
-        {children}
+        <ChainBridge>{children}</ChainBridge>
       </QueryClientProvider>
     </WagmiProvider>
   );

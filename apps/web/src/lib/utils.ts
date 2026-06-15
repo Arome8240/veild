@@ -46,8 +46,11 @@ export function resolveAvatar(avatarCID: string, name?: string): string {
     return `https://api.dicebear.com/7.x/initials/svg?seed=${seed}`;
   }
   if (avatarCID.startsWith("http")) return avatarCID;
-  if (avatarCID.startsWith("Qm") || avatarCID.startsWith("bafy"))
-    return `https://ipfs.io/ipfs/${avatarCID}`;
+  if (avatarCID.startsWith("Qm") || avatarCID.startsWith("bafy")) {
+    const gateway =
+      process.env.NEXT_PUBLIC_PINATA_GATEWAY ?? "https://ipfs.io/ipfs";
+    return `${gateway}/${avatarCID}`;
+  }
   const seed = encodeURIComponent(name ?? avatarCID);
   return `https://api.dicebear.com/7.x/initials/svg?seed=${seed}`;
 }

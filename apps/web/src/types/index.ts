@@ -19,6 +19,7 @@ export interface RegisterFormState {
   name: string;
   bio: string;
   category: string;
+  avatarCID: string;
 }
 
 // ─── Component prop types ─────────────────────────────────────────────────────

@@ -5,6 +5,7 @@ import { Check, Loader2, AlertCircle, CheckCircle2, Info } from "lucide-react";
 import { useAccount } from "wagmi";
 import { CREATOR_CATEGORIES } from "@/constants/config";
 import { useVeildContracts, useIsRegistered, useCreatorByUsername } from "@/hooks/useVeildContracts";
+import { AvatarUpload } from "@/components/creator/avatar-upload";
 import type { RegisterFormState } from "@/types";
 import type { Address } from "viem";
 
@@ -17,6 +18,7 @@ const INITIAL_STATE: RegisterFormState = {
   name: "",
   bio: "",
   category: CREATOR_CATEGORIES[0],
+  avatarCID: "",
 };
 
 /** Strip the raw JSON-RPC wrapper viem sometimes leaks into error messages. */
@@ -110,7 +112,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
     e.preventDefault();
     if (usernameTaken || !form.username || !form.name) return;
     reset();
-    registerCreator(form.username, form.name, form.bio, "", form.category);
+    registerCreator(form.username, form.name, form.bio, form.avatarCID, form.category);
   }
 
   const isBusy    = isPending || isConfirming;
@@ -118,6 +120,12 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+      {/* Avatar upload */}
+      <AvatarUpload
+        name={form.name || form.username}
+        onCIDReady={(cid) => setForm((f) => ({ ...f, avatarCID: cid }))}
+      />
+
       {/* MiniPay notice */}
       <div className="flex gap-2.5 bg-blue-500/10 border border-blue-500/20 rounded-xl px-3.5 py-3">
         <Info className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" aria-hidden="true" />

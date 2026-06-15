@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
   if (!jwt) {
     return NextResponse.json(
       { error: "PINATA_JWT is not configured on the server." },
-      { status: 500 },
+      { status: 500 }
     );
   }
 
@@ -21,16 +21,10 @@ export async function POST(req: NextRequest) {
 
   // Validate type and size (max 5 MB)
   if (!file.type.startsWith("image/")) {
-    return NextResponse.json(
-      { error: "Only image files are allowed." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "Only image files are allowed." }, { status: 400 });
   }
   if (file.size > 5 * 1024 * 1024) {
-    return NextResponse.json(
-      { error: "File exceeds 5 MB limit." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "File exceeds 5 MB limit." }, { status: 400 });
   }
 
   const body = new FormData();
@@ -48,7 +42,7 @@ export async function POST(req: NextRequest) {
     console.error("Pinata upload failed:", res.status, text);
     return NextResponse.json(
       { error: "Upload to IPFS failed. Please try again." },
-      { status: 502 },
+      { status: 502 }
     );
   }
 
@@ -56,11 +50,9 @@ export async function POST(req: NextRequest) {
   const cid: string = json?.data?.cid;
 
   if (!cid) {
-    return NextResponse.json(
-      { error: "Pinata did not return a CID." },
-      { status: 502 },
-    );
+    return NextResponse.json({ error: "Pinata did not return a CID." }, { status: 502 });
   }
 
   return NextResponse.json({ cid });
+  //ewe
 }

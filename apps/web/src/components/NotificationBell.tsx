@@ -47,9 +47,10 @@ export function NotificationBell() {
               </li>
             )}
             {notifications.map((n) => (
-              <li
-                key={n.id}
-                className={`flex items-start gap-3 px-4 py-3 cursor-pointer transition-colors ${
+              <li key={n.id}>
+              <button
+                type="button"
+                className={`flex w-full items-start gap-3 px-4 py-3 text-left cursor-pointer transition-colors ${
                   !n.read ? "bg-white/5" : "hover:bg-white/5"
                 }`}
                 onClick={() => markRead(n.id)}
@@ -65,6 +66,7 @@ export function NotificationBell() {
                 >
                   ✕
                 </button>
+              </button>
               </li>
             ))}
           </ul>

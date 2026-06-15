@@ -1,0 +1,185 @@
+/**
+ * Deploy the 9 remaining Veild contracts on Celo mainnet.
+ *
+ * VeildRegistry  (0x4565001527ac0f6fa822020f8b4c3d33e0ca0aa4) — already live
+ * VeildMessages  (0x687f4fcfeb8fcbdf1d16e187b1b3613f7f07398e) — already live
+ *
+ * Usage:
+ *   npx hardhat run scripts/deploy-remaining.ts --network celo
+ */
+
+import hre from "hardhat";
+import { formatEther } from "viem";
+import * as fs from "fs";
+import * as path from "path";
+
+const REGISTRY = "0x4565001527ac0f6fa822020f8b4c3d33e0ca0aa4" as const;
+
+function log(msg: string) { console.log(msg); }
+function sep() { log("─".repeat(60)); }
+
+async function verifyContract(address: string, constructorArgs: unknown[], name: string) {
+  log(`\nVerifying ${name}...`);
+  await hre
+    .run("verify:verify", { address, constructorArguments: constructorArgs })
+    .catch((e: Error) => {
+      if (e.message.includes("Already Verified")) {
+        log(`  ℹ  ${name}: already verified.`);
+      } else {
+        log(`  ⚠  ${name}: verification failed — ${e.message}`);
+      }
+    });
+}
+
+async function main() {
+  sep();
+  log("  🪄  Veild — Deploy Remaining Contracts");
+  sep();
+
+  const [deployer]   = await hre.viem.getWalletClients();
+  const pub          = await hre.viem.getPublicClient();
+  const deployerAddr = deployer.account.address;
+  const balance      = await pub.getBalance({ address: deployerAddr });
+
+  log(`  Network   : ${hre.network.name}`);
+  log(`  Deployer  : ${deployerAddr}`);
+  log(`  Balance   : ${formatEther(balance)} CELO`);
+  log(`  Registry  : ${REGISTRY}`);
+  sep();
+
+  if (balance === 0n) throw new Error("Deployer has zero balance.");
+
+  // Celo enforces EIP-7623 floor data gas — explicit cap avoids underrun.
+  const GAS = 700_000n;
+
+  // ── Deploy ─────────────────────────────────────────────────────────────────
+
+  log("\n[1/10] Deploying VeildTips...");
+  const tips = await hre.viem.deployContract("VeildTips", [REGISTRY], { gas: GAS });
+  log(`  ✔  VeildTips          → ${tips.address}`);
+
+  log("\n[2/10] Deploying VeildSubscriptions...");
+  const subs = await hre.viem.deployContract("VeildSubscriptions", [REGISTRY], { gas: GAS });
+  log(`  ✔  VeildSubscriptions → ${subs.address}`);
+
+  log("\n[3/10] Deploying VeildPools...");
+  const pools = await hre.viem.deployContract("VeildPools", [REGISTRY], { gas: GAS });
+  log(`  ✔  VeildPools         → ${pools.address}`);
+
+  log("\n[4/10] Deploying VeildBadges...");
+  const badges = await hre.viem.deployContract("VeildBadges", [], { gas: GAS });
+  log(`  ✔  VeildBadges        → ${badges.address}`);
+
+  log("\n[5/10] Deploying VeildGovernance...");
+  const gov = await hre.viem.deployContract("VeildGovernance", [], { gas: GAS });
+  log(`  ✔  VeildGovernance    → ${gov.address}`);
+
+  log("\n[6/10] Deploying VeildAuction...");
+  const auction = await hre.viem.deployContract("VeildAuction", [REGISTRY], { gas: GAS });
+  log(`  ✔  VeildAuction       → ${auction.address}`);
+
+  log("\n[7/10] Deploying VeildReferral...");
+  const referral = await hre.viem.deployContract("VeildReferral", [REGISTRY], { gas: GAS });
+  log(`  ✔  VeildReferral      → ${referral.address}`);
+
+  log("\n[8/10] Deploying VeildGifts...");
+  const gifts = await hre.viem.deployContract("VeildGifts", [REGISTRY], { gas: GAS });
+  log(`  ✔  VeildGifts         → ${gifts.address}`);
+
+  log("\n[9/10] Deploying VeildStaking...");
+  const staking = await hre.viem.deployContract("VeildStaking", [REGISTRY], { gas: GAS });
+  log(`  ✔  VeildStaking       → ${staking.address}`);
+
+  log("\n[10/10] Deploying VeildFeeDistributor...");
+  const feeDistributor = await hre.viem.deployContract("VeildFeeDistributor", [deployerAddr], { gas: GAS });
+  log(`  ✔  VeildFeeDistributor → ${feeDistributor.address}`);
+
+  // ── Persist addresses ──────────────────────────────────────────────────────
+
+  const newAddrs = {
+    VeildTips:           tips.address,
+    VeildSubscriptions:  subs.address,
+    VeildPools:          pools.address,
+    VeildBadges:         badges.address,
+    VeildGovernance:     gov.address,
+    VeildAuction:        auction.address,
+    VeildReferral:       referral.address,
+    VeildGifts:          gifts.address,
+    VeildStaking:        staking.address,
+    VeildFeeDistributor: feeDistributor.address,
+  };
+
+  const deploymentsDir = path.join(__dirname, "..", "deployments");
+  fs.mkdirSync(deploymentsDir, { recursive: true });
+
+  // Merge into addresses.ts preserving existing entries
+  const indexPath   = path.join(deploymentsDir, "addresses.ts");
+  const existing: Record<string, Record<string, string>> = fs.existsSync(indexPath)
+    ? JSON.parse(
+        fs.readFileSync(indexPath, "utf-8")
+          .replace(/^.*?=\s*/s, "")
+          .replace(/\s*as const.*$/s, ""),
+      )
+    : {};
+
+  existing["celo"] = {
+    ...(existing["celo"] ?? {}),
+    ...newAddrs,
+  };
+
+  fs.writeFileSync(
+    indexPath,
+    `// Auto-generated by scripts/deploy-remaining.ts — DO NOT EDIT\n` +
+    `export const CONTRACT_ADDRESSES = ${JSON.stringify(existing, null, 2)} as const;\n\n` +
+    `export type NetworkName = keyof typeof CONTRACT_ADDRESSES;\n`,
+  );
+  log(`\nUpdated contract addresses → ${indexPath}`);
+
+  // Also write a deployment JSON
+  const jsonPath = path.join(deploymentsDir, "celo-remaining.json");
+  fs.writeFileSync(jsonPath, JSON.stringify({
+    network: hre.network.name,
+    timestamp: new Date().toISOString(),
+    deployer: deployerAddr,
+    registry: REGISTRY,
+    contracts: newAddrs,
+  }, null, 2));
+
+  // ── Verify ─────────────────────────────────────────────────────────────────
+
+  log("\nWaiting for 5 confirmations before verifying...");
+  const deployed = [tips, subs, pools, badges, gov, auction, referral, gifts, staking, feeDistributor];
+  for (const c of deployed) {
+    const tx = (c as any).deploymentTransaction?.();
+    if (tx?.hash) await pub.waitForTransactionReceipt({ hash: tx.hash, confirmations: 5 });
+  }
+
+  await verifyContract(tips.address,          [REGISTRY],      "VeildTips");
+  await verifyContract(subs.address,          [REGISTRY],      "VeildSubscriptions");
+  await verifyContract(pools.address,         [REGISTRY],      "VeildPools");
+  await verifyContract(badges.address,        [],              "VeildBadges");
+  await verifyContract(gov.address,           [],              "VeildGovernance");
+  await verifyContract(auction.address,       [REGISTRY],      "VeildAuction");
+  await verifyContract(referral.address,      [REGISTRY],      "VeildReferral");
+  await verifyContract(gifts.address,         [REGISTRY],      "VeildGifts");
+  await verifyContract(staking.address,       [REGISTRY],      "VeildStaking");
+  await verifyContract(feeDistributor.address,[deployerAddr],  "VeildFeeDistributor");
+
+  // ── Summary ────────────────────────────────────────────────────────────────
+
+  sep();
+  log("  ✅  Deployment complete!");
+  sep();
+  console.table(newAddrs);
+
+  const base = "https://celoscan.io/address/";
+  for (const [name, addr] of Object.entries(newAddrs)) {
+    log(`  ${name.padEnd(22)}: ${base}${addr}`);
+  }
+  sep();
+}
+
+main().catch((e) => {
+  console.error("\n❌  Deployment failed:", e.message ?? e);
+  process.exitCode = 1;
+});

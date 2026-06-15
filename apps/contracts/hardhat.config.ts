@@ -19,6 +19,8 @@ const config: HardhatUserConfig = {
       url: process.env.CELO_RPC_URL ?? "https://forno.celo.org",
       accounts: process.env.PRIVATE_KEY ? [`0x${process.env.PRIVATE_KEY}`] : [],
       chainId: 42220,
+      // EIP-7623 floor data gas: bump estimate by 30% so large bytecode deploys don't underrun.
+      gasMultiplier: 1.3,
     },
     // Celo Alfajores Testnet
     "celo-sepolia": {

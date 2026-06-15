@@ -88,6 +88,17 @@ export function useVeildContracts() {
     });
   }
 
+  function updateProfile(
+    name: string, bio: string,
+    avatarCID: string, category: string
+  ) {
+    writeContract({
+      ...veildRegistry.celo,
+      functionName: "updateProfile",
+      args: [name, bio, avatarCID, category],
+    });
+  }
+
   return {
     txHash,
     isPending,
@@ -103,6 +114,7 @@ export function useVeildContracts() {
     archiveMessage,
     claimEarnings,
     registerCreator,
+    updateProfile,
   };
 }
 

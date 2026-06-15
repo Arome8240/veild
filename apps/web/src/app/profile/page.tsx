@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Copy, Check, Share2, ExternalLink,
   MessageCircle, DollarSign, TrendingUp, Eye,
-  ChevronRight, Loader2, X,
+  ChevronRight, Loader2, X, Pencil,
 } from "lucide-react";
 import { useCurrentCreator } from "@/hooks/useCurrentCreator";
 import { useMiniPay } from "@/hooks/useMiniPay";
@@ -16,6 +16,7 @@ import { useVeildTips } from "@/hooks/useTips";
 import { useSubEarnings, useSubscriberCount } from "@/hooks/useSubscriptions";
 import { useVeildSubscriptions } from "@/hooks/useSubscriptions";
 import { RegisterForm } from "@/components/creator/register-form";
+import { EditProfileModal } from "@/components/creator/edit-profile-modal";
 import { ManageTiers } from "@/components/creator/manage-tiers";
 import { CreatePoolForm } from "@/components/creator/create-pool-form";
 import { BottomNav } from "@/components/bottom-nav";
@@ -41,6 +42,7 @@ export default function ProfilePage() {
   const { claimSubEarnings, isPending: subClaimPending, isConfirmed: subClaimDone } = useVeildSubscriptions();
 
   const [showRegister, setShowRegister] = useState(false);
+  const [showEdit, setShowEdit]         = useState(false);
 
   const profileUrl = profile?.username
     ? `${VEILD_APP_DOMAIN}/${profile.username}`
@@ -169,19 +171,28 @@ export default function ProfilePage() {
                     size="lg"
                   />
                 </div>
-                {profileUrl && (
+                <div className="flex items-center gap-2 mb-1">
                   <button
-                    onClick={copyLink}
-                    aria-label={copied ? "Link copied" : "Copy your Veild link"}
-                    className="flex items-center gap-1.5 text-xs font-medium bg-primary hover:bg-primary/90 text-primary-foreground px-3 py-1.5 rounded-full transition-colors mb-1"
+                    onClick={() => setShowEdit(true)}
+                    aria-label="Edit your profile"
+                    className="flex items-center gap-1.5 text-xs font-medium border border-border bg-muted hover:bg-muted/80 text-foreground px-3 py-1.5 rounded-full transition-colors"
                   >
-                    {copied ? (
-                      <><Check className="w-3 h-3" aria-hidden="true" /> Copied!</>
-                    ) : (
-                      <><Copy className="w-3 h-3" aria-hidden="true" /> Copy link</>
-                    )}
+                    <Pencil className="w-3 h-3" aria-hidden="true" /> Edit
                   </button>
-                )}
+                  {profileUrl && (
+                    <button
+                      onClick={copyLink}
+                      aria-label={copied ? "Link copied" : "Copy your Veild link"}
+                      className="flex items-center gap-1.5 text-xs font-medium bg-primary hover:bg-primary/90 text-primary-foreground px-3 py-1.5 rounded-full transition-colors"
+                    >
+                      {copied ? (
+                        <><Check className="w-3 h-3" aria-hidden="true" /> Copied!</>
+                      ) : (
+                        <><Copy className="w-3 h-3" aria-hidden="true" /> Copy link</>
+                      )}
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div className="flex items-center gap-2 flex-wrap mb-0.5">
@@ -422,6 +433,16 @@ export default function ProfilePage() {
           </motion.div>
         )}
       </div>
+
+      {/* EDIT PROFILE MODAL */}
+      {isRegistered && profile && (
+        <EditProfileModal
+          profile={profile}
+          open={showEdit}
+          onClose={() => setShowEdit(false)}
+          onSaved={refetch}
+        />
+      )}
 
       {/* REGISTRATION MODAL */}
       <AnimatePresence>

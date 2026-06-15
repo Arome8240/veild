@@ -70,11 +70,11 @@ export function useStacksTips() {
       openContractCall({
         contractAddress: TIPS_CONTRACT_ADDRESS,
         contractName:    TIPS_CONTRACT_NAME,
-        functionName:    "send-tip-amount",
+        functionName:    "send-tip",
         functionArgs: [
           principalCV(creator),
-          stringUtf8CV(message.slice(0, 280)),
           uintCV(amountMicroStx),
+          stringUtf8CV(message.slice(0, 280)),
         ],
         network,
         anchorMode: AnchorMode.Any,

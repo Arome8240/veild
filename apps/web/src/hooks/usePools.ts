@@ -1,6 +1,7 @@
 "use client";
 
-import { useWriteContract, useReadContract, useWaitForTransactionReceipt } from "wagmi";
+import { useReadContract, useWaitForTransactionReceipt } from "wagmi";
+import { useCeloWrite } from "./useCeloWrite";
 import { type Address } from "viem";
 import { veildPools, type Pool, type Contribution } from "@/lib/contracts";
 
@@ -12,7 +13,7 @@ import { veildPools, type Pool, type Contribution } from "@/lib/contracts";
  * Public actions: markExpired
  */
 export function useVeildPools() {
-  const { writeContract, data: txHash, isPending, error, reset } = useWriteContract();
+  const { writeContract, data: txHash, isPending, error, reset } = useCeloWrite();
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({ hash: txHash });
 

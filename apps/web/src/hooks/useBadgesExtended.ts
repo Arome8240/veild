@@ -1,12 +1,13 @@
 "use client";
 
-import { useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import { useReadContract, useWaitForTransactionReceipt } from "wagmi";
+import { useCeloWrite } from "./useCeloWrite";
 import { type Address } from "viem";
 import { veildBadges, BADGE_IDS } from "@/lib/contracts";
 import type { BadgeBitmap } from "@/lib/contracts";
 
 export function useAwardBadge() {
-  const { writeContract, data: txHash, isPending, error, reset } = useWriteContract();
+  const { writeContract, data: txHash, isPending, error, reset } = useCeloWrite();
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({ hash: txHash });
 

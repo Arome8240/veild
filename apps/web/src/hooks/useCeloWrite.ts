@@ -17,15 +17,19 @@ type WriteParams = Parameters<ReturnType<typeof useWriteContract>["writeContract
  * Drop-in replacement for wagmi's useWriteContract.
  * Automatically appends feeCurrency (cUSD) to every write when running inside
  * MiniPay, so gas is paid in cUSD instead of native CELO.
+ *
+ * feeCurrency is a Celo chain extension not present in wagmi's generic types,
+ * so params is typed as `any` to avoid false-positive TypeScript errors in callers.
  */
 export function useCeloWrite() {
   const { writeContract: _write, ...rest } = useWriteContract();
 
-  function writeContract(params: WriteParams) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function writeContract(params: any) {
     _write(
       isMiniPayBrowser()
-        ? ({ ...params, feeCurrency: CUSD_ADDRESS } as WriteParams)
-        : params,
+        ? ({ ...params, feeCurrency: CUSD_ADDRESS } as unknown as WriteParams)
+        : (params as WriteParams),
     );
   }
 

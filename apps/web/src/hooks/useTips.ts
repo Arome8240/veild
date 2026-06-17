@@ -1,6 +1,7 @@
 "use client";
 
-import { useWriteContract, useReadContract, useWaitForTransactionReceipt } from "wagmi";
+import { useReadContract, useWaitForTransactionReceipt } from "wagmi";
+import { useCeloWrite } from "./useCeloWrite";
 import { type Address } from "viem";
 import { veildTips, type Tip, type FanEntry } from "@/lib/contracts";
 
@@ -11,7 +12,7 @@ import { veildTips, type Tip, type FanEntry } from "@/lib/contracts";
  * is a single veildTips.celo spread with a functionName override.
  */
 export function useVeildTips() {
-  const { writeContract, data: txHash, isPending, error, reset } = useWriteContract();
+  const { writeContract, data: txHash, isPending, error, reset } = useCeloWrite();
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({ hash: txHash });
 

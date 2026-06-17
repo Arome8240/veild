@@ -1,12 +1,13 @@
 "use client";
 
-import { useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import { useReadContract, useWaitForTransactionReceipt } from "wagmi";
+import { useCeloWrite } from "./useCeloWrite";
 import { type Address } from "viem";
 import { veildSubscriptions } from "@/lib/contracts";
 import type { SubscriptionTier, Subscription } from "@/lib/contracts";
 
 export function useVeildSubscriptions() {
-  const { writeContract, data: txHash, isPending, error, reset } = useWriteContract();
+  const { writeContract, data: txHash, isPending, error, reset } = useCeloWrite();
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({ hash: txHash });
 

@@ -1,8 +1,9 @@
 "use client";
 
-import { useWriteContract, useReadContract, useWaitForTransactionReceipt } from "wagmi";
+import { useReadContract, useWaitForTransactionReceipt } from "wagmi";
 import { type Address } from "viem";
 import { veildRegistry, veildMessages } from "@/lib/contracts";
+import { useCeloWrite } from "./useCeloWrite";
 
 /**
  * useVeildContracts
@@ -12,7 +13,7 @@ import { veildRegistry, veildMessages } from "@/lib/contracts";
  * each contract call is a single spread instead of repeating address and abi.
  */
 export function useVeildContracts() {
-  const { writeContract, data: txHash, isPending, error, reset } = useWriteContract();
+  const { writeContract, data: txHash, isPending, error, reset } = useCeloWrite();
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({ hash: txHash });
 

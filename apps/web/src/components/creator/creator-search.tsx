@@ -74,6 +74,7 @@ export function CreatorSearch() {
             />
           ) : query ? (
             <button
+              type="button"
               onClick={() => setQuery("")}
               aria-label="Clear search"
               className="text-muted-foreground hover:text-foreground transition-colors"

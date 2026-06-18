@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { useReadContract, useWaitForTransactionReceipt } from "wagmi";
 import { useCeloWrite } from "./useCeloWrite";
 import { veildAuction, type Auction } from "@/lib/contracts";
@@ -9,38 +10,38 @@ export function useVeildAuction() {
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({ hash: txHash });
 
-  function createAuction(label: string, minBid: bigint, duration: bigint) {
+  const createAuction = useCallback((label: string, minBid: bigint, duration: bigint) => {
     writeContract({
       ...veildAuction.celo,
       functionName: "createAuction",
       args: [label, minBid, duration],
     });
-  }
+  }, [writeContract]);
 
-  function placeBid(auctionId: bigint, amount: bigint) {
+  const placeBid = useCallback((auctionId: bigint, amount: bigint) => {
     writeContract({
       ...veildAuction.celo,
       functionName: "placeBid",
       args: [auctionId],
       value: amount,
     });
-  }
+  }, [writeContract]);
 
-  function claimWin(auctionId: bigint) {
+  const claimWin = useCallback((auctionId: bigint) => {
     writeContract({
       ...veildAuction.celo,
       functionName: "claimWin",
       args: [auctionId],
     });
-  }
+  }, [writeContract]);
 
-  function cancelAuction(auctionId: bigint) {
+  const cancelAuction = useCallback((auctionId: bigint) => {
     writeContract({
       ...veildAuction.celo,
       functionName: "cancelAuction",
       args: [auctionId],
     });
-  }
+  }, [writeContract]);
 
   return {
     txHash,

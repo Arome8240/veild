@@ -23,14 +23,14 @@ export default function HomePage() {
   const [copied, setCopied] = useState(false);
 
   const profileUrl = profile?.username
-    ? `veild.app/${profile.username}`
+    ? `veild.vercel.app/${profile.username}`
     : address
-    ? `veild.app/0x${address.slice(2, 8).toLowerCase()}`
-    : "veild.app/your-link";
+    ? `veild.vercel.app/0x${address.slice(2, 8).toLowerCase()}`
+    : "veild.vercel.app/your-link";
 
   const copyLink = useCallback(() => {
     if (navigator.clipboard && profile?.username)
-      navigator.clipboard.writeText(`https://veild.app/${profile.username}`);
+      navigator.clipboard.writeText(`https://veild.vercel.app/${profile.username}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }, [profile?.username]);

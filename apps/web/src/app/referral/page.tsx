@@ -10,8 +10,8 @@ export default function ReferralPage() {
   const { address }         = useAccount();
   const { claimReward }     = useVeildReferral();
   const referralLink        = address
-    ? `https://veild.app/r/${address}`
-    : "https://veild.app/r/your-address";
+    ? `https://veild.vercel.app/r/${address}`
+    : "https://veild.vercel.app/r/your-address";
 
   return (
     <main className="min-h-screen pb-24">

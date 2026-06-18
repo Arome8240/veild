@@ -5,7 +5,7 @@ import { showConnect, disconnect as stacksDisconnect } from "@stacks/connect";
 
 const APP_DETAILS = {
   name: "Veild",
-  icon: "https://veild.app/favicon.svg",
+  icon: "https://veild.vercel.app/favicon.svg",
 };
 
 export interface StacksWalletState {

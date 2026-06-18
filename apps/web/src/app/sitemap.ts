@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = "https://veild.app";
+  const base = "https://veild.vercel.app";
 
   const staticRoutes = [
     { url: base,                  changeFrequency: "daily",   priority: 1.0 },

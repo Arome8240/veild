@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     statusBarStyle:  "black-translucent",
     title:           "Veild",
   },
-  metadataBase: new URL("https://veild.app"),
+  metadataBase: new URL("https://veild.vercel.app"),
 };
 
 export const viewport: Viewport = {

@@ -22,7 +22,7 @@ export const IPFS_GATEWAY = "https://ipfs.io/ipfs";
 export const DICEBEAR_BASE = "https://api.dicebear.com/7.x/avataaars/svg";
 export const METAMASK_DOWNLOAD_URL = "https://metamask.io/download/";
 export const CELO_MAINNET_RPC = "https://forno.celo.org";
-export const VEILD_APP_DOMAIN = "veild.app";
+export const VEILD_APP_DOMAIN = "veild.vercel.app";
 
 // ─── Creator categories ───────────────────────────────────────────────────────
 export const CREATOR_CATEGORIES = [

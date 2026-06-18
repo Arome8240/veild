@@ -44,7 +44,7 @@ export function ReferralCard({ referrer, onClaim }: Props) {
       <div className="rounded-lg bg-white/5 p-3 text-center">
         <p className="text-xs text-zinc-500 mb-1">Your referral link</p>
         <p className="font-mono text-xs text-zinc-300 truncate">
-          veild.app/r/{referrer.slice(0, 10)}…
+          veild.vercel.app/r/{referrer.slice(0, 10)}…
         </p>
       </div>
     </div>

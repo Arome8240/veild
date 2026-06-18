@@ -56,6 +56,7 @@ export function SubscribeButton({ creatorAddress, creatorName, fanAddress }: Sub
   return (
     <>
       <button
+        type="button"
         onClick={handleOpen}
         className={`flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full transition-all border ${
           isSubbed
@@ -98,6 +99,7 @@ export function SubscribeButton({ creatorAddress, creatorName, fanAddress }: Sub
                   Subscribe to {creatorName.split(" ")[0]}
                 </h2>
                 <button
+                  type="button"
                   onClick={handleClose}
                   className="w-7 h-7 flex items-center justify-center rounded-full bg-muted hover:bg-muted/80"
                   aria-label="Close"
@@ -126,6 +128,7 @@ export function SubscribeButton({ creatorAddress, creatorName, fanAddress }: Sub
                     {activeTiers.map((tier, i) => (
                       <button
                         key={i}
+                        type="button"
                         onClick={() => setSelectedTier(i)}
                         className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all text-left ${
                           selectedTier === i
@@ -172,6 +175,7 @@ export function SubscribeButton({ creatorAddress, creatorName, fanAddress }: Sub
                   )}
 
                   <button
+                    type="button"
                     onClick={handleSubscribe}
                     disabled={isBusy || !isConnected || activeTiers.length === 0}
                     aria-busy={isBusy}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useSearch } from "@/hooks/useSearch";
 import type { Creator } from "@/lib/contracts";
@@ -14,14 +14,14 @@ export function SearchBar({ onSelect }: Props) {
   const { results, isLoading } = useSearch(query);
   const router                 = useRouter();
 
-  const handleSelect = (c: Creator) => {
+  const handleSelect = useCallback((c: Creator) => {
     if (onSelect) {
       onSelect(c);
     } else {
       router.push(`/creator/${c.username}`);
     }
     setQuery("");
-  };
+  }, [onSelect, router]);
 
   return (
     <div className="relative">
@@ -51,6 +51,7 @@ export function SearchBar({ onSelect }: Props) {
           {results.map((c) => (
             <li key={c.username}>
               <button
+                type="button"
                 onClick={() => handleSelect(c)}
                 className="flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-white/5 transition-colors"
               >

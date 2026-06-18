@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Loader2, Check } from "lucide-react";
 import { AvatarUpload } from "./avatar-upload";
 import { useVeildContracts } from "@/hooks/useVeildContracts";
-import { CREATOR_CATEGORIES } from "@/constants/config";
+import { CREATOR_CATEGORIES, MAX_BIO_CHARS } from "@/constants/config";
 import type { Creator } from "@/types";
 
 interface Props {
@@ -26,18 +26,19 @@ export function EditProfileModal({ profile, open, onClose, onSaved }: Props) {
 
   const isBusy = isPending || isConfirming;
 
-  function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || isBusy) return;
     reset();
     updateProfile(name.trim(), bio.trim(), avatarCID, category);
-  }
+  }, [name, bio, avatarCID, category, isBusy, reset, updateProfile]);
 
-  // Close and refetch after on-chain confirmation
-  if (isConfirmed) {
-    onSaved();
-    onClose();
-  }
+  useEffect(() => {
+    if (isConfirmed) {
+      onSaved();
+      onClose();
+    }
+  }, [isConfirmed, onSaved, onClose]);
 
   return (
     <AnimatePresence>
@@ -104,10 +105,10 @@ export function EditProfileModal({ profile, open, onClose, onSaved }: Props) {
                   id="edit-bio"
                   rows={3}
                   value={bio}
-                  onChange={(e) => setBio(e.target.value.slice(0, 280))}
+                  onChange={(e) => setBio(e.target.value.slice(0, MAX_BIO_CHARS))}
                   className="w-full bg-background border border-input focus:border-ring rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-colors resize-none"
                 />
-                <p className="text-[10px] text-muted-foreground mt-0.5 text-right">{bio.length}/280</p>
+                <p className="text-[10px] text-muted-foreground mt-0.5 text-right">{bio.length}/{MAX_BIO_CHARS}</p>
               </div>
 
               {/* Category */}

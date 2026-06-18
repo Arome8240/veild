@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Heart, Share2, MessageCircle, Loader2 } from "lucide-react";
 import { CreatorAvatar } from "@/components/creator/creator-avatar";
 import { useAccount } from "wagmi";
@@ -45,18 +45,18 @@ export function WallPostCard({
   const liked     = alreadyLiked || localLiked;
   const likeCount = post.likes + (localLiked && !alreadyLiked ? 1n : 0n);
 
-  function handleLike() {
+  const handleLike = useCallback(() => {
     if (liked || !address) return;
     likeWallPost(creatorAddr, BigInt(index));
     setLocalLiked(true);
-  }
+  }, [liked, address, likeWallPost, creatorAddr, index]);
 
-  function handleShare() {
+  const handleShare = useCallback(() => {
     share({
       title: `Ask ${creatorName} anything — Veild`,
       url: `https://${VEILD_APP_DOMAIN}/${creatorUsername}/wall#${post.id}`,
     });
-  }
+  }, [share, creatorName, creatorUsername, post.id]);
 
   return (
     <article

@@ -25,7 +25,6 @@ type WriteParams = Parameters<ReturnType<typeof useWriteContract>["writeContract
 export function useCeloWrite() {
   const { writeContract: _write, ...rest } = useWriteContract();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const writeContract = useCallback((params: any) => {
     _write(
       isMiniPayBrowser()

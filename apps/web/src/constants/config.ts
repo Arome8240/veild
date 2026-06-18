@@ -1,8 +1,17 @@
 /** Application-wide configuration constants. */
 
 // ─── Message limits ───────────────────────────────────────────────────────────
-export const MAX_MESSAGE_CHARS = 280;
-export const MAX_USERNAME_CHARS = 32;
+export const MAX_MESSAGE_CHARS       = 280;
+export const MAX_USERNAME_CHARS      = 32;
+export const MAX_BIO_CHARS           = 280;
+export const MAX_TIP_MESSAGE_CHARS   = 140;
+export const MAX_POOL_QUESTION_CHARS = 256;
+export const MAX_TIER_LABEL_CHARS    = 32;
+
+// ─── UI limits ────────────────────────────────────────────────────────────────
+export const WALL_PREVIEW_SIZE      = 4;
+export const MAX_NOTIFICATIONS      = 50;
+export const MAX_ERROR_DISPLAY_CHARS = 100;
 
 // ─── Contract defaults ────────────────────────────────────────────────────────
 export const DEFAULT_PRIORITY_FEE_WEI = BigInt("1000000000000000"); // 0.001 CELO

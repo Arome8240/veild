@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { useWriteContract } from "wagmi";
 
 // cUSD on Celo mainnet — MiniPay defaults to paying gas in cUSD, not native CELO.
@@ -25,13 +26,13 @@ export function useCeloWrite() {
   const { writeContract: _write, ...rest } = useWriteContract();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function writeContract(params: any) {
+  const writeContract = useCallback((params: any) => {
     _write(
       isMiniPayBrowser()
         ? ({ ...params, feeCurrency: CUSD_ADDRESS } as unknown as WriteParams)
         : (params as WriteParams),
     );
-  }
+  }, [_write]);
 
   return { writeContract, ...rest };
 }

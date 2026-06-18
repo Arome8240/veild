@@ -11,6 +11,7 @@ import {
 } from "@stacks/transactions";
 import { STACKS_MAINNET } from "@stacks/network";
 import { openContractCall } from "@stacks/connect";
+import { MAX_MESSAGE_CHARS } from "@/constants/config";
 
 const TIPS_CONTRACT_ADDRESS =
   process.env.NEXT_PUBLIC_STACKS_TIPS_ADDRESS ?? "";
@@ -74,7 +75,7 @@ export function useStacksTips() {
         functionArgs: [
           principalCV(creator),
           uintCV(amountMicroStx),
-          stringUtf8CV(message.slice(0, 280)),
+          stringUtf8CV(message.slice(0, MAX_MESSAGE_CHARS)),
         ],
         network,
         anchorMode: AnchorMode.Any,

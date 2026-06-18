@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft, Heart, Share2, MessageCircle, Flame, Clock, Loader2 } from "lucide-react";
@@ -45,18 +45,18 @@ function WallPostCard({
   const liked     = alreadyLiked || localLiked;
   const likeCount = post.likes + (localLiked && !alreadyLiked ? 1n : 0n);
 
-  function handleLike() {
+  const handleLike = useCallback(() => {
     if (liked || !address) return;
     likeWallPost(creatorAddr, BigInt(index));
     setLocalLiked(true);
-  }
+  }, [liked, address, likeWallPost, creatorAddr, index]);
 
-  function handleShare() {
+  const handleShare = useCallback(() => {
     const url = `${window.location.origin}/${creatorAddr}/wall#${post.id}`;
     navigator.clipboard?.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  }
+  }, [creatorAddr, post.id]);
 
   return (
     <motion.div
@@ -86,7 +86,7 @@ function WallPostCard({
       {/* Footer */}
       <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/5">
         <div className="flex items-center gap-3">
-          <button onClick={handleLike} disabled={liked || !address || isPending}
+          <button type="button" onClick={handleLike} disabled={liked || !address || isPending}
             aria-label={liked ? "Unlike" : "Like this Q&A"}
             aria-pressed={liked}
             className={`flex items-center gap-1.5 text-xs transition-colors ${
@@ -100,7 +100,7 @@ function WallPostCard({
           </button>
           <span className="text-zinc-700 text-xs">{timeAgo(post.publishedAt)}</span>
         </div>
-        <button onClick={handleShare} aria-label="Share this Q&A" className="flex items-center gap-1.5 text-xs text-zinc-600 hover:text-zinc-400 transition-colors">
+        <button type="button" onClick={handleShare} aria-label="Share this Q&A" className="flex items-center gap-1.5 text-xs text-zinc-600 hover:text-zinc-400 transition-colors">
           <Share2 className="w-3.5 h-3.5" />
           {copied ? <span className="text-green-400">Copied!</span> : "Share"}
         </button>
@@ -173,7 +173,8 @@ export default function WallPage({ params }: { params: { username: string } }) {
         {/* SORT */}
         <div className="flex gap-1 mb-6 bg-[#111] border border-white/5 rounded-xl p-1 w-fit">
           {(["top","new"] as const).map(s => (
-            <button key={s} onClick={() => setSortBy(s)}
+            <button key={s} type="button" onClick={() => setSortBy(s)}
+              aria-pressed={sortBy === s}
               className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium capitalize transition-all ${
                 sortBy === s ? "bg-white text-black shadow-sm" : "text-zinc-500"
               }`}

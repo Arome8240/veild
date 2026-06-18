@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { useAccount } from "wagmi";
 import {
   useCreatorProfile,
@@ -35,9 +36,9 @@ export function useCurrentCreator() {
   const isLoading =
     loadingReg || loadingProfile || loadingStats || loadingEarnings;
 
-  async function refetch() {
+  const refetch = useCallback(async () => {
     await Promise.all([refetchProfile(), refetchStats(), refetchWall()]);
-  }
+  }, [refetchProfile, refetchStats, refetchWall]);
 
   return {
     address: address as Address | undefined,

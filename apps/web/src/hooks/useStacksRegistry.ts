@@ -32,7 +32,12 @@ export interface StacksCreator {
   isActive:      boolean;
 }
 
-function parseCreatorCV(cv: any): StacksCreator | null {
+interface ClarityValue {
+  type: string;
+  value: Record<string, { value: unknown }>;
+}
+
+function parseCreatorCV(cv: ClarityValue | null | undefined): StacksCreator | null {
   if (!cv || cv.type !== "tuple") return null;
   const v = cv.value;
   return {
@@ -50,7 +55,7 @@ function parseCreatorCV(cv: any): StacksCreator | null {
 
 // ── Read helpers ──────────────────────────────────────────────────────────────
 
-async function readOnly(functionName: string, functionArgs: any[]) {
+async function readOnly(functionName: string, functionArgs: unknown[]) {
   return fetchCallReadOnlyFunction({
     contractAddress: REGISTRY_CONTRACT_ADDRESS,
     contractName:    REGISTRY_CONTRACT_NAME,

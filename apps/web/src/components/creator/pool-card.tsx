@@ -119,6 +119,7 @@ export function PoolCard({ pool, fanAddress }: PoolCardProps) {
         {/* Action */}
         {isActive && (
           <button
+            type="button"
             onClick={handleOpen}
             className="w-full flex items-center justify-center gap-1.5 text-xs font-semibold bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 text-emerald-400 py-2 rounded-xl transition-all"
           >
@@ -153,6 +154,7 @@ export function PoolCard({ pool, fanAddress }: PoolCardProps) {
               <div className="flex items-center justify-between mb-3">
                 <h2 className="font-bold text-base">Contribute to pool</h2>
                 <button
+                  type="button"
                   onClick={handleClose}
                   className="w-7 h-7 flex items-center justify-center rounded-full bg-muted hover:bg-muted/80"
                   aria-label="Close"
@@ -182,6 +184,7 @@ export function PoolCard({ pool, fanAddress }: PoolCardProps) {
                       {CONTRIB_AMOUNTS.map((a) => (
                         <button
                           key={a.label}
+                          type="button"
                           onClick={() => setAmount(a.value)}
                           className={`py-2.5 rounded-xl text-xs font-semibold border transition-all ${
                             amount === a.value
@@ -211,6 +214,7 @@ export function PoolCard({ pool, fanAddress }: PoolCardProps) {
                   )}
 
                   <button
+                    type="button"
                     onClick={handleContribute}
                     disabled={isBusy || !isConnected}
                     aria-busy={isBusy}

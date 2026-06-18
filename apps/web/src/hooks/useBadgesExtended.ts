@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { useReadContract, useWaitForTransactionReceipt } from "wagmi";
 import { useCeloWrite } from "./useCeloWrite";
 import { type Address } from "viem";
@@ -11,13 +12,13 @@ export function useAwardBadge() {
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({ hash: txHash });
 
-  function awardBadge(to: Address, badgeId: number) {
+  const awardBadge = useCallback((to: Address, badgeId: number) => {
     writeContract({
       ...veildBadges.celo,
       functionName: "awardBadge",
       args: [to, BigInt(badgeId)],
     });
-  }
+  }, [writeContract]);
 
   return { awardBadge, isPending, isConfirming, isConfirmed, error, reset };
 }

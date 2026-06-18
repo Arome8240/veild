@@ -46,6 +46,7 @@ export function MessageReactions({ messageId: _id, initial = {} }: Props) {
       {visible.map((r) => (
         <button
           key={r.emoji}
+          type="button"
           onClick={() => toggle(r.emoji)}
           aria-pressed={r.reacted}
           aria-label={`React with ${r.emoji}: ${r.count}`}

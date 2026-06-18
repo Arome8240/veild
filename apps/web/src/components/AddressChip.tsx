@@ -15,6 +15,7 @@ export function AddressChip({ address, chars = 4, className = "" }: Props) {
 
   return (
     <button
+      type="button"
       onClick={() => copy(address)}
       aria-label={copied ? "Copied!" : `Copy address ${address}`}
       className={`inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-xs hover:bg-white/10 transition-colors ${className}`}

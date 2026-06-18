@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -81,14 +81,13 @@ export default function CreatorProfilePage({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConfirmed]);
 
-  function handleSend() {
+  const handleSend = useCallback(() => {
     if (!canSend || !creatorAddr) return;
     if (isConnected) {
       isPriority
         ? sendPriorityOnChain(creatorAddr, message, priorityFee)
         : sendOnChain(creatorAddr, message);
     } else {
-      // Offline / no wallet — show local success feedback
       setSent(true);
       burst();
       const t = setTimeout(() => {
@@ -98,13 +97,13 @@ export default function CreatorProfilePage({
       }, TOAST_DURATION_MS);
       return () => clearTimeout(t);
     }
-  }
+  }, [canSend, creatorAddr, isConnected, isPriority, message, priorityFee, sendPriorityOnChain, sendOnChain, burst]);
 
-  function handleLike(wallIndex: number) {
+  const handleLike = useCallback((wallIndex: number) => {
     if (!creatorAddr || !isConnected) return;
     likeOnChain(creatorAddr, BigInt(wallIndex));
     setLikedPosts((prev) => new Set([...prev, wallIndex]));
-  }
+  }, [creatorAddr, isConnected, likeOnChain]);
 
   // ── Guards ────────────────────────────────────────────────────────────────
   if (loadingCreator) {

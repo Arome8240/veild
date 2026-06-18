@@ -1,29 +1,24 @@
 "use client";
 
+import { useCallback } from "react";
 import { useParams } from "next/navigation";
 import { useAccount } from "wagmi";
 import { BottomNav } from "@/components/bottom-nav";
 import { GiftPicker } from "@/components/GiftPicker";
 import { useCreatorByUsername } from "@/hooks/useCreatorProfile";
 import { useVeildGifts } from "@/hooks/useGifts";
-import { useReadContract } from "wagmi";
-import { veildRegistry } from "@/lib/contracts";
 import type { Address } from "viem";
 
 export default function GiftsPage() {
-  const { username }    = useParams<{ username: string }>();
-  const { address }     = useAccount();
+  const { username }      = useParams<{ username: string }>();
+  const { address }       = useAccount();
   const { data: creator } = useCreatorByUsername(username);
+  const { sendGift }      = useVeildGifts();
 
-  const addrResult = useReadContract({
-    ...veildRegistry.celo,
-    functionName: "getCreatorByUsername",
-    args: username ? [username] : undefined,
-    query: { enabled: !!username },
-  });
-
-  const { sendGift } = useVeildGifts();
-  const creatorAddress = address;
+  const handleGift = useCallback((giftTypeId: number, price: bigint, message: string) => {
+    if (!address) return;
+    sendGift(address, BigInt(giftTypeId), message, price);
+  }, [address, sendGift]);
 
   if (!creator) {
     return (
@@ -39,11 +34,6 @@ export default function GiftsPage() {
     );
   }
 
-  const handleGift = (giftTypeId: number, price: bigint, message: string) => {
-    if (!creatorAddress) return;
-    sendGift(creatorAddress, BigInt(giftTypeId), message, price);
-  };
-
   return (
     <main className="min-h-screen pb-24">
       <header className="sticky top-0 z-10 border-b border-white/10 bg-black/80 backdrop-blur px-4 py-3">
@@ -53,7 +43,7 @@ export default function GiftsPage() {
 
       <div className="px-4 py-4">
         <GiftPicker
-          recipient={creatorAddress ?? ("0x0" as Address)}
+          recipient={address ?? ("0x0" as Address)}
           onGift={handleGift}
         />
       </div>

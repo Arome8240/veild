@@ -55,17 +55,17 @@ export function ManageTiers({ creatorAddress }: ManageTiersProps) {
     setNewLabel("");
   }, [newLabel, newPrice, createTier]);
 
-  function handleUpdatePrice() {
+  const handleUpdatePrice = useCallback(() => {
     if (editId === null) return;
     setMode("edit");
     updateTierPrice(BigInt(editId), editPrice);
     setEditId(null);
-  }
+  }, [editId, editPrice, updateTierPrice]);
 
-  function handleDeactivate(tierId: number) {
+  const handleDeactivate = useCallback((tierId: number) => {
     setMode("deactivate");
     deactivateTier(BigInt(tierId));
-  }
+  }, [deactivateTier]);
 
   return (
     <div className="bg-card border border-border rounded-2xl overflow-hidden">

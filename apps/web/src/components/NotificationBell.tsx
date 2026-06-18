@@ -10,6 +10,7 @@ export function NotificationBell() {
   return (
     <div className="relative">
       <button
+        type="button"
         onClick={() => setOpen((o) => !o)}
         className="relative rounded-xl p-2 hover:bg-white/5 transition-colors"
         aria-label="Notifications"
@@ -34,6 +35,7 @@ export function NotificationBell() {
             <span className="text-sm font-medium">Notifications</span>
             {unreadCount > 0 && (
               <button
+                type="button"
                 onClick={markAllRead}
                 className="text-xs text-zinc-500 hover:text-white transition-colors"
               >

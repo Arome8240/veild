@@ -39,6 +39,7 @@ export function EarningsCard({ creator, onClaimTips, onClaimSubs, onClaimGifts, 
             </div>
             {onClaim && value > 0n && (
               <button
+                type="button"
                 onClick={onClaim}
                 disabled={claimPending}
                 className="rounded-lg bg-green-500/20 px-3 py-1.5 text-xs font-medium text-green-300 hover:bg-green-500/30 disabled:opacity-40 transition-colors"

@@ -11,9 +11,15 @@ export function ShareSheet({ url, title }: Props) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(url);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard access denied — fall back to selecting the input text
+      const input = document.querySelector<HTMLInputElement>(`input[value="${CSS.escape(url)}"]`);
+      input?.select();
+    }
   };
 
   const handleNativeShare = async () => {
@@ -27,6 +33,7 @@ export function ShareSheet({ url, title }: Props) {
       <input
         readOnly
         value={url}
+        aria-label="Share URL"
         className="flex-1 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-zinc-400 font-mono truncate focus:outline-none"
       />
       <button
@@ -36,7 +43,7 @@ export function ShareSheet({ url, title }: Props) {
       >
         {copied ? "Copied!" : "Copy"}
       </button>
-      {typeof navigator !== "undefined" && "share" in navigator && (
+      {"share" in navigator && (
         <button
           onClick={handleNativeShare}
           className="rounded-lg border border-white/10 p-2 hover:bg-white/5 transition-colors"

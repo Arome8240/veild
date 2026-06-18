@@ -19,6 +19,7 @@ export function ChainSelector() {
       {CHAINS.map(({ id, label, emoji }) => (
         <button
           key={id}
+          type="button"
           onClick={() => setChain(id)}
           aria-pressed={activeChain === id}
           className={`flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium transition-all

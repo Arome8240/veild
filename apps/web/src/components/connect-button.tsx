@@ -33,6 +33,7 @@ export function ConnectButton() {
       {/* ── Celo wallet ───────────────────────────────────── */}
       {isCeloConnected ? (
         <button
+          type="button"
           onClick={() => {
             setChain("celo");
             disconnectCelo();
@@ -48,6 +49,7 @@ export function ConnectButton() {
         </button>
       ) : (
         <button
+          type="button"
           onClick={() => setChain("celo")}
           disabled
           className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium
@@ -61,6 +63,7 @@ export function ConnectButton() {
       {/* ── Stacks wallet ─────────────────────────────────── */}
       {isStacksConnected ? (
         <button
+          type="button"
           onClick={() => {
             setChain("stacks");
             disconnectStacks();
@@ -76,6 +79,7 @@ export function ConnectButton() {
         </button>
       ) : (
         <button
+          type="button"
           onClick={connectStacks}
           className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium
             bg-orange-500/10 text-orange-700 dark:text-orange-300 hover:bg-orange-500/20 transition-colors"

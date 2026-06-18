@@ -17,6 +17,7 @@ export function PageHeader({ title, subtitle, back = false, action }: Props) {
       <div className="flex items-center gap-2">
         {back && (
           <button
+            type="button"
             onClick={() => router.back()}
             aria-label="Go back"
             className="shrink-0 rounded-xl p-1.5 hover:bg-white/5 transition-colors"

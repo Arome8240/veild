@@ -33,6 +33,7 @@ export function ReferralCard({ referrer, onClaim }: Props) {
 
       {pending > 0n && (
         <button
+          type="button"
           onClick={onClaim}
           className="w-full rounded-lg bg-yellow-500/20 py-2 text-sm font-medium text-yellow-300 hover:bg-yellow-500/30 transition-colors"
         >

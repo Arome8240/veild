@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Loader2, Plus, Trash2, Edit2, Check, AlertCircle } from "lucide-react";
 import { type Address } from "viem";
 import {
@@ -8,6 +8,8 @@ import {
   useCreatorTiers,
 } from "@/hooks/useSubscriptions";
 import { formatCELO } from "@/lib/utils";
+
+const MAX_TIERS = 3;
 
 const PRICE_OPTIONS = [
   { label: "0.01 CELO/mo",  value: 10_000_000_000_000_000n },
@@ -40,8 +42,7 @@ export function ManageTiers({ creatorAddress }: ManageTiersProps) {
     reset();
   }
 
-  const MAX_TIERS = 3;
-  const activeTiers = tiers.filter((t) => t.isActive);
+  const activeTiers = useMemo(() => tiers.filter((t) => t.isActive), [tiers]);
   const canAdd      = activeTiers.length < MAX_TIERS;
 
   function handleCreate() {
@@ -68,7 +69,7 @@ export function ManageTiers({ creatorAddress }: ManageTiersProps) {
       <div className="px-4 pt-4 pb-3 border-b border-border">
         <h3 className="text-sm font-semibold">Subscription tiers</h3>
         <p className="text-xs text-muted-foreground mt-0.5">
-          Up to 3 tiers. Fans subscribe monthly.
+          Up to {MAX_TIERS} tiers. Fans subscribe monthly.
         </p>
       </div>
 
@@ -196,7 +197,7 @@ export function ManageTiers({ creatorAddress }: ManageTiersProps) {
 
       {!canAdd && (
         <p className="px-4 pb-4 text-xs text-muted-foreground text-center">
-          Maximum of 3 active tiers reached.
+          Maximum of {MAX_TIERS} active tiers reached.
         </p>
       )}
     </div>

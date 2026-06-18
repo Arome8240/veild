@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { useReadContract, useWaitForTransactionReceipt } from "wagmi";
 import { useCeloWrite } from "./useCeloWrite";
 import { type Address } from "viem";
@@ -10,22 +11,22 @@ export function useVeildGifts() {
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({ hash: txHash });
 
-  function sendGift(creator: Address, giftTypeId: bigint, message: string, amount: bigint) {
+  const sendGift = useCallback((creator: Address, giftTypeId: bigint, message: string, amount: bigint) => {
     writeContract({
       ...veildGifts.celo,
       functionName: "sendGift",
       args: [creator, giftTypeId, message],
       value: amount,
     });
-  }
+  }, [writeContract]);
 
-  function claimGiftEarnings() {
+  const claimGiftEarnings = useCallback(() => {
     writeContract({
       ...veildGifts.celo,
       functionName: "claimEarnings",
       args: [],
     });
-  }
+  }, [writeContract]);
 
   return {
     txHash,

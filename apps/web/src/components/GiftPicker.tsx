@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { formatEther, type Address } from "viem";
 import { useGiftTypeCount, useGiftType } from "@/hooks/useGifts";
 import type { GiftType } from "@/lib/contracts";
@@ -42,16 +42,16 @@ export function GiftPicker({ recipient: _recipient, onGift }: Props) {
   const { data: countRaw } = useGiftTypeCount();
   const count              = Number(countRaw ?? 5n);
 
-  const handleSelect = (id: number, price: bigint) => {
+  const handleSelect = useCallback((id: number, price: bigint) => {
     setSelected({ id, price });
-  };
+  }, []);
 
-  const handleSend = () => {
+  const handleSend = useCallback(() => {
     if (!selected) return;
     onGift(selected.id, selected.price, message);
     setMessage("");
     setSelected(null);
-  };
+  }, [selected, onGift, message]);
 
   return (
     <div className="space-y-4">
@@ -67,6 +67,7 @@ export function GiftPicker({ recipient: _recipient, onGift }: Props) {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Add a message (optional, max 100 chars)"
+            aria-label="Gift message (optional)"
             maxLength={100}
             rows={2}
             className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-white/20"

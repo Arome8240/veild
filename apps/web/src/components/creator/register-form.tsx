@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Check, Loader2, AlertCircle, CheckCircle2, Info } from "lucide-react";
 import { useAccount } from "wagmi";
-import { CREATOR_CATEGORIES } from "@/constants/config";
+import { CREATOR_CATEGORIES, MAX_USERNAME_CHARS, MAX_ERROR_DISPLAY_CHARS } from "@/constants/config";
 import { useVeildContracts, useIsRegistered, useCreatorByUsername } from "@/hooks/useVeildContracts";
 import { AvatarUpload } from "@/components/creator/avatar-upload";
 import type { RegisterFormState } from "@/types";
@@ -41,7 +41,7 @@ function friendlyError(msg: string): string {
   if (msg.includes("reverted"))
     return "Transaction reverted. Check the username isn't already taken.";
 
-  return msg.length > 100 ? msg.slice(0, 100) + "…" : msg;
+  return msg.length > MAX_ERROR_DISPLAY_CHARS ? msg.slice(0, MAX_ERROR_DISPLAY_CHARS) + "…" : msg;
 }
 
 /**
@@ -76,6 +76,15 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
     return () => clearTimeout(t);
   }, [form.username]);
 
+  const isBusy    = isPending || isConfirming;
+
+  const handleSubmit = useCallback((e: React.FormEvent) => {
+    e.preventDefault();
+    if (usernameTaken || !form.username || !form.name) return;
+    reset();
+    registerCreator(form.username, form.name, form.bio, form.avatarCID, form.category);
+  }, [usernameTaken, form, reset, registerCreator]);
+
   // ── Confirmation screen ───────────────────────────────────────────────────────
   if (isConfirmed) {
     return (
@@ -107,15 +116,6 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
       </div>
     );
   }
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (usernameTaken || !form.username || !form.name) return;
-    reset();
-    registerCreator(form.username, form.name, form.bio, form.avatarCID, form.category);
-  }
-
-  const isBusy    = isPending || isConfirming;
   const canSubmit = !!form.username && !!form.name && !usernameTaken && !isBusy;
 
   return (
@@ -149,7 +149,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             onChange={(e) =>
               setForm((f) => ({
                 ...f,
-                username: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 32),
+                username: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, MAX_USERNAME_CHARS),
               }))
             }
             placeholder="your_handle"

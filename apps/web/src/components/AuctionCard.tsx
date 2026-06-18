@@ -49,6 +49,7 @@ export function AuctionCard({ auctionId, onBid, onClaim, viewer }: Props) {
 
       {active && onBid && (
         <button
+          type="button"
           onClick={() => onBid(auctionId, auction.highestBid + auction.highestBid / 10n)}
           className="w-full rounded-lg bg-purple-500/20 py-2 text-sm font-medium text-purple-300 hover:bg-purple-500/30 transition-colors"
         >
@@ -58,6 +59,7 @@ export function AuctionCard({ auctionId, onBid, onClaim, viewer }: Props) {
 
       {ended && isWinner && !claimed && onClaim && (
         <button
+          type="button"
           onClick={() => onClaim(auctionId)}
           className="w-full rounded-lg bg-green-500/20 py-2 text-sm font-medium text-green-300 hover:bg-green-500/30 transition-colors"
         >

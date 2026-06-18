@@ -76,12 +76,14 @@ export function ProposalCard({ proposalId, voter, onVote }: Props) {
         {isActive && voter && !hasVoted && onVote && (
           <div className="flex gap-2">
             <button
+              type="button"
               onClick={() => onVote(proposalId, true)}
               className="rounded-lg bg-green-500/20 px-3 py-1 text-xs font-medium text-green-400 hover:bg-green-500/30 transition-colors"
             >
               Vote For
             </button>
             <button
+              type="button"
               onClick={() => onVote(proposalId, false)}
               className="rounded-lg bg-red-500/20 px-3 py-1 text-xs font-medium text-red-400 hover:bg-red-500/30 transition-colors"
             >

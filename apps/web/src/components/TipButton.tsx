@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { parseEther, type Address } from "viem";
 
 const QUICK_AMOUNTS = [0.01, 0.05, 0.1, 0.5] as const;
@@ -16,14 +16,14 @@ export function TipButton({ recipient, onTip, isPending }: Props) {
   const [amount, setAmount]   = useState("");
   const [message, setMessage] = useState("");
 
-  const handleSend = () => {
+  const handleSend = useCallback(() => {
     const parsed = parseEther(amount || "0");
     if (parsed <= 0n) return;
     onTip(recipient, parsed, message.trim() || undefined);
     setOpen(false);
     setAmount("");
     setMessage("");
-  };
+  }, [amount, message, onTip, recipient]);
 
   return (
     <>

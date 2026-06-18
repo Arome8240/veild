@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { injected } from "wagmi/connectors";
+import { METAMASK_DOWNLOAD_URL } from "@/constants/config";
 
 export function useMiniPay() {
   const [isMiniPay, setIsMiniPay] = useState(false);
@@ -36,7 +37,7 @@ export function useMiniPay() {
 
   const connectWallet = useCallback(() => {
     if (!hasWallet) {
-      window.open("https://metamask.io/download/", "_blank");
+      window.open(METAMASK_DOWNLOAD_URL, "_blank");
       return;
     }
     connect({ connector: injected() });

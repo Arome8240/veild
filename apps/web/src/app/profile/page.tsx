@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -50,9 +50,16 @@ export default function ProfilePage() {
 
   const { copied, copy } = useCopyToClipboard();
 
-  function copyLink() {
+  const copyLink = useCallback(() => {
     if (profileUrl) copy(`https://${profileUrl}`);
-  }
+  }, [profileUrl, copy]);
+
+  const handleCloseRegister = useCallback(() => setShowRegister(false), []);
+  const handleRegisterSuccess = useCallback(() => {
+    setShowRegister(false);
+    refetch();
+  }, [refetch]);
+  const handleCloseEdit = useCallback(() => setShowEdit(false), []);
 
   // ── Not connected ─────────────────────────────────────────────────────────
   if (!isConnected) {
@@ -329,7 +336,7 @@ export default function ProfilePage() {
           >
             {earnings > 0n && (
               <button
-                onClick={() => claimEarnings()}
+                onClick={claimEarnings}
                 disabled={claimPending || claimDone}
                 aria-busy={claimPending}
                 className="w-full flex items-center justify-center gap-2 py-3 bg-green-500/10 border border-green-500/25 text-green-300 text-sm font-medium rounded-xl hover:bg-green-500/15 transition-all disabled:opacity-60"
@@ -340,7 +347,7 @@ export default function ProfilePage() {
             )}
             {tipEarnings > 0n && (
               <button
-                onClick={() => claimTipEarnings()}
+                onClick={claimTipEarnings}
                 disabled={tipClaimPending || tipClaimDone}
                 aria-busy={tipClaimPending}
                 className="w-full flex items-center justify-center gap-2 py-3 bg-pink-500/10 border border-pink-500/25 text-pink-300 text-sm font-medium rounded-xl hover:bg-pink-500/15 transition-all disabled:opacity-60"
@@ -351,7 +358,7 @@ export default function ProfilePage() {
             )}
             {subEarnings > 0n && (
               <button
-                onClick={() => claimSubEarnings()}
+                onClick={claimSubEarnings}
                 disabled={subClaimPending || subClaimDone}
                 aria-busy={subClaimPending}
                 className="w-full flex items-center justify-center gap-2 py-3 bg-violet-500/10 border border-violet-500/25 text-violet-300 text-sm font-medium rounded-xl hover:bg-violet-500/15 transition-all disabled:opacity-60"
@@ -439,7 +446,7 @@ export default function ProfilePage() {
         <EditProfileModal
           profile={profile}
           open={showEdit}
-          onClose={() => setShowEdit(false)}
+          onClose={handleCloseEdit}
           onSaved={refetch}
         />
       )}
@@ -452,7 +459,7 @@ export default function ProfilePage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-end bg-black/70 backdrop-blur-sm"
-            onClick={(e) => e.target === e.currentTarget && setShowRegister(false)}
+            onClick={(e) => e.target === e.currentTarget && handleCloseRegister()}
             role="dialog"
             aria-modal="true"
             aria-label="Create your Veild profile"
@@ -471,19 +478,15 @@ export default function ProfilePage() {
               <div className="flex items-center justify-between mb-5">
                 <h2 className="font-bold text-base">Create your Veild</h2>
                 <button
-                  onClick={() => setShowRegister(false)}
+                  type="button"
+                  onClick={handleCloseRegister}
                   className="w-7 h-7 flex items-center justify-center rounded-full bg-muted hover:bg-muted/80 transition-colors"
                   aria-label="Close registration form"
                 >
                   <X className="w-3.5 h-3.5" aria-hidden="true" />
                 </button>
               </div>
-              <RegisterForm
-                onSuccess={() => {
-                  setShowRegister(false);
-                  refetch();
-                }}
-              />
+              <RegisterForm onSuccess={handleRegisterSuccess} />
             </motion.div>
           </motion.div>
         )}

@@ -47,23 +47,23 @@ export function AvatarUpload({ currentCID, name, onCIDReady }: Props) {
     [onCIDReady],
   );
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) handleFile(file);
-  }
+  }, [handleFile]);
 
-  function handleDrop(e: React.DragEvent) {
+  const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     if (file?.type.startsWith("image/")) handleFile(file);
-  }
+  }, [handleFile]);
 
-  function clear() {
+  const clear = useCallback(() => {
     setPreviewUrl(null);
     setUploadState("idle");
     setErrorMsg(null);
     if (inputRef.current) inputRef.current.value = "";
-  }
+  }, []);
 
   const displayCID = uploadState === "done" && !previewUrl ? currentCID : undefined;
 

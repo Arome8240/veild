@@ -8,6 +8,7 @@ import {
   useCreatorTiers,
 } from "@/hooks/useSubscriptions";
 import { formatCELO } from "@/lib/utils";
+import { MAX_TIER_LABEL_CHARS } from "@/constants/config";
 
 const MAX_TIERS = 3;
 
@@ -155,11 +156,11 @@ export function ManageTiers({ creatorAddress }: ManageTiersProps) {
           <input
             type="text"
             value={newLabel}
-            onChange={(e) => setNewLabel(e.target.value.slice(0, 32))}
+            onChange={(e) => setNewLabel(e.target.value.slice(0, MAX_TIER_LABEL_CHARS))}
             placeholder='e.g. "Supporter", "VIP"'
             className="w-full bg-background border border-input focus:border-ring rounded-xl px-3 py-2 text-sm outline-none transition-colors"
             aria-label="Tier label"
-            maxLength={32}
+            maxLength={MAX_TIER_LABEL_CHARS}
           />
           <select
             value={newPrice.toString()}

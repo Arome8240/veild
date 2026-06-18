@@ -7,6 +7,7 @@ import { type Address } from "viem";
 import { useVeildTips } from "@/hooks/useTips";
 import { useMiniPay } from "@/hooks/useMiniPay";
 import { formatCELO } from "@/lib/utils";
+import { MAX_TIP_MESSAGE_CHARS } from "@/constants/config";
 
 const AMOUNTS = [
   { label: "0.01",  value: 10_000_000_000_000_000n },
@@ -133,12 +134,12 @@ export function TipButton({ creatorAddress, creatorName }: TipButtonProps) {
                       id="tip-message"
                       type="text"
                       value={message}
-                      onChange={(e) => setMessage(e.target.value.slice(0, 140))}
+                      onChange={(e) => setMessage(e.target.value.slice(0, MAX_TIP_MESSAGE_CHARS))}
                       placeholder={`Show some love to ${creatorName.split(" ")[0]}…`}
                       className="w-full bg-background border border-input focus:border-ring rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-colors"
                     />
                     <p className="text-[10px] text-muted-foreground mt-0.5 text-right">
-                      {message.length}/140
+                      {message.length}/{MAX_TIP_MESSAGE_CHARS}
                     </p>
                   </div>
 

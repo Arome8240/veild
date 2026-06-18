@@ -28,6 +28,7 @@ import {
   QUICK_PROMPTS,
   DEFAULT_PRIORITY_FEE_WEI,
   TOAST_DURATION_MS,
+  WALL_PREVIEW_SIZE,
 } from "@/constants/config";
 import type { Address } from "viem";
 
@@ -134,7 +135,7 @@ export default function CreatorProfilePage({
     return <CreatorNotFound username={params.username} />;
   }
 
-  const visibleWall    = wallPosts.slice(0, 4);
+  const visibleWall    = wallPosts.slice(0, WALL_PREVIEW_SIZE);
   const firstName      = creator.name.split(" ")[0];
 
   return (

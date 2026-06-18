@@ -5,6 +5,7 @@ import { Loader2, Plus, AlertCircle, Check } from "lucide-react";
 import { type Address } from "viem";
 import { useVeildPools } from "@/hooks/usePools";
 import { formatCELO } from "@/lib/utils";
+import { MAX_POOL_QUESTION_CHARS } from "@/constants/config";
 
 const DURATION_OPTIONS = [
   { label: "3 days",   value: BigInt(3 * 86400) },
@@ -71,13 +72,13 @@ export function CreatePoolForm({ creatorAddress, onCreated }: CreatePoolFormProp
               <textarea
                 id="pool-question"
                 value={question}
-                onChange={(e) => setQuestion(e.target.value.slice(0, 256))}
+                onChange={(e) => setQuestion(e.target.value.slice(0, MAX_POOL_QUESTION_CHARS))}
                 placeholder="What question do you want your fans to fund?"
                 rows={3}
                 className="w-full bg-background border border-input focus:border-ring rounded-xl px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none resize-none transition-colors"
               />
               <p className="text-[10px] text-muted-foreground text-right mt-0.5">
-                {question.length}/256
+                {question.length}/{MAX_POOL_QUESTION_CHARS}
               </p>
             </div>
 

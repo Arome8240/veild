@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { MAX_NOTIFICATIONS } from "@/constants/config";
 
 export type NotifType = "tip" | "sub" | "message" | "gift" | "auction" | "governance";
 
@@ -28,7 +29,7 @@ export function useNotifications() {
   const push = useCallback((n: Omit<Notification, "id" | "timestamp" | "read">) => {
     setNotifications((prev) => [
       { ...n, id: newId(), timestamp: Date.now(), read: false },
-      ...prev.slice(0, 49),
+      ...prev.slice(0, MAX_NOTIFICATIONS - 1),
     ]);
   }, []);
 

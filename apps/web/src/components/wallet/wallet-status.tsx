@@ -55,7 +55,7 @@ export function WalletStatus() {
         </div>
         <button
           type="button"
-          onClick={disconnect}
+          onClick={() => disconnect()}
           className="text-[10px] text-muted-foreground hover:text-foreground shrink-0 transition-colors"
           aria-label="Disconnect wallet"
         >

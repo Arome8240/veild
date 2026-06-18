@@ -43,7 +43,7 @@ export function SubscribeButton({ creatorAddress, creatorName, fanAddress }: Sub
   const handleSubscribe = useCallback(() => {
     const tier = activeTiers[selectedTier];
     if (!tier) return;
-    subscribe(creatorAddress, tier.id, tier.pricePerMonth);
+    subscribe(creatorAddress, BigInt(selectedTier), tier.pricePerMonth);
   }, [activeTiers, selectedTier, subscribe, creatorAddress]);
 
   const isBusy = isPending || isConfirming;

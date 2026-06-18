@@ -10,6 +10,7 @@ import {
   trueCV,
   falseCV,
   AnchorMode,
+  type ClarityValue,
 } from "@stacks/transactions";
 import { STACKS_MAINNET } from "@stacks/network";
 import { openContractCall } from "@stacks/connect";
@@ -32,22 +33,22 @@ export interface StacksCreator {
   isActive:      boolean;
 }
 
-interface ClarityValue {
+interface CreatorTupleCV {
   type: string;
-  value: Record<string, { value: unknown }>;
+  value: Record<string, { value: string | boolean | number | null | undefined } | undefined>;
 }
 
-function parseCreatorCV(cv: ClarityValue | null | undefined): StacksCreator | null {
+function parseCreatorCV(cv: CreatorTupleCV | null | undefined): StacksCreator | null {
   if (!cv || cv.type !== "tuple") return null;
   const v = cv.value;
   return {
-    username:      v["username"]?.value       ?? "",
-    name:          v["name"]?.value           ?? "",
-    bio:           v["bio"]?.value            ?? "",
-    avatarCid:     v["avatar-cid"]?.value     ?? "",
-    category:      v["category"]?.value       ?? "",
-    joinedAt:      parseInt(v["joined-at"]?.value      ?? "0"),
-    totalMessages: parseInt(v["total-messages"]?.value ?? "0"),
+    username:      (v["username"]?.value       as string) ?? "",
+    name:          (v["name"]?.value           as string) ?? "",
+    bio:           (v["bio"]?.value            as string) ?? "",
+    avatarCid:     (v["avatar-cid"]?.value     as string) ?? "",
+    category:      (v["category"]?.value       as string) ?? "",
+    joinedAt:      parseInt((v["joined-at"]?.value      as string) ?? "0"),
+    totalMessages: parseInt((v["total-messages"]?.value as string) ?? "0"),
     isVerified:    v["is-verified"]?.value === true,
     isActive:      v["is-active"]?.value   === true,
   };
@@ -55,7 +56,7 @@ function parseCreatorCV(cv: ClarityValue | null | undefined): StacksCreator | nu
 
 // ── Read helpers ──────────────────────────────────────────────────────────────
 
-async function readOnly(functionName: string, functionArgs: unknown[]) {
+async function readOnly(functionName: string, functionArgs: ClarityValue[]) {
   return fetchCallReadOnlyFunction({
     contractAddress: REGISTRY_CONTRACT_ADDRESS,
     contractName:    REGISTRY_CONTRACT_NAME,

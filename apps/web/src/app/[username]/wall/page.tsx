@@ -52,8 +52,8 @@ function WallPostCard({
   }
 
   function handleShare() {
-    const url = `${typeof window !== "undefined" ? window.location.origin : ""}/${creatorAddr}/wall#${post.id}`;
-    if (navigator.clipboard) navigator.clipboard.writeText(url);
+    const url = `${window.location.origin}/${creatorAddr}/wall#${post.id}`;
+    navigator.clipboard?.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
@@ -87,6 +87,8 @@ function WallPostCard({
       <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/5">
         <div className="flex items-center gap-3">
           <button onClick={handleLike} disabled={liked || !address || isPending}
+            aria-label={liked ? "Unlike" : "Like this Q&A"}
+            aria-pressed={liked}
             className={`flex items-center gap-1.5 text-xs transition-colors ${
               liked ? "text-pink-400" : "text-zinc-600 hover:text-pink-400"
             } disabled:opacity-50`}
@@ -98,7 +100,7 @@ function WallPostCard({
           </button>
           <span className="text-zinc-700 text-xs">{timeAgo(post.publishedAt)}</span>
         </div>
-        <button onClick={handleShare} className="flex items-center gap-1.5 text-xs text-zinc-600 hover:text-zinc-400 transition-colors">
+        <button onClick={handleShare} aria-label="Share this Q&A" className="flex items-center gap-1.5 text-xs text-zinc-600 hover:text-zinc-400 transition-colors">
           <Share2 className="w-3.5 h-3.5" />
           {copied ? <span className="text-green-400">Copied!</span> : "Share"}
         </button>

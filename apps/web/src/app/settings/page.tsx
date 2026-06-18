@@ -75,6 +75,7 @@ export default function SettingsPage() {
           <p className="px-1 text-xs font-medium uppercase tracking-wide text-zinc-500">Help</p>
           <div className="rounded-xl border border-white/10 overflow-hidden">
             <button
+              type="button"
               onClick={resetOnboarding}
               className="w-full flex items-center justify-between px-4 py-3 hover:bg-white/5 transition-colors text-left"
             >

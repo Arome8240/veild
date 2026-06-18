@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Loader2, Plus, AlertCircle, Check } from "lucide-react";
 import { type Address } from "viem";
 import { useVeildPools } from "@/hooks/usePools";
@@ -36,11 +36,13 @@ export function CreatePoolForm({ creatorAddress, onCreated }: CreatePoolFormProp
 
   const isBusy = isPending || isConfirming;
 
-  if (isConfirmed) {
-    onCreated?.();
-    reset();
-    setQuestion("");
-  }
+  useEffect(() => {
+    if (isConfirmed) {
+      onCreated?.();
+      reset();
+      setQuestion("");
+    }
+  }, [isConfirmed, onCreated, reset]);
 
   const handleCreate = useCallback(() => {
     if (!question.trim()) return;

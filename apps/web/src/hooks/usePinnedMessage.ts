@@ -10,7 +10,9 @@ function readPinned(): Record<string, string> {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     return raw ? JSON.parse(raw) : {};
-  } catch {
+  } catch (err) {
+    console.warn("[usePinnedMessage] Corrupted localStorage data, resetting:", err);
+    localStorage.removeItem(STORAGE_KEY);
     return {};
   }
 }

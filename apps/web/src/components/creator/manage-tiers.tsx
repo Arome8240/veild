@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { Loader2, Plus, Trash2, Edit2, Check, AlertCircle } from "lucide-react";
 import { type Address } from "viem";
 import {
@@ -38,20 +38,22 @@ export function ManageTiers({ creatorAddress }: ManageTiersProps) {
   const [editPrice, setEditPrice]   = useState(PRICE_OPTIONS[0].value);
   const [mode, setMode]             = useState<"idle" | "add" | "edit" | "deactivate">("idle");
 
-  if (isConfirmed) {
-    refetch();
-    reset();
-  }
+  useEffect(() => {
+    if (isConfirmed) {
+      refetch();
+      reset();
+    }
+  }, [isConfirmed, refetch, reset]);
 
   const activeTiers = useMemo(() => tiers.filter((t) => t.isActive), [tiers]);
   const canAdd      = activeTiers.length < MAX_TIERS;
 
-  function handleCreate() {
+  const handleCreate = useCallback(() => {
     if (!newLabel.trim()) return;
     setMode("add");
     createTier(newPrice, newLabel.trim());
     setNewLabel("");
-  }
+  }, [newLabel, newPrice, createTier]);
 
   function handleUpdatePrice() {
     if (editId === null) return;

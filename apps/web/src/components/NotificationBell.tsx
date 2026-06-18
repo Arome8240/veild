@@ -13,6 +13,8 @@ export function NotificationBell() {
         onClick={() => setOpen((o) => !o)}
         className="relative rounded-xl p-2 hover:bg-white/5 transition-colors"
         aria-label="Notifications"
+        aria-expanded={open}
+        aria-haspopup="true"
       >
         <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -60,9 +62,10 @@ export function NotificationBell() {
                   <p className="text-xs text-zinc-500 truncate">{n.body}</p>
                 </div>
                 <button
+                  type="button"
                   onClick={(e) => { e.stopPropagation(); dismiss(n.id); }}
                   className="shrink-0 text-zinc-600 hover:text-zinc-400 transition-colors"
-                  aria-label="Dismiss"
+                  aria-label={`Dismiss notification: ${n.title}`}
                 >
                   ✕
                 </button>

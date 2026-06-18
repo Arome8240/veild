@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { useReadContract, useWaitForTransactionReceipt } from "wagmi";
 import { useCeloWrite } from "./useCeloWrite";
 import { type Address } from "viem";
@@ -10,37 +11,37 @@ export function useVeildGovernance() {
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({ hash: txHash });
 
-  function createProposal(title: string, description: string) {
+  const createProposal = useCallback((title: string, description: string) => {
     writeContract({
       ...veildGovernance.celo,
       functionName: "createProposal",
       args: [title, description],
     });
-  }
+  }, [writeContract]);
 
-  function castVote(proposalId: bigint, support: boolean) {
+  const castVote = useCallback((proposalId: bigint, support: boolean) => {
     writeContract({
       ...veildGovernance.celo,
       functionName: "castVote",
       args: [proposalId, support],
     });
-  }
+  }, [writeContract]);
 
-  function finalizeProposal(proposalId: bigint) {
+  const finalizeProposal = useCallback((proposalId: bigint) => {
     writeContract({
       ...veildGovernance.celo,
       functionName: "finalizeProposal",
       args: [proposalId],
     });
-  }
+  }, [writeContract]);
 
-  function cancelProposal(proposalId: bigint) {
+  const cancelProposal = useCallback((proposalId: bigint) => {
     writeContract({
       ...veildGovernance.celo,
       functionName: "cancelProposal",
       args: [proposalId],
     });
-  }
+  }, [writeContract]);
 
   return {
     txHash,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { injected } from "wagmi/connectors";
 
@@ -34,13 +34,13 @@ export function useMiniPay() {
     }
   }, [mounted, isConnected, connect]);
 
-  function connectWallet() {
+  const connectWallet = useCallback(() => {
     if (!hasWallet) {
       window.open("https://metamask.io/download/", "_blank");
       return;
     }
     connect({ connector: injected() });
-  }
+  }, [hasWallet, connect]);
 
   return {
     isMiniPay,

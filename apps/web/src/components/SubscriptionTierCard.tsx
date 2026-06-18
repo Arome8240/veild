@@ -33,6 +33,7 @@ export function SubscriptionTierCard({ creator, subscriber, onSubscribe }: Props
             </div>
             {!isSub && onSubscribe && (
               <button
+                type="button"
                 onClick={() => onSubscribe(BigInt(i), tier.pricePerMonth)}
                 className="rounded-lg bg-purple-500/20 px-3 py-1.5 text-xs font-medium text-purple-300 hover:bg-purple-500/30 transition-colors"
               >

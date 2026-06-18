@@ -54,7 +54,8 @@ export function WalletStatus() {
           </p>
         </div>
         <button
-          onClick={() => disconnect()}
+          type="button"
+          onClick={disconnect}
           className="text-[10px] text-muted-foreground hover:text-foreground shrink-0 transition-colors"
           aria-label="Disconnect wallet"
         >
@@ -67,6 +68,7 @@ export function WalletStatus() {
   return (
     <div>
       <button
+        type="button"
         onClick={connectWallet}
         disabled={isConnecting}
         aria-label={

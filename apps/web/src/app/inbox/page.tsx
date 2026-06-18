@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Zap, MessageCircle, Search, X, Check, Loader2,
@@ -36,6 +36,11 @@ export default function InboxPage() {
   const { visible, counts } = useMessageFilter(rawInbox, tab, search);
 
   const creatorName = profile?.name ?? "You";
+
+  const handleCloseReply = useCallback(() => {
+    setReplyTarget(null);
+    refetch();
+  }, [refetch]);
 
   if (isLoading) {
     return (
@@ -107,7 +112,7 @@ export default function InboxPage() {
           <motion.button
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
-            onClick={() => claimEarnings()}
+            onClick={claimEarnings}
             disabled={claimPending || claimDone}
             aria-busy={claimPending}
             className="w-full mb-4 flex items-center justify-center gap-2 py-2.5 bg-green-500/10 border border-green-500/25 text-green-300 text-xs font-medium rounded-xl hover:bg-green-500/15 transition-all disabled:opacity-60"
@@ -138,6 +143,7 @@ export default function InboxPage() {
           />
           {search && (
             <button
+              type="button"
               onClick={() => setSearch("")}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
               aria-label="Clear search"
@@ -229,10 +235,7 @@ export default function InboxPage() {
         {replyTarget && (
           <ReplySheet
             message={replyTarget}
-            onClose={() => {
-              setReplyTarget(null);
-              refetch();
-            }}
+            onClose={handleCloseReply}
           />
         )}
       </AnimatePresence>

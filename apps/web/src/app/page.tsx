@@ -59,7 +59,7 @@ export default function HomePage() {
           <p className="text-zinc-500 text-sm mb-8 leading-relaxed">
             Connect your wallet or open in MiniPay to access your creator inbox.
           </p>
-          <button onClick={connectWallet} disabled={isConnecting}
+          <button type="button" onClick={connectWallet} disabled={isConnecting}
             className="flex items-center justify-center gap-2 bg-violet-700 hover:bg-violet-600 text-white text-sm font-semibold px-6 py-3 rounded-full transition-all disabled:opacity-60 mx-auto"
           >
             {isConnecting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}

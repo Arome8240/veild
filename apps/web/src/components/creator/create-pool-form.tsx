@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Loader2, Plus, AlertCircle, Check } from "lucide-react";
 import { type Address } from "viem";
 import { useVeildPools } from "@/hooks/usePools";
@@ -41,10 +41,10 @@ export function CreatePoolForm({ creatorAddress, onCreated }: CreatePoolFormProp
     setQuestion("");
   }
 
-  function handleCreate() {
+  const handleCreate = useCallback(() => {
     if (!question.trim()) return;
     createPool(creatorAddress, question.trim(), duration, amount);
-  }
+  }, [createPool, creatorAddress, question, duration, amount]);
 
   return (
     <div className="bg-card border border-border rounded-2xl overflow-hidden">

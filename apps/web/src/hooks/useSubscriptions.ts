@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { useReadContract, useWaitForTransactionReceipt } from "wagmi";
 import { useCeloWrite } from "./useCeloWrite";
 import { type Address } from "viem";
@@ -18,48 +19,48 @@ export function useVeildSubscriptions() {
 
   // ── Creator ──────────────────────────────────────────────────────────────
 
-  function createTier(pricePerMonth: bigint, label: string) {
+  const createTier = useCallback((pricePerMonth: bigint, label: string) => {
     writeContract({
       ...veildSubscriptions.celo,
       functionName: "createTier",
       args: [pricePerMonth, label],
     });
-  }
+  }, [writeContract]);
 
-  function updateTierPrice(tierId: bigint, newPrice: bigint) {
+  const updateTierPrice = useCallback((tierId: bigint, newPrice: bigint) => {
     writeContract({
       ...veildSubscriptions.celo,
       functionName: "updateTierPrice",
       args: [tierId, newPrice],
     });
-  }
+  }, [writeContract]);
 
-  function deactivateTier(tierId: bigint) {
+  const deactivateTier = useCallback((tierId: bigint) => {
     writeContract({
       ...veildSubscriptions.celo,
       functionName: "deactivateTier",
       args: [tierId],
     });
-  }
+  }, [writeContract]);
 
-  function claimSubEarnings() {
+  const claimSubEarnings = useCallback(() => {
     writeContract({
       ...veildSubscriptions.celo,
       functionName: "claimEarnings",
       args: [],
     });
-  }
+  }, [writeContract]);
 
   // ── Fan ──────────────────────────────────────────────────────────────────
 
-  function subscribe(creatorAddress: Address, tierId: bigint, amount: bigint) {
+  const subscribe = useCallback((creatorAddress: Address, tierId: bigint, amount: bigint) => {
     writeContract({
       ...veildSubscriptions.celo,
       functionName: "subscribe",
       args: [creatorAddress, tierId],
       value: amount,
     });
-  }
+  }, [writeContract]);
 
   return {
     txHash,

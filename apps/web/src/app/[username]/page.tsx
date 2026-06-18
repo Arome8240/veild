@@ -250,6 +250,7 @@ export default function CreatorProfilePage({
               {QUICK_PROMPTS.map((prompt) => (
                 <button
                   key={prompt}
+                  type="button"
                   onClick={() => setMessage(prompt)}
                   className="shrink-0 text-xs text-muted-foreground border border-border hover:border-primary/30 hover:text-primary bg-card hover:bg-primary/5 px-3 py-1.5 rounded-full transition-all whitespace-nowrap"
                   aria-label={`Use prompt: ${prompt}`}
@@ -444,6 +445,7 @@ export default function CreatorProfilePage({
                   </div>
                   <div className="flex items-center gap-3 mt-3">
                     <button
+                      type="button"
                       onClick={() => handleLike(i)}
                       aria-pressed={likedPosts.has(i)}
                       aria-label={likedPosts.has(i) ? "Unlike" : "Like this Q&A"}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { useReadContract, useWaitForTransactionReceipt } from "wagmi";
 import { useCeloWrite } from "./useCeloWrite";
 import { type Address } from "viem";
@@ -10,30 +11,30 @@ export function useVeildStaking() {
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({ hash: txHash });
 
-  function stake(amount: bigint) {
+  const stake = useCallback((amount: bigint) => {
     writeContract({
       ...veildStaking.celo,
       functionName: "stake",
       args: [],
       value: amount,
     });
-  }
+  }, [writeContract]);
 
-  function requestWithdraw() {
+  const requestWithdraw = useCallback(() => {
     writeContract({
       ...veildStaking.celo,
       functionName: "requestWithdraw",
       args: [],
     });
-  }
+  }, [writeContract]);
 
-  function withdraw() {
+  const withdraw = useCallback(() => {
     writeContract({
       ...veildStaking.celo,
       functionName: "withdraw",
       args: [],
     });
-  }
+  }, [writeContract]);
 
   return {
     txHash,

@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { useReadContract, useWaitForTransactionReceipt } from "wagmi";
 import { useCeloWrite } from "./useCeloWrite";
 import { type Address } from "viem";
@@ -17,52 +18,52 @@ export function useVeildPools() {
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({ hash: txHash });
 
-  function createPool(
+  const createPool = useCallback((
     creatorAddress: Address,
     question: string,
     duration: bigint,
     amount: bigint
-  ) {
+  ) => {
     writeContract({
       ...veildPools.celo,
       functionName: "createPool",
       args: [creatorAddress, question, duration],
       value: amount,
     });
-  }
+  }, [writeContract]);
 
-  function contribute(poolId: bigint, amount: bigint) {
+  const contribute = useCallback((poolId: bigint, amount: bigint) => {
     writeContract({
       ...veildPools.celo,
       functionName: "contribute",
       args: [poolId],
       value: amount,
     });
-  }
+  }, [writeContract]);
 
-  function answerPool(poolId: bigint, answer: string) {
+  const answerPool = useCallback((poolId: bigint, answer: string) => {
     writeContract({
       ...veildPools.celo,
       functionName: "answerPool",
       args: [poolId, answer],
     });
-  }
+  }, [writeContract]);
 
-  function markExpired(poolId: bigint) {
+  const markExpired = useCallback((poolId: bigint) => {
     writeContract({
       ...veildPools.celo,
       functionName: "markExpired",
       args: [poolId],
     });
-  }
+  }, [writeContract]);
 
-  function claimRefund(poolId: bigint, contribIndex: bigint) {
+  const claimRefund = useCallback((poolId: bigint, contribIndex: bigint) => {
     writeContract({
       ...veildPools.celo,
       functionName: "claimRefund",
       args: [poolId, contribIndex],
     });
-  }
+  }, [writeContract]);
 
   return {
     txHash,

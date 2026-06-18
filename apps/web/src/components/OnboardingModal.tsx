@@ -39,12 +39,14 @@ export function OnboardingModal() {
 
         <div className="flex gap-2">
           <button
+            type="button"
             onClick={skip}
             className="flex-1 rounded-xl border border-white/10 py-2.5 text-sm text-zinc-500 hover:bg-white/5 transition-colors"
           >
             Skip
           </button>
           <button
+            type="button"
             onClick={next}
             className="flex-1 rounded-xl bg-white py-2.5 text-sm font-medium text-black hover:bg-white/90 transition-colors"
           >

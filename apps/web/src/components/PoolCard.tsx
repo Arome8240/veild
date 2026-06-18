@@ -45,6 +45,7 @@ export function PoolCard({ poolId, onContribute }: Props) {
 
       {!answered && onContribute && (
         <button
+          type="button"
           onClick={() => onContribute(poolId)}
           className="w-full rounded-lg bg-purple-500/20 py-2 text-sm font-medium text-purple-300 hover:bg-purple-500/30 transition-colors"
         >

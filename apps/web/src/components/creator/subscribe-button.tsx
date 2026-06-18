@@ -115,7 +115,7 @@ export function SubscribeButton({ creatorAddress, creatorName, fanAddress }: Sub
                   <p className="text-muted-foreground text-sm mt-1">
                     Your access lasts 30 days.
                   </p>
-                  <button onClick={handleClose} className="mt-4 text-primary text-sm hover:text-primary/80">
+                  <button type="button" onClick={handleClose} className="mt-4 text-primary text-sm hover:text-primary/80">
                     Close
                   </button>
                 </div>

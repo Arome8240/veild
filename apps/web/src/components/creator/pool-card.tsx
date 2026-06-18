@@ -170,7 +170,7 @@ export function PoolCard({ pool, fanAddress }: PoolCardProps) {
                   <p className="text-muted-foreground text-sm mt-1">
                     {formatCELO(amount)} CELO added to the pool.
                   </p>
-                  <button onClick={handleClose} className="mt-4 text-primary text-sm hover:text-primary/80">
+                  <button type="button" onClick={handleClose} className="mt-4 text-primary text-sm hover:text-primary/80">
                     Close
                   </button>
                 </div>

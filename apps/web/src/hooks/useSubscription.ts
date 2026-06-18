@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { useReadContract, useWaitForTransactionReceipt } from "wagmi";
 import { useCeloWrite } from "./useCeloWrite";
 import { type Address } from "viem";
@@ -11,30 +12,30 @@ export function useVeildSubscriptions() {
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({ hash: txHash });
 
-  function subscribe(creator: Address, tierId: bigint, value: bigint) {
+  const subscribe = useCallback((creator: Address, tierId: bigint, value: bigint) => {
     writeContract({
       ...veildSubscriptions.celo,
       functionName: "subscribe",
       args:  [creator, tierId],
       value,
     });
-  }
+  }, [writeContract]);
 
-  function createTier(pricePerMonth: bigint, label: string) {
+  const createTier = useCallback((pricePerMonth: bigint, label: string) => {
     writeContract({
       ...veildSubscriptions.celo,
       functionName: "createTier",
       args:  [pricePerMonth, label],
     });
-  }
+  }, [writeContract]);
 
-  function claimSubEarnings() {
+  const claimSubEarnings = useCallback(() => {
     writeContract({
       ...veildSubscriptions.celo,
       functionName: "claimEarnings",
       args:  [],
     });
-  }
+  }, [writeContract]);
 
   return { subscribe, createTier, claimSubEarnings, isPending, isConfirming, isConfirmed, error, reset };
 }

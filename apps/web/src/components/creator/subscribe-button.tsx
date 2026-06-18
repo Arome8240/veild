@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, Loader2, Check, X, AlertCircle, Zap } from "lucide-react";
 import { type Address } from "viem";
@@ -27,7 +27,7 @@ export function SubscribeButton({ creatorAddress, creatorName, fanAddress }: Sub
   const [open, setOpen]         = useState(false);
   const [selectedTier, setSelectedTier] = useState(0);
 
-  const activeTiers = tiers.filter((t) => t.isActive);
+  const activeTiers = useMemo(() => tiers.filter((t) => t.isActive), [tiers]);
 
   function handleOpen() {
     reset();
@@ -43,7 +43,9 @@ export function SubscribeButton({ creatorAddress, creatorName, fanAddress }: Sub
   function handleSubscribe() {
     const tier = activeTiers[selectedTier];
     if (!tier) return;
-    subscribe(creatorAddress, BigInt(tiers.indexOf(tier)), tier.pricePerMonth);
+    // Use the tier's on-chain id directly; indexOf would give the wrong index
+    // when inactive tiers precede the selected one in the full tiers array.
+    subscribe(creatorAddress, tier.id, tier.pricePerMonth);
   }
 
   const isBusy = isPending || isConfirming;

@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { useReadContract, useWaitForTransactionReceipt } from "wagmi";
 import { type Address } from "viem";
 import { veildRegistry, veildMessages } from "@/lib/contracts";
@@ -19,86 +20,86 @@ export function useVeildContracts() {
 
   // ─── Fan writes ─────────────────────────────────────────────────────────────
 
-  function sendMessage(creatorAddress: Address, content: string) {
+  const sendMessage = useCallback((creatorAddress: Address, content: string) => {
     writeContract({
       ...veildMessages.celo,
       functionName: "sendMessage",
       args: [creatorAddress, content],
     });
-  }
+  }, [writeContract]);
 
-  function sendPriorityMessage(creatorAddress: Address, content: string, fee: bigint) {
+  const sendPriorityMessage = useCallback((creatorAddress: Address, content: string, fee: bigint) => {
     writeContract({
       ...veildMessages.celo,
       functionName: "sendPriorityMessage",
       args: [creatorAddress, content],
       value: fee,
     });
-  }
+  }, [writeContract]);
 
-  function likeWallPost(creatorAddress: Address, wallIndex: bigint) {
+  const likeWallPost = useCallback((creatorAddress: Address, wallIndex: bigint) => {
     writeContract({
       ...veildMessages.celo,
       functionName: "likeWallPost",
       args: [creatorAddress, wallIndex],
     });
-  }
+  }, [writeContract]);
 
   // ─── Creator writes ──────────────────────────────────────────────────────────
 
-  function replyToMessage(messageIndex: bigint, reply: string, publishToWall: boolean) {
+  const replyToMessage = useCallback((messageIndex: bigint, reply: string, publish: boolean) => {
     writeContract({
       ...veildMessages.celo,
       functionName: "replyToMessage",
-      args: [messageIndex, reply, publishToWall],
+      args: [messageIndex, reply, publish],
     });
-  }
+  }, [writeContract]);
 
-  function publishToWall(messageIndex: bigint) {
+  const publishToWall = useCallback((messageIndex: bigint) => {
     writeContract({
       ...veildMessages.celo,
       functionName: "publishToWall",
       args: [messageIndex],
     });
-  }
+  }, [writeContract]);
 
-  function archiveMessage(messageIndex: bigint) {
+  const archiveMessage = useCallback((messageIndex: bigint) => {
     writeContract({
       ...veildMessages.celo,
       functionName: "archiveMessage",
       args: [messageIndex],
     });
-  }
+  }, [writeContract]);
 
-  function claimEarnings() {
+  const claimEarnings = useCallback(() => {
     writeContract({
       ...veildMessages.celo,
       functionName: "claimEarnings",
       args: [],
     });
-  }
+  }, [writeContract]);
 
-  function registerCreator(
+  const registerCreator = useCallback((
     username: string, name: string, bio: string,
     avatarCID: string, category: string
-  ) {
+  ) => {
     writeContract({
       ...veildRegistry.celo,
       functionName: "register",
       args: [username, name, bio, avatarCID, category],
     });
-  }
+  }, [writeContract]);
 
-  function updateProfile(
+  const updateProfile = useCallback((
     name: string, bio: string,
     avatarCID: string, category: string
-  ) {
+  ) => {
     writeContract({
       ...veildRegistry.celo,
       functionName: "updateProfile",
       args: [name, bio, avatarCID, category],
     });
-  }
+  }, [writeContract]);
 
   return {
     txHash,

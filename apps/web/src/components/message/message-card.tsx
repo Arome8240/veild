@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
   Zap, Reply, Eye, Archive, ChevronDown, Loader2,
 } from "lucide-react";
@@ -30,6 +30,11 @@ export function MessageCard({
   const [expanded, setExpanded] = useState(false);
   const { archiveMessage, publishToWall, isPending, isConfirming } =
     useVeildContracts();
+
+  const handleToggleExpand = useCallback(() => setExpanded((v) => !v), []);
+  const handleReply = useCallback(() => onReply(message), [onReply, message]);
+  const handlePublish = useCallback(() => publishToWall(BigInt(message.index)), [publishToWall, message.index]);
+  const handleArchive = useCallback(() => archiveMessage(BigInt(message.index)), [archiveMessage, message.index]);
 
   if (message.isArchived) return null;
 
@@ -94,7 +99,8 @@ export function MessageCard({
         </p>
         {isLong && (
           <button
-            onClick={() => setExpanded(!expanded)}
+            type="button"
+            onClick={handleToggleExpand}
             aria-expanded={expanded}
             className="flex items-center gap-0.5 text-xs text-muted-foreground hover:text-foreground mb-3 transition-colors"
           >
@@ -124,7 +130,8 @@ export function MessageCard({
         <div className="flex items-center gap-1.5" role="group" aria-label="Message actions">
           {!message.isAnswered && (
             <button
-              onClick={() => onReply(message as IndexedMessage)}
+              type="button"
+              onClick={handleReply}
               className="flex items-center gap-1 text-xs text-primary-foreground bg-primary hover:bg-primary/90 px-3 py-1.5 rounded-lg transition-colors font-medium"
               aria-label="Reply to this message"
             >
@@ -133,7 +140,8 @@ export function MessageCard({
           )}
           {message.isAnswered && !message.isPublished && (
             <button
-              onClick={() => publishToWall(BigInt(message.index))}
+              type="button"
+              onClick={handlePublish}
               disabled={isBusy}
               className="flex items-center gap-1 text-xs text-foreground hover:text-green-400 border border-border hover:border-green-500/25 px-3 py-1.5 rounded-lg transition-all disabled:opacity-50"
               aria-label="Publish this Q&A to your public wall"
@@ -147,7 +155,8 @@ export function MessageCard({
             </button>
           )}
           <button
-            onClick={() => archiveMessage(BigInt(message.index))}
+            type="button"
+            onClick={handleArchive}
             disabled={isBusy}
             className="ml-auto flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground px-2.5 py-1.5 rounded-lg transition-colors disabled:opacity-50"
             aria-label="Archive this message"

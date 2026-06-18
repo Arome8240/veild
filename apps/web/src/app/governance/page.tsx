@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useAccount } from "wagmi";
 import { BottomNav } from "@/components/bottom-nav";
 import { ProposalCard } from "@/components/ProposalCard";
@@ -15,16 +15,16 @@ export default function GovernancePage() {
   const [description, setDescription] = useState("");
   const { createProposal, castVote, isPending } = useVeildGovernance();
 
-  const handleCreate = async () => {
+  const handleCreate = useCallback(async () => {
     if (!title.trim() || !description.trim()) return;
     await createProposal(title, description);
     setTitle("");
     setDescription("");
-  };
+  }, [title, description, createProposal]);
 
-  const handleVote = (proposalId: bigint, support: boolean) => {
+  const handleVote = useCallback((proposalId: bigint, support: boolean) => {
     castVote(proposalId, support);
-  };
+  }, [castVote]);
 
   return (
     <main className="min-h-screen pb-24">
@@ -42,6 +42,7 @@ export default function GovernancePage() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Title (max 100 chars)"
+              aria-label="Proposal title"
               maxLength={100}
               className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-white/20"
             />
@@ -49,11 +50,13 @@ export default function GovernancePage() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Description (max 500 chars)"
+              aria-label="Proposal description"
               maxLength={500}
               rows={3}
               className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-white/20"
             />
             <button
+              type="button"
               onClick={handleCreate}
               disabled={isPending || !title.trim() || !description.trim()}
               className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-black hover:bg-white/90 disabled:opacity-40 transition-colors"

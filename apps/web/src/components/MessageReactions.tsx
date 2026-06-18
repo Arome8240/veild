@@ -39,7 +39,7 @@ export function MessageReactions({ messageId: _id, initial = {} }: Props) {
     );
   }, []);
 
-  const visible = reactions.filter((r) => r.count > 0 || true);
+  const visible = reactions.filter((r) => r.count > 0 || r.reacted);
 
   return (
     <div className="flex flex-wrap gap-1 mt-1.5" role="group" aria-label="Message reactions">

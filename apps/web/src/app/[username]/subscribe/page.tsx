@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { useParams } from "next/navigation";
 import { useAccount } from "wagmi";
 import { BottomNav } from "@/components/bottom-nav";
@@ -12,6 +13,10 @@ export default function SubscribePage() {
   const { address }       = useAccount();
   const { data: creator } = useCreatorByUsername(username);
   const { subscribe }     = useVeildSubscriptions();
+
+  const handleSubscribe = useCallback((tierId: bigint, price: bigint) => {
+    if (address) subscribe(address, tierId, price);
+  }, [address, subscribe]);
 
   return (
     <main className="min-h-screen pb-24">
@@ -27,7 +32,7 @@ export default function SubscribePage() {
           <SubscriptionTierCard
             creator={address}
             subscriber={address}
-            onSubscribe={(tierId, price) => subscribe(address, tierId, price)}
+            onSubscribe={handleSubscribe}
           />
         ) : (
           <p className="text-center text-sm text-zinc-500 py-8">

@@ -34,7 +34,9 @@ export default function DiscoverPage() {
           {CATEGORIES.map((c) => (
             <button
               key={c}
+              type="button"
               onClick={() => setCategory(c)}
+              aria-pressed={category === c}
               className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
                 category === c
                   ? "bg-white text-black"

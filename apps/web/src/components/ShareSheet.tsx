@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 interface Props {
   url:    string;
@@ -10,23 +10,22 @@ interface Props {
 export function ShareSheet({ url, title }: Props) {
   const [copied, setCopied] = useState(false);
 
-  const handleCopy = async () => {
+  const handleCopy = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Clipboard access denied — fall back to selecting the input text
       const input = document.querySelector<HTMLInputElement>(`input[value="${CSS.escape(url)}"]`);
       input?.select();
     }
-  };
+  }, [url]);
 
-  const handleNativeShare = async () => {
+  const handleNativeShare = useCallback(async () => {
     if (navigator.share) {
       await navigator.share({ title, url });
     }
-  };
+  }, [title, url]);
 
   return (
     <div className="flex items-center gap-2">
@@ -37,6 +36,7 @@ export function ShareSheet({ url, title }: Props) {
         className="flex-1 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-zinc-400 font-mono truncate focus:outline-none"
       />
       <button
+        type="button"
         onClick={handleCopy}
         className="rounded-lg border border-white/10 px-3 py-2 text-sm hover:bg-white/5 transition-colors"
         aria-label="Copy link"
@@ -45,6 +45,7 @@ export function ShareSheet({ url, title }: Props) {
       </button>
       {"share" in navigator && (
         <button
+          type="button"
           onClick={handleNativeShare}
           className="rounded-lg border border-white/10 p-2 hover:bg-white/5 transition-colors"
           aria-label="Share"

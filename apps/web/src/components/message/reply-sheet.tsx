@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { X, Eye, Reply, Check, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Toggle } from "@/components/ui/toggle";
@@ -29,10 +29,10 @@ export function ReplySheet({ message, onClose }: ReplySheetProps) {
     }
   }, [isConfirmed, onClose, reset]);
 
-  function handleSubmit() {
+  const handleSubmit = useCallback(() => {
     if (!reply.trim()) return;
     replyToMessage(BigInt(message.index), reply, publishToWall);
-  }
+  }, [replyToMessage, message.index, reply, publishToWall]);
 
   const isbusy = isPending || isConfirming;
 

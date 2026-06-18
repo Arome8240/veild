@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Loader2, Check, X, AlertCircle } from "lucide-react";
 import { type Address } from "viem";
@@ -29,21 +29,21 @@ export function TipButton({ creatorAddress, creatorName }: TipButtonProps) {
   const [amount, setAmount] = useState(AMOUNTS[0].value);
   const [message, setMessage] = useState("");
 
-  function handleOpen() {
+  const handleOpen = useCallback(() => {
     reset();
     setOpen(true);
-  }
+  }, [reset]);
 
-  function handleClose() {
+  const handleClose = useCallback(() => {
     setOpen(false);
     reset();
     setMessage("");
     setAmount(AMOUNTS[0].value);
-  }
+  }, [reset]);
 
-  function handleTip() {
+  const handleTip = useCallback(() => {
     sendTip(creatorAddress, message, amount);
-  }
+  }, [sendTip, creatorAddress, message, amount]);
 
   const isBusy = isPending || isConfirming;
 

@@ -37,8 +37,9 @@ export function AvatarUpload({ currentCID, name, onCIDReady }: Props) {
 
         onCIDReady(json.cid);
         setUploadState("done");
-      } catch (e: any) {
-        setErrorMsg(e.message ?? "Upload failed. Try again.");
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : "Upload failed. Try again.";
+        setErrorMsg(msg);
         setUploadState("error");
         setPreviewUrl(null);
       }

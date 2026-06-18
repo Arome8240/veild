@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Users, Clock, Loader2, Check, X, AlertCircle, Plus } from "lucide-react";
 import { type Address } from "viem";
@@ -45,20 +45,20 @@ export function PoolCard({ pool, fanAddress }: PoolCardProps) {
   const isBusy = isPending || isConfirming;
   const isActive = pool.status === 0;
 
-  function handleOpen() {
+  const handleOpen = useCallback(() => {
     reset();
     setOpen(true);
-  }
+  }, [reset]);
 
-  function handleClose() {
+  const handleClose = useCallback(() => {
     setOpen(false);
     reset();
     if (isConfirmed) refetch();
-  }
+  }, [reset, isConfirmed, refetch]);
 
-  function handleContribute() {
+  const handleContribute = useCallback(() => {
     contribute(pool.id, amount);
-  }
+  }, [contribute, pool.id, amount]);
 
   const contribCount = contributions.length;
   const statusLabel  = STATUS_LABELS[pool.status] ?? "Unknown";

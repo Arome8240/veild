@@ -35,15 +35,21 @@ export function TipButton({ recipient, onTip, isPending }: Props) {
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 sm:items-center">
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 sm:items-center"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="tip-modal-title"
+        >
           <div className="w-full max-w-sm rounded-t-2xl sm:rounded-2xl border border-white/10 bg-zinc-900 p-5 space-y-4">
-            <h2 className="font-semibold text-center">Send a Tip</h2>
+            <h2 id="tip-modal-title" className="font-semibold text-center">Send a Tip</h2>
 
             <div className="grid grid-cols-4 gap-2">
               {QUICK_AMOUNTS.map((a) => (
                 <button
                   key={a}
                   onClick={() => setAmount(String(a))}
+                  aria-pressed={amount === String(a)}
                   className={`rounded-xl py-2 text-sm font-medium transition-colors ${
                     amount === String(a)
                       ? "bg-yellow-400/30 text-yellow-300"
@@ -55,7 +61,9 @@ export function TipButton({ recipient, onTip, isPending }: Props) {
               ))}
             </div>
 
+            <label htmlFor="tip-amount" className="sr-only">Custom amount in CELO</label>
             <input
+              id="tip-amount"
               type="number"
               min="0"
               step="0.01"
@@ -65,7 +73,9 @@ export function TipButton({ recipient, onTip, isPending }: Props) {
               className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-white/20"
             />
 
+            <label htmlFor="tip-message" className="sr-only">Message (optional)</label>
             <input
+              id="tip-message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Add a message (optional)"

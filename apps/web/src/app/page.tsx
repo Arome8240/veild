@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -28,14 +28,14 @@ export default function HomePage() {
     ? `veild.app/0x${address.slice(2, 8).toLowerCase()}`
     : "veild.app/your-link";
 
-  function copyLink() {
+  const copyLink = useCallback(() => {
     if (navigator.clipboard && profile?.username)
       navigator.clipboard.writeText(`https://veild.app/${profile.username}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  }
+  }, [profile?.username]);
 
-  async function shareLink() {
+  const shareLink = useCallback(async () => {
     const shareData = {
       title: `Ask ${profile?.name ?? "me"} anything — anonymously`,
       text: "Send me an anonymous message on Veild.",
@@ -45,7 +45,7 @@ export default function HomePage() {
       try { await navigator.share(shareData); return; } catch {}
     }
     copyLink();
-  }
+  }, [profile?.name, profileUrl, copyLink]);
 
   const unread = stats ? Number(stats.unread) : 0;
 
@@ -169,7 +169,7 @@ export default function HomePage() {
           {/* Share link */}
           <div className="flex items-center gap-2 bg-[#0a0a0a] border border-white/8 rounded-xl px-3 py-2.5 mb-3">
             <span className="text-zinc-500 text-xs font-mono flex-1 truncate">{profileUrl}</span>
-            <button onClick={copyLink}
+            <button type="button" onClick={copyLink}
               className={`shrink-0 text-xs font-medium px-2.5 py-1 rounded-lg transition-all ${
                 copied ? "bg-green-500/15 text-green-400" : "bg-violet-600 hover:bg-violet-500 text-white"
               }`}
@@ -179,7 +179,7 @@ export default function HomePage() {
             </button>
           </div>
 
-          <button onClick={shareLink}
+          <button type="button" onClick={shareLink}
             className="w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/8 border border-white/8 text-zinc-300 text-xs font-medium py-2.5 rounded-xl transition-colors"
           >
             <Share2 className="w-3.5 h-3.5" /> Share your Veild link

@@ -4,6 +4,7 @@
 export const MAX_MESSAGE_CHARS       = 280;
 export const MAX_USERNAME_CHARS      = 32;
 export const MAX_BIO_CHARS           = 280;
+export const MAX_BIO_EDITOR_CHARS    = 200;
 export const MAX_TIP_MESSAGE_CHARS   = 140;
 export const MAX_POOL_QUESTION_CHARS = 256;
 export const MAX_TIER_LABEL_CHARS    = 32;

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { MAX_BIO_EDITOR_CHARS } from "@/constants/config";
 
 interface Props {
   currentBio: string;
@@ -11,22 +12,21 @@ interface Props {
 export function BioEditor({ currentBio, onSave, isPending }: Props) {
   const [editing, setEditing] = useState(false);
   const [bio, setBio]         = useState(currentBio);
-  const MAX                   = 200;
   const textareaRef           = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     if (editing) textareaRef.current?.focus();
   }, [editing]);
 
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     await onSave(bio.trim());
     setEditing(false);
-  };
+  }, [onSave, bio]);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     setBio(currentBio);
     setEditing(false);
-  };
+  }, [currentBio]);
 
   if (!editing) {
     return (
@@ -50,13 +50,13 @@ export function BioEditor({ currentBio, onSave, isPending }: Props) {
       <textarea
         ref={textareaRef}
         value={bio}
-        onChange={(e) => setBio(e.target.value.slice(0, MAX))}
+        onChange={(e) => setBio(e.target.value.slice(0, MAX_BIO_EDITOR_CHARS))}
         rows={3}
         className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-white/20 resize-none"
         placeholder="Tell your audience about yourself…"
       />
       <div className="flex items-center justify-between gap-2">
-        <span className="text-xs text-zinc-600">{bio.length}/{MAX}</span>
+        <span className="text-xs text-zinc-600">{bio.length}/{MAX_BIO_EDITOR_CHARS}</span>
         <div className="flex gap-2">
           <button
             onClick={handleCancel}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { useReadContract, useWaitForTransactionReceipt } from "wagmi";
 import { useCeloWrite } from "./useCeloWrite";
 import { type Address } from "viem";
@@ -10,13 +11,13 @@ export function useVeildReferral() {
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({ hash: txHash });
 
-  function claimReward() {
+  const claimReward = useCallback(() => {
     writeContract({
       ...veildReferral.celo,
       functionName: "claimReward",
       args: [],
     });
-  }
+  }, [writeContract]);
 
   return {
     txHash,

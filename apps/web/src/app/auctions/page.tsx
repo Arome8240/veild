@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { useAccount } from "wagmi";
 import { BottomNav } from "@/components/bottom-nav";
 import { AuctionCard } from "@/components/AuctionCard";
@@ -10,6 +11,9 @@ export default function AuctionsPage() {
   const { data: countRaw }      = useAuctionCount();
   const count                   = Number(countRaw ?? 0n);
   const { placeBid, claimWin }  = useVeildAuction();
+
+  const handleBid  = useCallback((aId: bigint, amt: bigint) => placeBid(aId, amt), [placeBid]);
+  const handleClaim = useCallback((aId: bigint) => claimWin(aId), [claimWin]);
 
   return (
     <main className="min-h-screen pb-24">
@@ -27,8 +31,8 @@ export default function AuctionsPage() {
               key={id.toString()}
               auctionId={id}
               viewer={address}
-              onBid={(aId, amt) => placeBid(aId, amt)}
-              onClaim={(aId) => claimWin(aId)}
+              onBid={handleBid}
+              onClaim={handleClaim}
             />
           ))
         )}

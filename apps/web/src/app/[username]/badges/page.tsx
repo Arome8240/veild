@@ -5,21 +5,12 @@ import { useAccount } from "wagmi";
 import { BottomNav } from "@/components/bottom-nav";
 import { BadgeDisplay } from "@/components/BadgeDisplay";
 import { useCreatorByUsername } from "@/hooks/useCreatorProfile";
-import { useReadContract } from "wagmi";
-import { veildRegistry } from "@/lib/contracts";
 import type { Address } from "viem";
 
 export default function BadgesPage() {
   const { username }      = useParams<{ username: string }>();
   const { address }       = useAccount();
   const { data: creator } = useCreatorByUsername(username);
-
-  const addrResult = useReadContract({
-    ...veildRegistry.celo,
-    functionName: "getCreatorByUsername",
-    args:         username ? [username] : undefined,
-    query:        { enabled: !!username },
-  });
 
   const creatorAddress = (address ?? "0x0") as Address;
 

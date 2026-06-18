@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { parseEther, formatEther, type Address } from "viem";
 import { useStakeInfo, useBoostScore, useCanWithdraw } from "@/hooks/useStaking";
 import type { StakeInfo } from "@/lib/contracts";
@@ -25,6 +25,12 @@ export function StakingPanel({ creator, onStake, onRequestWithdraw, onWithdraw }
   const staked      = info?.amount ?? 0n;
   const hasPending  = info?.withdrawPending ?? false;
 
+  const handleStake = useCallback(() => {
+    if (!input || Number(input) <= 0) return;
+    onStake(parseEther(input));
+    setInput("");
+  }, [input, onStake]);
+
   return (
     <div className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-4">
       <h3 className="font-semibold">Staking</h3>
@@ -48,11 +54,13 @@ export function StakingPanel({ creator, onStake, onRequestWithdraw, onWithdraw }
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Amount (CELO)"
+          aria-label="Stake amount in CELO"
           className="flex-1 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-white/20"
         />
         <button
           disabled={!input || Number(input) <= 0}
-          onClick={() => { onStake(parseEther(input)); setInput(""); }}
+          onClick={handleStake}
+          aria-label="Stake CELO"
           className="rounded-lg bg-blue-500/20 px-4 py-2 text-sm font-medium text-blue-300 hover:bg-blue-500/30 disabled:opacity-40 transition-colors"
         >
           Stake

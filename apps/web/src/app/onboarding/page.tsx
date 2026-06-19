@@ -31,10 +31,16 @@ export default function OnboardingPage() {
         </div>
 
         {/* Progress dots */}
-        <div className="flex justify-center gap-1.5">
+        <div
+          className="flex justify-center gap-1.5"
+          role="group"
+          aria-label={`Step ${currentIndex + 1} of ${totalSteps}`}
+        >
           {STEPS.map((s, i) => (
             <span
               key={s.key}
+              aria-current={i === currentIndex ? "step" : undefined}
+              aria-label={s.title}
               className={`h-1.5 rounded-full transition-all ${
                 i === currentIndex ? "w-5 bg-white" : "w-1.5 bg-white/20"
               }`}

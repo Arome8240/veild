@@ -171,7 +171,11 @@ export default function WallPage({ params }: { params: { username: string } }) {
         </motion.div>
 
         {/* SORT */}
-        <div className="flex gap-1 mb-6 bg-[#111] border border-white/5 rounded-xl p-1 w-fit">
+        <div
+          role="group"
+          aria-label="Sort Q&As"
+          className="flex gap-1 mb-6 bg-[#111] border border-white/5 rounded-xl p-1 w-fit"
+        >
           {(["top","new"] as const).map(s => (
             <button key={s} type="button" onClick={() => setSortBy(s)}
               aria-pressed={sortBy === s}
@@ -179,7 +183,10 @@ export default function WallPage({ params }: { params: { username: string } }) {
                 sortBy === s ? "bg-white text-black shadow-sm" : "text-zinc-500"
               }`}
             >
-              {s === "top" ? <Flame className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
+              {s === "top"
+                ? <Flame className="w-3 h-3" aria-hidden="true" />
+                : <Clock className="w-3 h-3" aria-hidden="true" />
+              }
               {s === "top" ? "Top" : "New"}
             </button>
           ))}

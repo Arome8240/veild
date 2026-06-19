@@ -53,11 +53,13 @@ export function BioEditor({ currentBio, onSave, isPending }: Props) {
         value={bio}
         onChange={(e) => setBio(e.target.value.slice(0, MAX_BIO_EDITOR_CHARS))}
         rows={3}
+        aria-label="Edit your bio"
+        aria-describedby="bio-char-count"
         className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-white/20 resize-none"
         placeholder="Tell your audience about yourself…"
       />
       <div className="flex items-center justify-between gap-2">
-        <span className="text-xs text-zinc-600">{bio.length}/{MAX_BIO_EDITOR_CHARS}</span>
+        <span id="bio-char-count" aria-live="polite" className="text-xs text-zinc-600">{bio.length}/{MAX_BIO_EDITOR_CHARS}</span>
         <div className="flex gap-2">
           <button
             type="button"

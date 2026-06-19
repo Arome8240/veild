@@ -26,7 +26,7 @@ export default function GiftsPage() {
         <header className="sticky top-0 z-10 border-b border-white/10 bg-black/80 backdrop-blur px-4 py-3">
           <h1 className="text-lg font-bold">Gifts</h1>
         </header>
-        <div className="flex items-center justify-center h-40">
+        <div className="flex items-center justify-center h-40" role="status" aria-live="polite">
           <p className="text-sm text-zinc-500">Loading…</p>
         </div>
         <BottomNav />

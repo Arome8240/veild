@@ -12,9 +12,14 @@ export function AnalyticsChart({ creator }: Props) {
 
   if (a.isLoading) {
     return (
-      <div className="rounded-xl border border-white/10 bg-white/5 p-4 animate-pulse">
-        <div className="h-4 w-24 rounded bg-white/10 mb-3" />
-        <div className="grid grid-cols-3 gap-2">
+      <div
+        className="rounded-xl border border-white/10 bg-white/5 p-4 animate-pulse"
+        aria-busy="true"
+        aria-label="Loading analytics"
+        role="status"
+      >
+        <div className="h-4 w-24 rounded bg-white/10 mb-3" aria-hidden="true" />
+        <div className="grid grid-cols-3 gap-2" aria-hidden="true">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="h-16 rounded bg-white/10" />
           ))}

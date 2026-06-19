@@ -60,10 +60,18 @@ export function ProposalCard({ proposalId, voter, onVote }: Props) {
           <span>For {(forVotes ?? 0n).toString()}</span>
           <span>Against {(againstVotes ?? 0n).toString()}</span>
         </div>
-        <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+        <div
+          role="progressbar"
+          aria-label="Votes for"
+          aria-valuenow={forPct}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          className="h-1.5 rounded-full bg-white/10 overflow-hidden"
+        >
           <div
             className="h-full bg-green-500 transition-all"
             style={{ width: `${forPct}%` }}
+            aria-hidden="true"
           />
         </div>
       </div>

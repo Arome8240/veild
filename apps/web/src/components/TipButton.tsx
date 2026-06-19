@@ -28,6 +28,7 @@ export function TipButton({ recipient, onTip, isPending }: Props) {
   return (
     <>
       <button
+        type="button"
         onClick={() => setOpen(true)}
         className="rounded-xl bg-yellow-400/20 px-4 py-2 text-sm font-medium text-yellow-300 hover:bg-yellow-400/30 transition-colors"
       >
@@ -48,6 +49,7 @@ export function TipButton({ recipient, onTip, isPending }: Props) {
               {QUICK_AMOUNTS.map((a) => (
                 <button
                   key={a}
+                  type="button"
                   onClick={() => setAmount(String(a))}
                   aria-pressed={amount === String(a)}
                   className={`rounded-xl py-2 text-sm font-medium transition-colors ${
@@ -85,12 +87,14 @@ export function TipButton({ recipient, onTip, isPending }: Props) {
 
             <div className="flex gap-2">
               <button
+                type="button"
                 onClick={() => setOpen(false)}
                 className="flex-1 rounded-xl border border-white/10 py-2.5 text-sm text-zinc-500 hover:bg-white/5 transition-colors"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={handleSend}
                 disabled={isPending || !amount || Number(amount) <= 0}
                 className="flex-1 rounded-xl bg-yellow-400 py-2.5 text-sm font-medium text-black hover:bg-yellow-300 disabled:opacity-40 transition-colors"

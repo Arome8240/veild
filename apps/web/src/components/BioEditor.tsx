@@ -5,7 +5,7 @@ import { MAX_BIO_EDITOR_CHARS } from "@/constants/config";
 
 interface Props {
   currentBio: string;
-  onSave:     (bio: string) => Promise<void> | void;
+  onSave:     (_bio: string) => Promise<void> | void;
   isPending?: boolean;
 }
 

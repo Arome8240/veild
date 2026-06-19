@@ -279,7 +279,7 @@ export default function CreatorProfilePage({
                 if (e.target.value.length <= MAX_MESSAGE_CHARS)
                   setMessage(e.target.value);
               }}
-              placeholder={`Ask ${firstName} anything. It&apos;s anonymous.`}
+              placeholder={`Ask ${firstName} anything. It's anonymous.`}
               rows={4}
               aria-describedby="char-counter"
               className="w-full bg-transparent text-foreground placeholder:text-muted-foreground text-sm p-4 pb-2 resize-none outline-none leading-relaxed"

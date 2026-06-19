@@ -51,8 +51,11 @@ export function BottomNav() {
                   strokeWidth={active ? 2.2 : 1.8}
                 />
                 {badge && (
-                  <span className="absolute -top-1.5 -right-2 min-w-[16px] h-4 bg-violet-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
-                    {badge > 9 ? "9+" : badge}
+                  <span
+                    aria-label={`${badge} unread`}
+                    className="absolute -top-1.5 -right-2 min-w-[16px] h-4 bg-violet-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center px-1 leading-none"
+                  >
+                    <span aria-hidden="true">{badge > 9 ? "9+" : badge}</span>
                   </span>
                 )}
               </div>

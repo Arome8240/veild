@@ -58,6 +58,7 @@ export function StakingPanel({ creator, onStake, onRequestWithdraw, onWithdraw }
           className="flex-1 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-white/20"
         />
         <button
+          type="button"
           disabled={!input || Number(input) <= 0}
           onClick={handleStake}
           aria-label="Stake CELO"
@@ -69,6 +70,7 @@ export function StakingPanel({ creator, onStake, onRequestWithdraw, onWithdraw }
 
       {staked > 0n && !hasPending && (
         <button
+          type="button"
           onClick={onRequestWithdraw}
           className="w-full rounded-lg border border-white/10 py-2 text-sm text-zinc-400 hover:bg-white/5 transition-colors"
         >
@@ -78,6 +80,7 @@ export function StakingPanel({ creator, onStake, onRequestWithdraw, onWithdraw }
 
       {hasPending && canWithdraw && (
         <button
+          type="button"
           onClick={onWithdraw}
           className="w-full rounded-lg bg-green-500/20 py-2 text-sm font-medium text-green-300 hover:bg-green-500/30 transition-colors"
         >

@@ -7,7 +7,7 @@ import type { StakeInfo } from "@/lib/contracts";
 
 interface Props {
   creator:          Address;
-  onStake:          (amount: bigint) => void;
+  onStake:          (_amount: bigint) => void;
   onRequestWithdraw: () => void;
   onWithdraw:       () => void;
 }

@@ -15,7 +15,8 @@ export const MAX_NOTIFICATIONS      = 50;
 export const MAX_ERROR_DISPLAY_CHARS = 100;
 
 // ─── Contract defaults ────────────────────────────────────────────────────────
-export const DEFAULT_PRIORITY_FEE_WEI = BigInt("1000000000000000"); // 0.001 CELO
+export const DEFAULT_PRIORITY_FEE_WEI    = BigInt("1000000000000000");  // 0.001 CELO
+export const DEFAULT_POOL_CONTRIBUTE_WEI = BigInt("10000000000000000"); // 0.01 CELO
 
 // ─── External URLs ────────────────────────────────────────────────────────────
 export const IPFS_GATEWAY = "https://ipfs.io/ipfs";

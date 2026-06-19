@@ -4,8 +4,7 @@ import { useCallback } from "react";
 import { BottomNav } from "@/components/bottom-nav";
 import { PoolCard } from "@/components/PoolCard";
 import { usePoolCount, useVeildPools } from "@/hooks/usePools";
-
-const POOL_CONTRIBUTE_AMOUNT = 10000000000000000n;
+import { DEFAULT_POOL_CONTRIBUTE_WEI } from "@/constants/config";
 
 export default function PoolsPage() {
   const { data: countRaw }    = usePoolCount();
@@ -13,7 +12,7 @@ export default function PoolsPage() {
   const { contribute }        = useVeildPools();
 
   const handleContribute = useCallback((poolId: bigint) => {
-    contribute(poolId, POOL_CONTRIBUTE_AMOUNT);
+    contribute(poolId, DEFAULT_POOL_CONTRIBUTE_WEI);
   }, [contribute]);
 
   return (

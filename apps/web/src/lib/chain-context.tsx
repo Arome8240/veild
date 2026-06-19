@@ -13,7 +13,7 @@ export type SupportedChain = "celo" | "stacks";
 
 interface ChainCtx {
   activeChain:  SupportedChain;
-  setChain:     (chain: SupportedChain) => void;
+  setChain:     (_chain: SupportedChain) => void;
   /** EVM address (when on Celo) */
   celoAddress:  `0x${string}` | undefined;
   /** Stacks principal (when on Stacks) */

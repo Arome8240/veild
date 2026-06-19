@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 
-type Validator<T> = (value: T) => string | null;
+type Validator<T> = (_value: T) => string | null;
 
 /**
  * Simple form field validation hook.

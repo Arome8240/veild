@@ -29,9 +29,12 @@ export function AuctionCard({ auctionId, onBid, onClaim, viewer }: Props) {
           <p className="text-xs text-zinc-500">Auction #{auctionId.toString()}</p>
           <h3 className="font-semibold leading-tight">{auction.label}</h3>
         </div>
-        <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${
-          active ? "text-blue-400 bg-blue-400/10" : "text-zinc-400 bg-zinc-400/10"
-        }`}>
+        <span
+          aria-label={`Auction status: ${active ? "Live" : "Ended"}`}
+          className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${
+            active ? "text-blue-400 bg-blue-400/10" : "text-zinc-400 bg-zinc-400/10"
+          }`}
+        >
           {active ? "Live" : "Ended"}
         </span>
       </header>
@@ -51,6 +54,7 @@ export function AuctionCard({ auctionId, onBid, onClaim, viewer }: Props) {
         <button
           type="button"
           onClick={() => onBid(auctionId, auction.highestBid + auction.highestBid / 10n)}
+          aria-label={`Place bid: ${formatEther(auction.highestBid + auction.highestBid / 10n)} CELO (+10%)`}
           className="w-full rounded-lg bg-purple-500/20 py-2 text-sm font-medium text-purple-300 hover:bg-purple-500/30 transition-colors"
         >
           Place Bid (+10%)

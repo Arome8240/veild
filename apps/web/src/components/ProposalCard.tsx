@@ -23,7 +23,7 @@ const STATE_COLORS: Record<number, string> = {
 interface Props {
   proposalId: bigint;
   voter?:     Address;
-  onVote?:    (proposalId: bigint, support: boolean) => void;
+  onVote?:    (_proposalId: bigint, _support: boolean) => void;
 }
 
 export function ProposalCard({ proposalId, voter, onVote }: Props) {

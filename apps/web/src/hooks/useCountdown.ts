@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 interface CountdownResult {
   days:    number;
@@ -17,7 +17,7 @@ interface CountdownResult {
 export function useCountdown(targetUnixSec: bigint | number | undefined): CountdownResult {
   const target = targetUnixSec !== undefined ? Number(targetUnixSec) * 1000 : null;
 
-  const calc = (): CountdownResult => {
+  const calc = useCallback((): CountdownResult => {
     if (!target) return { days: 0, hours: 0, minutes: 0, seconds: 0, expired: true };
     const diff = target - Date.now();
     if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0, expired: true };
@@ -29,7 +29,7 @@ export function useCountdown(targetUnixSec: bigint | number | undefined): Countd
       seconds: totalSec % 60,
       expired: false,
     };
-  };
+  }, [target]);
 
   const [result, setResult] = useState<CountdownResult>(calc);
 
@@ -37,7 +37,7 @@ export function useCountdown(targetUnixSec: bigint | number | undefined): Countd
     if (!target) return;
     const id = setInterval(() => setResult(calc()), 1000);
     return () => clearInterval(id);
-  }, [target]);
+  }, [target, calc]);
 
   return result;
 }

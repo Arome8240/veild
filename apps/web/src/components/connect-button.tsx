@@ -38,13 +38,14 @@ export function ConnectButton() {
             setChain("celo");
             disconnectCelo();
           }}
+          aria-label={`Celo wallet: ${shortenAddress(celoAddress!)} — click to disconnect`}
           className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors
             ${activeChain === "celo"
               ? "bg-yellow-400/20 text-yellow-700 dark:text-yellow-300 ring-1 ring-yellow-400"
               : "bg-surface-2 text-muted hover:bg-surface-3"
             }`}
         >
-          <span className="size-2 rounded-full bg-green-500" />
+          <span className="size-2 rounded-full bg-green-500" aria-hidden="true" />
           {shortenAddress(celoAddress!)}
         </button>
       ) : (
@@ -52,10 +53,11 @@ export function ConnectButton() {
           type="button"
           onClick={() => setChain("celo")}
           disabled
+          aria-label="Celo wallet not connected"
           className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium
             bg-surface-2 text-muted cursor-not-allowed opacity-60"
         >
-          <span className="size-2 rounded-full bg-zinc-400" />
+          <span className="size-2 rounded-full bg-zinc-400" aria-hidden="true" />
           Celo
         </button>
       )}
@@ -68,23 +70,25 @@ export function ConnectButton() {
             setChain("stacks");
             disconnectStacks();
           }}
+          aria-label={`Stacks wallet: ${shortenAddress(stacksAddress!)} — click to disconnect`}
           className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors
             ${activeChain === "stacks"
               ? "bg-orange-400/20 text-orange-700 dark:text-orange-300 ring-1 ring-orange-400"
               : "bg-surface-2 text-muted hover:bg-surface-3"
             }`}
         >
-          <span className="size-2 rounded-full bg-green-500" />
+          <span className="size-2 rounded-full bg-green-500" aria-hidden="true" />
           {shortenAddress(stacksAddress!)}
         </button>
       ) : (
         <button
           type="button"
           onClick={connectStacks}
+          aria-label="Connect Stacks wallet"
           className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium
             bg-orange-500/10 text-orange-700 dark:text-orange-300 hover:bg-orange-500/20 transition-colors"
         >
-          <span className="size-2 rounded-full bg-orange-400" />
+          <span className="size-2 rounded-full bg-orange-400" aria-hidden="true" />
           Connect Stacks
         </button>
       )}

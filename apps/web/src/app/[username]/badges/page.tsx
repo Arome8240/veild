@@ -4,14 +4,11 @@ import { useParams } from "next/navigation";
 import { useAccount } from "wagmi";
 import { BottomNav } from "@/components/bottom-nav";
 import { BadgeDisplay } from "@/components/BadgeDisplay";
-import { useCreatorByUsername } from "@/hooks/useCreatorProfile";
 import type { Address } from "viem";
 
 export default function BadgesPage() {
   const { username }      = useParams<{ username: string }>();
   const { address }       = useAccount();
-  const { data: creator } = useCreatorByUsername(username);
-
   const creatorAddress = (address ?? "0x0") as Address;
 
   return (

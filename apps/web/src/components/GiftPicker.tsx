@@ -9,7 +9,7 @@ const GIFT_EMOJI = ["🌹", "🚀", "👑", "💎", "📣"];
 
 interface GiftButtonProps {
   id:       number;
-  onSelect: (id: number, price: bigint) => void;
+  onSelect: (_id: number, _price: bigint) => void;
 }
 
 function GiftButton({ id, onSelect }: GiftButtonProps) {
@@ -32,7 +32,7 @@ function GiftButton({ id, onSelect }: GiftButtonProps) {
 
 interface Props {
   recipient: Address;
-  onGift:    (giftTypeId: number, price: bigint, message: string) => void;
+  onGift:    (_giftTypeId: number, _price: bigint, _message: string) => void;
 }
 
 export function GiftPicker({ recipient: _recipient, onGift }: Props) {

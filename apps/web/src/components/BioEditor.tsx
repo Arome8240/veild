@@ -35,6 +35,7 @@ export function BioEditor({ currentBio, onSave, isPending }: Props) {
           {currentBio || <span className="italic text-zinc-600">No bio yet.</span>}
         </p>
         <button
+          type="button"
           onClick={() => setEditing(true)}
           aria-label="Edit bio"
           className="shrink-0 rounded-lg p-1.5 text-zinc-600 hover:text-white hover:bg-white/5 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-all"
@@ -59,12 +60,14 @@ export function BioEditor({ currentBio, onSave, isPending }: Props) {
         <span className="text-xs text-zinc-600">{bio.length}/{MAX_BIO_EDITOR_CHARS}</span>
         <div className="flex gap-2">
           <button
+            type="button"
             onClick={handleCancel}
             className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-zinc-500 hover:bg-white/5 transition-colors"
           >
             Cancel
           </button>
           <button
+            type="button"
             onClick={handleSave}
             disabled={isPending || bio.trim() === currentBio}
             className="rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-black hover:bg-white/90 disabled:opacity-40 transition-colors"

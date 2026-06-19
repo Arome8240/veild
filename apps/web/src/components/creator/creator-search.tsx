@@ -1,32 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Search, X, Loader2, MessageCircle, ArrowRight } from "lucide-react";
 import { useCreatorByUsername } from "@/hooks/useVeildContracts";
+import { useDebounce } from "@/hooks/useDebounce";
 import { formatNumber } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { CreatorAvatar } from "@/components/creator/creator-avatar";
-
-const DEBOUNCE_MS = 500;
 
 /**
  * Real-time username search backed by VeildRegistry.getCreatorByUsername.
  * Debounces the query so we don't hammer the RPC on every keystroke.
  */
 export function CreatorSearch() {
-  const [query, setQuery]       = useState("");
-  const [debounced, setDebounced] = useState("");
-
-  // Debounce: only fire the on-chain lookup 500ms after the user stops typing
-  useEffect(() => {
-    if (!query.trim()) {
-      setDebounced("");
-      return;
-    }
-    const t = setTimeout(() => setDebounced(query.trim().toLowerCase()), DEBOUNCE_MS);
-    return () => clearTimeout(t);
-  }, [query]);
+  const [query, setQuery] = useState("");
+  const debounced = useDebounce(query.trim().toLowerCase(), 500);
 
   const { data: result, isLoading, isFetching } = useCreatorByUsername(
     debounced || undefined

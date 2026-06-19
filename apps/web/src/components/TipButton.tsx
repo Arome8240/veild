@@ -7,7 +7,7 @@ const QUICK_AMOUNTS = [0.01, 0.05, 0.1, 0.5] as const;
 
 interface Props {
   recipient: Address;
-  onTip:     (recipient: Address, amount: bigint, message?: string) => void;
+  onTip:     (_recipient: Address, _amount: bigint, _message?: string) => void;
   isPending?: boolean;
 }
 

@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback } from "react";
-import { useAccount } from "wagmi";
 import { BottomNav } from "@/components/bottom-nav";
 import { PoolCard } from "@/components/PoolCard";
 import { usePoolCount, useVeildPools } from "@/hooks/usePools";
@@ -9,7 +8,6 @@ import { usePoolCount, useVeildPools } from "@/hooks/usePools";
 const POOL_CONTRIBUTE_AMOUNT = 10000000000000000n;
 
 export default function PoolsPage() {
-  const { address }           = useAccount();
   const { data: countRaw }    = usePoolCount();
   const count                 = Number((countRaw as bigint | undefined) ?? 0n);
   const { contribute }        = useVeildPools();

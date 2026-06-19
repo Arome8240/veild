@@ -8,7 +8,7 @@ import type { Creator } from "@/lib/contracts";
 
 interface Props {
   creator:  Creator & { address: Address };
-  onFollow?: (address: Address) => void;
+  onFollow?: (_address: Address) => void;
   isFollowing?: boolean;
 }
 

@@ -20,6 +20,7 @@ function GiftButton({ id, onSelect }: GiftButtonProps) {
 
   return (
     <button
+      type="button"
       onClick={() => onSelect(id, gift.price)}
       className="flex flex-col items-center gap-1 rounded-xl border border-white/10 bg-white/5 p-3 hover:bg-white/10 transition-colors"
     >
@@ -73,6 +74,7 @@ export function GiftPicker({ recipient: _recipient, onGift }: Props) {
             className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-white/20"
           />
           <button
+            type="button"
             onClick={handleSend}
             className="w-full rounded-lg bg-pink-500/20 py-2 text-sm font-medium text-pink-300 hover:bg-pink-500/30 transition-colors"
           >

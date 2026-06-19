@@ -23,7 +23,11 @@ export function CountdownBadge({ targetUnixSec, className = "" }: Props) {
   if (days === 0)  parts.push(`${String(seconds).padStart(2, "0")}s`);
 
   return (
-    <span className={`font-mono text-xs tabular-nums ${className}`}>
+    <span
+      className={`font-mono text-xs tabular-nums ${className}`}
+      aria-live="off"
+      aria-label={`Time remaining: ${parts.join(" ")}`}
+    >
       {parts.join(" ")}
     </span>
   );

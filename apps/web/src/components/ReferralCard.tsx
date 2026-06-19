@@ -2,6 +2,7 @@
 
 import { formatEther, type Address } from "viem";
 import { useReferrerStats } from "@/hooks/useReferral";
+import { VEILD_APP_DOMAIN } from "@/constants/config";
 import type { ReferrerStats } from "@/lib/contracts";
 
 interface Props {
@@ -20,14 +21,14 @@ export function ReferralCard({ referrer, onClaim }: Props) {
     <div className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-4">
       <h3 className="font-semibold">Referrals</h3>
 
-      <div className="grid grid-cols-2 gap-3 text-center">
-        <div className="rounded-lg bg-white/5 p-3">
-          <p className="text-xs text-zinc-500">Total Referred</p>
-          <p className="text-2xl font-bold">{count.toString()}</p>
+      <div className="grid grid-cols-2 gap-3 text-center" role="list" aria-label="Referral statistics">
+        <div className="rounded-lg bg-white/5 p-3" role="listitem" aria-label={`Total referred: ${count.toString()}`}>
+          <p className="text-xs text-zinc-500" aria-hidden="true">Total Referred</p>
+          <p className="text-2xl font-bold" aria-hidden="true">{count.toString()}</p>
         </div>
-        <div className="rounded-lg bg-white/5 p-3">
-          <p className="text-xs text-zinc-500">Pending Reward</p>
-          <p className="font-bold">{formatEther(pending)} CELO</p>
+        <div className="rounded-lg bg-white/5 p-3" role="listitem" aria-label={`Pending reward: ${formatEther(pending)} CELO`}>
+          <p className="text-xs text-zinc-500" aria-hidden="true">Pending Reward</p>
+          <p className="font-bold" aria-hidden="true">{formatEther(pending)} CELO</p>
         </div>
       </div>
 
@@ -44,7 +45,7 @@ export function ReferralCard({ referrer, onClaim }: Props) {
       <div className="rounded-lg bg-white/5 p-3 text-center">
         <p className="text-xs text-zinc-500 mb-1">Your referral link</p>
         <p className="font-mono text-xs text-zinc-300 truncate">
-          veild.vercel.app/r/{referrer.slice(0, 10)}…
+          {VEILD_APP_DOMAIN}/r/{referrer.slice(0, 10)}…
         </p>
       </div>
     </div>

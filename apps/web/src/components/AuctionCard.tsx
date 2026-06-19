@@ -5,8 +5,8 @@ import { useAuction, useIsAuctionActive } from "@/hooks/useAuction";
 
 interface Props {
   auctionId:  bigint;
-  onBid?:     (auctionId: bigint, amount: bigint) => void;
-  onClaim?:   (auctionId: bigint) => void;
+  onBid?:     (_auctionId: bigint, _amount: bigint) => void;
+  onClaim?:   (_auctionId: bigint) => void;
   viewer?:    Address;
 }
 

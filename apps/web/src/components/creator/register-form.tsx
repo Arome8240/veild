@@ -95,6 +95,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           Your creator profile is now on-chain.
         </p>
         <button
+          type="button"
           onClick={onSuccess}
           className="text-primary text-sm hover:text-primary/80 transition-colors"
         >

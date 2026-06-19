@@ -79,6 +79,7 @@ export default function ProfilePage() {
             Connect your wallet to view or create your creator profile.
           </p>
           <button
+            type="button"
             onClick={connectWallet}
             disabled={isConnecting}
             className="flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-semibold px-6 py-3 rounded-full transition-all disabled:opacity-60 mx-auto"
@@ -149,6 +150,7 @@ export default function ProfilePage() {
               receiving anonymous messages.
             </p>
             <button
+              type="button"
               onClick={() => setShowRegister(true)}
               className="bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-semibold px-6 py-2.5 rounded-full transition-all"
             >
@@ -180,6 +182,7 @@ export default function ProfilePage() {
                 </div>
                 <div className="flex items-center gap-2 mb-1">
                   <button
+                    type="button"
                     onClick={() => setShowEdit(true)}
                     aria-label="Edit your profile"
                     className="flex items-center gap-1.5 text-xs font-medium border border-border bg-muted hover:bg-muted/80 text-foreground px-3 py-1.5 rounded-full transition-colors"
@@ -188,6 +191,7 @@ export default function ProfilePage() {
                   </button>
                   {profileUrl && (
                     <button
+                      type="button"
                       onClick={copyLink}
                       aria-label={copied ? "Link copied" : "Copy your Veild link"}
                       className="flex items-center gap-1.5 text-xs font-medium bg-primary hover:bg-primary/90 text-primary-foreground px-3 py-1.5 rounded-full transition-colors"
@@ -336,6 +340,7 @@ export default function ProfilePage() {
           >
             {earnings > 0n && (
               <button
+                type="button"
                 onClick={claimEarnings}
                 disabled={claimPending || claimDone}
                 aria-busy={claimPending}
@@ -347,6 +352,7 @@ export default function ProfilePage() {
             )}
             {tipEarnings > 0n && (
               <button
+                type="button"
                 onClick={claimTipEarnings}
                 disabled={tipClaimPending || tipClaimDone}
                 aria-busy={tipClaimPending}
@@ -358,6 +364,7 @@ export default function ProfilePage() {
             )}
             {subEarnings > 0n && (
               <button
+                type="button"
                 onClick={claimSubEarnings}
                 disabled={subClaimPending || subClaimDone}
                 aria-busy={subClaimPending}

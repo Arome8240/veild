@@ -65,6 +65,7 @@ export function ReplySheet({ message, onClose }: ReplySheetProps) {
               Reply on-chain
             </h2>
             <button
+              type="button"
               onClick={onClose}
               className="w-7 h-7 flex items-center justify-center rounded-full bg-muted hover:bg-muted/80 transition-colors"
               aria-label="Close reply sheet"
@@ -108,6 +109,7 @@ export function ReplySheet({ message, onClose }: ReplySheetProps) {
           </div>
 
           <button
+            type="button"
             onClick={handleSubmit}
             disabled={!reply.trim() || isbusy || isConfirmed}
             aria-busy={isbusy}

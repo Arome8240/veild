@@ -131,6 +131,7 @@ export function CreatePoolForm({ creatorAddress, onCreated }: CreatePoolFormProp
             </div>
 
             <button
+              type="button"
               onClick={handleCreate}
               disabled={isBusy || !question.trim()}
               aria-busy={isBusy}

@@ -92,6 +92,7 @@ export function WallPostCard({
       <footer className="flex items-center justify-between mt-4 pt-3 border-t border-border">
         <div className="flex items-center gap-3">
           <button
+            type="button"
             onClick={handleLike}
             disabled={liked || !address || isPending}
             aria-pressed={liked}
@@ -123,6 +124,7 @@ export function WallPostCard({
         </div>
 
         <button
+          type="button"
           onClick={handleShare}
           aria-label="Share this Q&A"
           className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"

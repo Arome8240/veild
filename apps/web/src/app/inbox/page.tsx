@@ -162,6 +162,7 @@ export default function InboxPage() {
           {(["all", "priority", "unanswered"] as InboxTab[]).map((t) => (
             <button
               key={t}
+              type="button"
               role="tab"
               aria-selected={tab === t}
               onClick={() => setTab(t)}

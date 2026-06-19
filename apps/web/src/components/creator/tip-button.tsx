@@ -50,6 +50,7 @@ export function TipButton({ creatorAddress, creatorName }: TipButtonProps) {
   return (
     <>
       <button
+        type="button"
         onClick={handleOpen}
         className="flex items-center gap-1.5 text-xs font-medium bg-pink-500/10 hover:bg-pink-500/20 border border-pink-500/25 text-pink-400 px-3 py-1.5 rounded-full transition-all"
         aria-label={`Tip ${creatorName}`}
@@ -84,6 +85,7 @@ export function TipButton({ creatorAddress, creatorName }: TipButtonProps) {
                   Tip {creatorName.split(" ")[0]}
                 </h2>
                 <button
+                  type="button"
                   onClick={handleClose}
                   className="w-7 h-7 flex items-center justify-center rounded-full bg-muted hover:bg-muted/80"
                   aria-label="Close"
@@ -112,6 +114,7 @@ export function TipButton({ creatorAddress, creatorName }: TipButtonProps) {
                       {AMOUNTS.map((a) => (
                         <button
                           key={a.label}
+                          type="button"
                           onClick={() => setAmount(a.value)}
                           className={`py-2.5 rounded-xl text-xs font-semibold border transition-all ${
                             amount === a.value
@@ -160,6 +163,7 @@ export function TipButton({ creatorAddress, creatorName }: TipButtonProps) {
                   )}
 
                   <button
+                    type="button"
                     onClick={handleTip}
                     disabled={isBusy || !isConnected}
                     aria-busy={isBusy}

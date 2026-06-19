@@ -107,6 +107,7 @@ export function ManageTiers({ creatorAddress }: ManageTiersProps) {
                     ))}
                   </select>
                   <button
+                    type="button"
                     onClick={handleUpdatePrice}
                     disabled={isPending}
                     className="p-1.5 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-colors disabled:opacity-60"
@@ -115,6 +116,7 @@ export function ManageTiers({ creatorAddress }: ManageTiersProps) {
                     <Check className="w-3.5 h-3.5" aria-hidden="true" />
                   </button>
                   <button
+                    type="button"
                     onClick={() => setEditId(null)}
                     className="p-1.5 rounded-lg bg-muted hover:bg-muted/80 text-muted-foreground transition-colors text-xs"
                     aria-label="Cancel edit"
@@ -125,6 +127,7 @@ export function ManageTiers({ creatorAddress }: ManageTiersProps) {
               ) : tier.isActive ? (
                 <div className="flex items-center gap-1">
                   <button
+                    type="button"
                     onClick={() => { setEditId(i); setEditPrice(tier.pricePerMonth); }}
                     className="p-1.5 rounded-lg bg-muted hover:bg-muted/80 transition-colors"
                     aria-label={`Edit ${tier.label} price`}
@@ -133,6 +136,7 @@ export function ManageTiers({ creatorAddress }: ManageTiersProps) {
                     <Edit2 className="w-3 h-3 text-muted-foreground" aria-hidden="true" />
                   </button>
                   <button
+                    type="button"
                     onClick={() => handleDeactivate(i)}
                     className="p-1.5 rounded-lg bg-destructive/10 hover:bg-destructive/20 transition-colors"
                     aria-label={`Deactivate ${tier.label}`}
@@ -183,6 +187,7 @@ export function ManageTiers({ creatorAddress }: ManageTiersProps) {
           )}
 
           <button
+            type="button"
             onClick={handleCreate}
             disabled={!newLabel.trim() || isPending}
             aria-busy={isPending && mode === "add"}

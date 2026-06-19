@@ -28,7 +28,11 @@ export default function DiscoverPage() {
 
       <div className="px-4 py-4 space-y-4">
         {/* Category pills */}
-        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+        <div
+          role="group"
+          aria-label="Filter by category"
+          className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide"
+        >
           {CATEGORIES.map((c) => (
             <button
               key={c}
@@ -47,9 +51,12 @@ export default function DiscoverPage() {
         </div>
 
         {/* Stats banner */}
-        <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 flex items-center justify-between">
-          <span className="text-sm text-zinc-400">Creators on Veild</span>
-          <span className="font-bold text-lg">{total.toString()}</span>
+        <div
+          className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 flex items-center justify-between"
+          aria-label={`${total.toString()} creators on Veild`}
+        >
+          <span className="text-sm text-zinc-400" aria-hidden="true">Creators on Veild</span>
+          <span className="font-bold text-lg" aria-hidden="true">{total.toString()}</span>
         </div>
 
         <p className="text-sm text-zinc-500 text-center py-8">

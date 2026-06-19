@@ -1,11 +1,10 @@
 "use client";
 
 import { type Address } from "viem";
-import { useTipEarnings }    from "./useTips";
-import { useSubEarnings, useSubscriberCount } from "./useSubscriptions";
-import { useTipCount, useTotalTipped }        from "./useTips";
-import { useGiftEarnings }                    from "./useGifts";
-import { useBoostScore }                      from "./useStaking";
+import { useTipEarnings, useTipCount, useTotalTipped } from "./useTips";
+import { useSubEarnings, useSubscriberCount }          from "./useSubscriptions";
+import { useGiftEarnings }                             from "./useGifts";
+import { useBoostScore }                               from "./useStaking";
 
 export interface CreatorAnalytics {
   tipEarnings:     bigint;

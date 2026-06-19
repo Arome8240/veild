@@ -6,7 +6,7 @@ import { useState, useCallback } from "react";
  * Generic localStorage hook with JSON serialisation.
  * SSR-safe — reads only on client, returns initial on server.
  */
-export function useLocalStorage<T>(key: string, initial: T): [T, (v: T) => void, () => void] {
+export function useLocalStorage<T>(key: string, initial: T): [T, (_v: T) => void, () => void] {
   const [value, setValue] = useState<T>(() => {
     if (typeof window === "undefined") return initial;
     try {

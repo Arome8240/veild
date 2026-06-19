@@ -22,11 +22,12 @@ function GiftButton({ id, onSelect }: GiftButtonProps) {
     <button
       type="button"
       onClick={() => onSelect(id, gift.price)}
+      aria-label={`Send ${gift.name} gift — ${formatEther(gift.price)} CELO`}
       className="flex flex-col items-center gap-1 rounded-xl border border-white/10 bg-white/5 p-3 hover:bg-white/10 transition-colors"
     >
-      <span className="text-2xl">{GIFT_EMOJI[id] ?? "🎁"}</span>
-      <span className="text-xs font-medium">{gift.name}</span>
-      <span className="text-xs text-zinc-500">{formatEther(gift.price)} CELO</span>
+      <span className="text-2xl" aria-hidden="true">{GIFT_EMOJI[id] ?? "🎁"}</span>
+      <span className="text-xs font-medium" aria-hidden="true">{gift.name}</span>
+      <span className="text-xs text-zinc-500" aria-hidden="true">{formatEther(gift.price)} CELO</span>
     </button>
   );
 }

@@ -38,6 +38,7 @@ export const CreatorCard = memo(function CreatorCard({ creator, onFollow, isFoll
           type="button"
           onClick={() => onFollow(creator.address)}
           aria-pressed={isFollowing}
+          aria-label={isFollowing ? `Unfollow ${creator.name}` : `Follow ${creator.name}`}
           className={`shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
             isFollowing
               ? "border border-white/10 text-zinc-400 hover:bg-white/5"

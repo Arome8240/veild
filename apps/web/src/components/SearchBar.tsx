@@ -6,7 +6,7 @@ import { useSearch } from "@/hooks/useSearch";
 import type { Creator } from "@/lib/contracts";
 
 interface Props {
-  onSelect?: (creator: Creator) => void;
+  onSelect?: (_creator: Creator) => void;
 }
 
 export function SearchBar({ onSelect }: Props) {

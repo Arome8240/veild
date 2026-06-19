@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useReadContract } from "wagmi";
 import { SearchBar } from "@/components/SearchBar";
 import { BottomNav } from "@/components/bottom-nav";
 import { veildRegistry } from "@/lib/contracts";
-import type { Creator } from "@/lib/contracts";
 
 const CATEGORIES = ["All", "Music", "Art", "Gaming", "Education", "Tech", "Lifestyle"];
 

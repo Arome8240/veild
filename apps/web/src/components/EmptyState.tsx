@@ -17,6 +17,7 @@ export function EmptyState({ emoji = "👀", title, body, action }: Props) {
       </div>
       {action && (
         <button
+          type="button"
           onClick={action.onClick}
           className="mt-2 rounded-xl bg-white px-5 py-2 text-sm font-medium text-black hover:bg-white/90 transition-colors"
         >

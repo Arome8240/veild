@@ -7,7 +7,7 @@ import type { SubscriptionTier } from "@/lib/contracts";
 interface Props {
   creator:   Address;
   subscriber?: Address;
-  onSubscribe?: (tierId: bigint, price: bigint) => void;
+  onSubscribe?: (_tierId: bigint, _price: bigint) => void;
 }
 
 export function SubscriptionTierCard({ creator, subscriber, onSubscribe }: Props) {

@@ -110,6 +110,7 @@ export default function InboxPage() {
         {/* CLAIM EARNINGS */}
         {earnings > 0n && (
           <motion.button
+            type="button"
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             onClick={claimEarnings}

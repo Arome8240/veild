@@ -6,7 +6,7 @@ import type { Pool } from "@/lib/contracts";
 
 interface Props {
   poolId:       bigint;
-  onContribute?: (poolId: bigint) => void;
+  onContribute?: (_poolId: bigint) => void;
 }
 
 export function PoolCard({ poolId, onContribute }: Props) {

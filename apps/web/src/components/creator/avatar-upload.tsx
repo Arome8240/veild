@@ -7,7 +7,7 @@ import { CreatorAvatar } from "./creator-avatar";
 interface Props {
   currentCID?: string;
   name?: string;
-  onCIDReady: (cid: string) => void;
+  onCIDReady: (_cid: string) => void;
 }
 
 type UploadState = "idle" | "uploading" | "done" | "error";

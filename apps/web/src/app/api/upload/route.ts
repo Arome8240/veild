@@ -40,8 +40,9 @@ export async function POST(req: NextRequest) {
   if (!res.ok) {
     const text = await res.text();
     console.error("Pinata upload failed:", res.status, text);
+    const detail = process.env.NODE_ENV === "development" ? ` (${res.status}: ${text.slice(0, 200)})` : "";
     return NextResponse.json(
-      { error: "Upload to IPFS failed. Please try again." },
+      { error: `Upload to IPFS failed. Please try again.${detail}` },
       { status: 502 }
     );
   }
@@ -50,9 +51,9 @@ export async function POST(req: NextRequest) {
   const cid: string = json?.data?.cid;
 
   if (!cid) {
+    console.error("Pinata response missing CID:", JSON.stringify(json));
     return NextResponse.json({ error: "Pinata did not return a CID." }, { status: 502 });
   }
 
   return NextResponse.json({ cid });
-  //ewe
 }

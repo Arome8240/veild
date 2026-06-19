@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { useWatchContractEvent } from "wagmi";
 import { veildTips, veildMessages, veildSubscriptions, veildGifts } from "@/lib/contracts";
 import { useNotifications } from "./useNotifications";

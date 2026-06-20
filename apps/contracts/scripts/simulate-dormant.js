@@ -21,7 +21,7 @@
  * Required .env:
  *   MONGODB_URI                  mongodb connection string
  *   RPC_URL                      Celo RPC endpoint
- *   MASTER_PRIVATE_KEY           funded wallet for top-ups
+ *   MASTER_PRIVATE_KEY           funded wallet for top-ups (must be contract owner)
  *   VEILD_REGISTRY_ADDRESS
  *   VEILD_MESSAGES_ADDRESS
  *   VEILD_TIPS_ADDRESS
@@ -30,6 +30,10 @@
  *   VEILD_GOVERNANCE_ADDRESS
  *   VEILD_GIFTS_ADDRESS
  *   VEILD_STAKING_ADDRESS
+ *   VEILD_BADGES_ADDRESS         (owner-only: master wallet awards badges)
+ *   VEILD_AUCTION_ADDRESS
+ *   VEILD_REFERRAL_ADDRESS       (owner-only: master wallet records referrals)
+ *   VEILD_FEE_DISTRIBUTOR_ADDRESS
  */
 
 import { ethers }   from 'ethers';
@@ -44,14 +48,18 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/veild_
 const RPC_URL     = process.env.RPC_URL     || 'https://forno.celo.org';
 
 const ADDR = {
-  registry:      process.env.VEILD_REGISTRY_ADDRESS,
-  messages:      process.env.VEILD_MESSAGES_ADDRESS,
-  tips:          process.env.VEILD_TIPS_ADDRESS,
-  subscriptions: process.env.VEILD_SUBSCRIPTIONS_ADDRESS,
-  pools:         process.env.VEILD_POOLS_ADDRESS,
-  governance:    process.env.VEILD_GOVERNANCE_ADDRESS,
-  gifts:         process.env.VEILD_GIFTS_ADDRESS,
-  staking:       process.env.VEILD_STAKING_ADDRESS,
+  registry:       process.env.VEILD_REGISTRY_ADDRESS,
+  messages:       process.env.VEILD_MESSAGES_ADDRESS,
+  tips:           process.env.VEILD_TIPS_ADDRESS,
+  subscriptions:  process.env.VEILD_SUBSCRIPTIONS_ADDRESS,
+  pools:          process.env.VEILD_POOLS_ADDRESS,
+  governance:     process.env.VEILD_GOVERNANCE_ADDRESS,
+  gifts:          process.env.VEILD_GIFTS_ADDRESS,
+  staking:        process.env.VEILD_STAKING_ADDRESS,
+  badges:         process.env.VEILD_BADGES_ADDRESS,
+  auction:        process.env.VEILD_AUCTION_ADDRESS,
+  referral:       process.env.VEILD_REFERRAL_ADDRESS,
+  feeDistributor: process.env.VEILD_FEE_DISTRIBUTOR_ADDRESS,
 };
 
 // CLI
@@ -61,12 +69,18 @@ const batchArg  = args.indexOf('--batch');
 const BATCH_SIZE = batchArg !== -1 ? parseInt(args[batchArg + 1]) : 100;
 
 // Probabilities for optional fan actions
-const TIP_CHANCE   = 0.30;
-const SUB_CHANCE   = 0.20;
-const POOL_CHANCE  = 0.15;
-const VOTE_CHANCE  = 0.15;
-const GIFT_CHANCE  = 0.10;
-const STAKE_CHANCE = 0.10;
+const TIP_CHANCE     = 0.30;
+const SUB_CHANCE     = 0.20;
+const POOL_CHANCE    = 0.15;
+const VOTE_CHANCE    = 0.15;
+const GIFT_CHANCE    = 0.10;
+const STAKE_CHANCE   = 0.10;
+const BID_CHANCE     = 0.20; // fan bids on an active auction
+const DIST_CHANCE    = 0.05; // fan triggers FeeDistributor.distribute()
+
+// Probabilities for creator actions
+const AUCTION_CHANCE = 0.30; // creator opens an auction slot
+const BADGE_CHANCE   = 0.50; // 50% of creators earn VerifiedCreator badge (id 2)
 
 // Values
 const TIP_AMOUNT        = ethers.parseEther('0.002');   // above MIN_TIP (0.001)
@@ -79,6 +93,9 @@ const PRIORITY_CHANCE   = 0.20;
 const GAS_BUFFER        = 130n;
 const TX_DELAY_MS       = 500;
 const POOL_DURATION     = 3n * 24n * 3600n; // 3 days in seconds
+const MIN_BID_AMOUNT    = ethers.parseEther('0.005');   // floor bid on auction slots
+const AUCTION_MIN_BID   = ethers.parseEther('0.003');   // min bid set by creator
+const AUCTION_DURATION  = 3n * 24n * 3600n;             // 3-day auction window
 
 // ─── ABIs ─────────────────────────────────────────────────────────────────────
 
@@ -141,6 +158,32 @@ const STAKING_ABI = [
   'function canWithdraw(address creator) external view returns (bool)',
 ];
 
+const BADGES_ABI = [
+  'function awardBadge(address holder, uint256 badgeId) external',
+  'function awardBadges(address holder, uint256[] calldata badgeIds) external',
+  'function hasBadge(address holder, uint256 badgeId) external view returns (bool)',
+  'function getBadges(address holder) external view returns (uint256[] memory)',
+];
+
+const AUCTION_ABI = [
+  'function createAuction(string calldata label, uint256 minBid, uint256 duration) external returns (uint256)',
+  'function placeBid(uint256 auctionId) external payable',
+  'function auctionCount() external view returns (uint256)',
+  'function getAuction(uint256 auctionId) external view returns (tuple(uint256 id, address creator, string label, uint256 minBid, uint256 highestBid, address highestBidder, uint256 startTime, uint256 endTime, uint8 state, bool claimed))',
+  'function isActive(uint256 auctionId) external view returns (bool)',
+];
+
+const REFERRAL_ABI = [
+  'function recordReferral(address referrer, address referred) external',
+  'function claimReward() external',
+  'function getStats(address referrer) external view returns (tuple(uint256 totalReferrals, uint256 pendingReward, uint256 claimedReward))',
+  'function hasBeenReferred(address) external view returns (bool)',
+];
+
+const FEE_DISTRIBUTOR_ABI = [
+  'function distribute() external',
+];
+
 // ─── Content pools ─────────────────────────────────────────────────────────────
 
 const FIRST_NAMES  = ['Alex','Jordan','Sam','Taylor','Morgan','Casey','Riley','Avery','Quinn','Blake','Drew','Sage','River','Phoenix','Reese'];
@@ -192,6 +235,13 @@ const PROPOSALS = [
   { title: 'Implement referral multiplier', description: 'Increase referral rewards for users who onboard three or more creators.' },
 ];
 const SUB_TIER_LABELS = ['Bronze', 'Silver', 'Gold', 'Supporter', 'VIP'];
+const AUCTION_LABELS  = [
+  'Exclusive 30-min Q&A session',
+  'Personal feedback on your creative work',
+  'Behind-the-scenes tutorial walkthrough',
+  'Priority question answered on stream',
+  'One-on-one mentorship session',
+];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -328,6 +378,34 @@ async function registerCreators(creators, provider, masterWallet) {
           await Account.updateOne({ address: acct.address }, { isRegistered: true });
           await logAction(acct.address, rec.hash, 'register', 'success', rec.gasUsed?.toString(), null, { username: acct.username });
           log(label, `✅ Registered @${acct.username}`);
+
+          // Record a referral from a random existing registered creator (owner-only)
+          if (ADDR.referral) {
+            try {
+              const referralContract = new ethers.Contract(ADDR.referral, REFERRAL_ABI, masterWallet);
+              const alreadyReferred  = await referralContract.hasBeenReferred(acct.address);
+              if (!alreadyReferred) {
+                const referrer = await Account.findOne({
+                  role:         'creator',
+                  isRegistered: true,
+                  address:      { $ne: acct.address },
+                });
+                if (referrer) {
+                  const check = await preflight(referralContract, 'recordReferral', referrer.address, acct.address);
+                  if (check === true) {
+                    const gl  = await gas(referralContract.recordReferral, referrer.address, acct.address);
+                    const rtx = await referralContract.recordReferral(referrer.address, acct.address, { gasLimit: gl });
+                    const rrec = await rtx.wait();
+                    await logAction(masterWallet.address, rrec.hash, 'recordReferral', rrec.status === 1 ? 'success' : 'failed', rrec.gasUsed?.toString(), null, { referrer: referrer.address, referred: acct.address });
+                    log(label, `🔗 referral recorded from @${referrer.username ?? shortAddr(referrer.address)}`);
+                  }
+                }
+              }
+            } catch (err) {
+              log(label, `⚠️  recordReferral: ${err.shortMessage ?? err.message}`);
+            }
+            await delay(TX_DELAY_MS);
+          }
         } else {
           throw new Error('tx reverted');
         }
@@ -355,6 +433,7 @@ async function fetchSharedState(provider) {
     activePools:        [],
     activeProposals:    [],
     giftTypeCount:      0n,
+    activeAuctions:     [],
   };
 
   state.registeredCreators = await Account.find({ role: 'creator', isRegistered: true }).lean();
@@ -410,6 +489,28 @@ async function fetchSharedState(provider) {
     }
   }
 
+  if (ADDR.auction) {
+    try {
+      const auctionContract = new ethers.Contract(ADDR.auction, AUCTION_ABI, provider);
+      const count = await auctionContract.auctionCount();
+      const activeAuctions = [];
+      const start = count > 20n ? count - 20n : 1n;
+      for (let id = start; id <= count; id++) {
+        try {
+          const active = await auctionContract.isActive(id);
+          if (active) {
+            const a = await auctionContract.getAuction(id);
+            activeAuctions.push({ id, minBid: a.minBid, highestBid: a.highestBid });
+          }
+        } catch { /* skip invalid id */ }
+      }
+      state.activeAuctions = activeAuctions;
+      log('📊', `${activeAuctions.length} active auctions found`);
+    } catch (err) {
+      log('⚠️ ', `Could not fetch auctions: ${err.shortMessage ?? err.message}`);
+    }
+  }
+
   return state;
 }
 
@@ -435,7 +536,7 @@ async function activateFan(acct, state, provider, masterWallet, index, total) {
     return;
   }
 
-  const { registeredCreators, activePools, activeProposals, giftTypeCount } = state;
+  const { registeredCreators, activePools, activeProposals, giftTypeCount, activeAuctions } = state;
 
   if (registeredCreators.length === 0) {
     log(label, '⚠️  No registered creators yet — skipping fan actions.');
@@ -496,6 +597,22 @@ async function activateFan(acct, state, provider, masterWallet, index, total) {
           await logAction(acct.address, rec.hash, 'tip', rec.status === 1 ? 'success' : 'failed', rec.gasUsed?.toString(), null, { amount: fmt(TIP_AMOUNT), creator: tipTarget.address });
           log(label, `💸 tipped ${fmt(TIP_AMOUNT)} CELO → @${tipTarget.username ?? shortAddr(tipTarget.address)}`);
           actionsCompleted++;
+          // Award FirstTip badge (id 3) to the creator receiving their first tip
+          if (ADDR.badges && rec.status === 1) {
+            try {
+              const badges = new ethers.Contract(ADDR.badges, BADGES_ABI, masterWallet);
+              const hasIt  = await badges.hasBadge(tipTarget.address, 3n);
+              if (!hasIt) {
+                const gl  = await gas(badges.awardBadge, tipTarget.address, 3n);
+                const btx = await badges.awardBadge(tipTarget.address, 3n, { gasLimit: gl });
+                const brec = await btx.wait();
+                await logAction(masterWallet.address, brec.hash, 'awardBadge', brec.status === 1 ? 'success' : 'failed', brec.gasUsed?.toString(), null, { holder: tipTarget.address, badgeId: '3' });
+                log(label, `🏅 awarded FirstTip badge to @${tipTarget.username ?? shortAddr(tipTarget.address)}`);
+              }
+            } catch (err) {
+              log(label, `⚠️  awardBadge(FirstTip): ${err.shortMessage ?? err.message}`);
+            }
+          }
         }
       } else {
         log(label, `[dry-run] tip → @${tipTarget.username}`);
@@ -536,6 +653,22 @@ async function activateFan(acct, state, provider, masterWallet, index, total) {
               await logAction(acct.address, rec.hash, 'subscribe', rec.status === 1 ? 'success' : 'failed', rec.gasUsed?.toString(), null, { tier: tier.id.toString(), creator: subTarget.address });
               log(label, `🔔 subscribed to @${subTarget.username ?? shortAddr(subTarget.address)} (tier ${tier.id})`);
               actionsCompleted++;
+              // Award Subscriber badge (id 5) to the fan
+              if (ADDR.badges && rec.status === 1) {
+                try {
+                  const badges = new ethers.Contract(ADDR.badges, BADGES_ABI, masterWallet);
+                  const hasIt  = await badges.hasBadge(acct.address, 5n);
+                  if (!hasIt) {
+                    const gl  = await gas(badges.awardBadge, acct.address, 5n);
+                    const btx = await badges.awardBadge(acct.address, 5n, { gasLimit: gl });
+                    const brec = await btx.wait();
+                    await logAction(masterWallet.address, brec.hash, 'awardBadge', brec.status === 1 ? 'success' : 'failed', brec.gasUsed?.toString(), null, { holder: acct.address, badgeId: '5' });
+                    log(label, `🏅 awarded Subscriber badge to fan`);
+                  }
+                } catch (err) {
+                  log(label, `⚠️  awardBadge(Subscriber): ${err.shortMessage ?? err.message}`);
+                }
+              }
             }
           }
         }
@@ -589,6 +722,22 @@ async function activateFan(acct, state, provider, masterWallet, index, total) {
             await logAction(acct.address, rec.hash, 'createPool', rec.status === 1 ? 'success' : 'failed', rec.gasUsed?.toString(), null, { question: question.slice(0, 60), creator: poolTarget.address });
             log(label, `🌊 created pool for @${poolTarget.username ?? shortAddr(poolTarget.address)}`);
             actionsCompleted++;
+            // Award PoolCreator badge (id 6) to the creator whose pool was funded
+            if (ADDR.badges && rec.status === 1) {
+              try {
+                const badges = new ethers.Contract(ADDR.badges, BADGES_ABI, masterWallet);
+                const hasIt  = await badges.hasBadge(poolTarget.address, 6n);
+                if (!hasIt) {
+                  const gl  = await gas(badges.awardBadge, poolTarget.address, 6n);
+                  const btx = await badges.awardBadge(poolTarget.address, 6n, { gasLimit: gl });
+                  const brec = await btx.wait();
+                  await logAction(masterWallet.address, brec.hash, 'awardBadge', brec.status === 1 ? 'success' : 'failed', brec.gasUsed?.toString(), null, { holder: poolTarget.address, badgeId: '6' });
+                  log(label, `🏅 awarded PoolCreator badge to @${poolTarget.username ?? shortAddr(poolTarget.address)}`);
+                }
+              } catch (err) {
+                log(label, `⚠️  awardBadge(PoolCreator): ${err.shortMessage ?? err.message}`);
+              }
+            }
           }
         } else {
           log(label, `[dry-run] createPool for @${poolTarget.username}`);
@@ -691,6 +840,72 @@ async function activateFan(acct, state, provider, masterWallet, index, total) {
     await delay(TX_DELAY_MS);
   }
 
+  // ── 8. Bid on an active auction (20%) ─────────────────────────────────────
+  if (ADDR.auction && coinFlip(BID_CHANCE) && activeAuctions.length > 0) {
+    const auctionContract = new ethers.Contract(ADDR.auction, AUCTION_ABI, wallet);
+    const a = rand(activeAuctions);
+    // Bid 5 % above current highest, or use MIN_BID_AMOUNT as floor
+    const required = a.highestBid > 0n
+      ? a.highestBid + (a.highestBid * 500n) / 10_000n
+      : a.minBid;
+    const bidAmount = required > MIN_BID_AMOUNT ? required : MIN_BID_AMOUNT;
+
+    try {
+      if (!DRY_RUN) {
+        const check = await preflight(auctionContract, 'placeBid', a.id, { value: bidAmount });
+        if (check !== true) {
+          log(label, `⛔ placeBid preflight: ${check}`);
+        } else {
+          const gl  = await gas(auctionContract.placeBid, a.id, { value: bidAmount });
+          const tx  = await auctionContract.placeBid(a.id, { value: bidAmount, gasLimit: gl });
+          const rec = await tx.wait();
+          await logAction(acct.address, rec.hash, 'placeBid', rec.status === 1 ? 'success' : 'failed', rec.gasUsed?.toString(), null, { auctionId: a.id.toString(), amount: fmt(bidAmount) });
+          log(label, `🔨 placed bid of ${fmt(bidAmount)} CELO on auction #${a.id}`);
+          actionsCompleted++;
+        }
+      } else {
+        log(label, `[dry-run] placeBid on auction #${a.id}`);
+      }
+    } catch (err) {
+      const r = err.errorName ?? err.shortMessage ?? err.message;
+      log(label, `❌ placeBid: ${r}`);
+      await logAction(acct.address, null, 'placeBid', 'failed', null, r, null);
+    }
+    await delay(TX_DELAY_MS);
+  }
+
+  // ── 9. Trigger fee distribution (5%) ──────────────────────────────────────
+  if (ADDR.feeDistributor && coinFlip(DIST_CHANCE)) {
+    const feeDist = new ethers.Contract(ADDR.feeDistributor, FEE_DISTRIBUTOR_ABI, wallet);
+    try {
+      if (!DRY_RUN) {
+        const check = await preflight(feeDist, 'distribute');
+        if (check !== true) {
+          // NoBalance is expected when there are no fees yet — skip silently
+          if (!String(check).includes('NoBalance')) {
+            log(label, `⛔ distribute preflight: ${check}`);
+          }
+        } else {
+          const gl  = await gas(feeDist.distribute);
+          const tx  = await feeDist.distribute({ gasLimit: gl });
+          const rec = await tx.wait();
+          await logAction(acct.address, rec.hash, 'distribute', rec.status === 1 ? 'success' : 'failed', rec.gasUsed?.toString(), null, null);
+          log(label, `💸 triggered fee distribution`);
+          actionsCompleted++;
+        }
+      } else {
+        log(label, `[dry-run] distribute fees`);
+      }
+    } catch (err) {
+      const r = err.errorName ?? err.shortMessage ?? err.message;
+      if (!r.includes('NoBalance')) {
+        log(label, `❌ distribute: ${r}`);
+        await logAction(acct.address, null, 'distribute', 'failed', null, r, null);
+      }
+    }
+    await delay(TX_DELAY_MS);
+  }
+
   // ── Mark account as interacted ────────────────────────────────────────────
   if (actionsCompleted > 0) {
     await Account.updateOne(
@@ -763,6 +978,87 @@ async function activateCreator(acct, provider, masterWallet, index, total) {
   } catch (err) {
     log(label, `❌ getInbox: ${err.shortMessage ?? err.message}`);
   }
+
+  // ── Open an auction slot (30%) ────────────────────────────────────────────────
+  if (ADDR.auction && coinFlip(AUCTION_CHANCE)) {
+    const auctionContract = new ethers.Contract(ADDR.auction, AUCTION_ABI, wallet);
+    const aLabel = rand(AUCTION_LABELS);
+    try {
+      if (!DRY_RUN) {
+        const check = await preflight(auctionContract, 'createAuction', aLabel, AUCTION_MIN_BID, AUCTION_DURATION);
+        if (check === true) {
+          const gl  = await gas(auctionContract.createAuction, aLabel, AUCTION_MIN_BID, AUCTION_DURATION);
+          const tx  = await auctionContract.createAuction(aLabel, AUCTION_MIN_BID, AUCTION_DURATION, { gasLimit: gl });
+          const rec = await tx.wait();
+          await logAction(acct.address, rec.hash, 'createAuction', rec.status === 1 ? 'success' : 'failed', rec.gasUsed?.toString(), null, { label: aLabel });
+          log(label, `🔨 created auction: "${aLabel}"`);
+        } else {
+          log(label, `⛔ createAuction preflight: ${check}`);
+        }
+      } else {
+        log(label, `[dry-run] createAuction: "${aLabel}"`);
+      }
+    } catch (err) {
+      log(label, `⚠️  createAuction: ${err.shortMessage ?? err.message}`);
+    }
+    await delay(TX_DELAY_MS);
+  }
+
+  // ── Award badges via master wallet (owner-only) ───────────────────────────────
+  if (ADDR.badges) {
+    const badges = new ethers.Contract(ADDR.badges, BADGES_ABI, masterWallet);
+    try {
+      if (!DRY_RUN) {
+        const existing = await badges.getBadges(acct.address);
+        const owned    = new Set(existing.map(b => Number(b)));
+        const toAward  = [];
+        // Badge 0 — First Message: all active registered creators qualify
+        if (!owned.has(0)) toAward.push(0n);
+        // Badge 2 — Verified Creator: awarded to ~50% of creators
+        if (!owned.has(2) && coinFlip(BADGE_CHANCE)) toAward.push(2n);
+
+        if (toAward.length > 0) {
+          const gl  = await gas(badges.awardBadges, acct.address, toAward);
+          const tx  = await badges.awardBadges(acct.address, toAward, { gasLimit: gl });
+          const rec = await tx.wait();
+          await logAction(masterWallet.address, rec.hash, 'awardBadges', rec.status === 1 ? 'success' : 'failed', rec.gasUsed?.toString(), null, { holder: acct.address, badges: toAward.map(b => b.toString()) });
+          log(label, `🏅 awarded badge(s) [${toAward.join(', ')}]`);
+        }
+      } else {
+        log(label, `[dry-run] awardBadges`);
+      }
+    } catch (err) {
+      log(label, `⚠️  awardBadges: ${err.shortMessage ?? err.message}`);
+    }
+    await delay(TX_DELAY_MS);
+  }
+
+  // ── Claim pending referral reward ─────────────────────────────────────────────
+  if (ADDR.referral) {
+    const referral = new ethers.Contract(ADDR.referral, REFERRAL_ABI, wallet);
+    try {
+      if (!DRY_RUN) {
+        const stats = await referral.getStats(acct.address);
+        if (stats.pendingReward > 0n) {
+          const check = await preflight(referral, 'claimReward');
+          if (check === true) {
+            const gl  = await gas(referral.claimReward);
+            const tx  = await referral.claimReward({ gasLimit: gl });
+            const rec = await tx.wait();
+            await logAction(acct.address, rec.hash, 'claimReward', rec.status === 1 ? 'success' : 'failed', rec.gasUsed?.toString(), null, { amount: fmt(stats.pendingReward) });
+            log(label, `💎 claimed ${fmt(stats.pendingReward)} CELO referral reward`);
+          } else {
+            log(label, `⛔ claimReward preflight: ${check}`);
+          }
+        }
+      } else {
+        log(label, `[dry-run] claimReward`);
+      }
+    } catch (err) {
+      log(label, `⚠️  claimReward: ${err.shortMessage ?? err.message}`);
+    }
+    await delay(TX_DELAY_MS);
+  }
 }
 
 // ─── Main ──────────────────────────────────────────────────────────────────────
@@ -779,7 +1075,7 @@ async function main() {
   console.log(`  Batch size : ${BATCH_SIZE}`);
   console.log(`  Network    : ${RPC_URL}`);
   Object.entries(ADDR).forEach(([k, v]) =>
-    console.log(`  ${k.padEnd(14)}: ${v ?? '(not set)'}`)
+    console.log(`  ${k.padEnd(16)}: ${v ?? '(not set)'}`)
   );
   if (DRY_RUN) console.log('\n  🔍 DRY RUN — no on-chain transactions');
   console.log('─'.repeat(72) + '\n');

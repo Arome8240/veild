@@ -51,27 +51,29 @@ export function NotificationBell() {
               </li>
             )}
             {notifications.map((n) => (
-              <li key={n.id}>
-              <button
-                type="button"
-                className={`flex w-full items-start gap-3 px-4 py-3 text-left cursor-pointer transition-colors ${
+              <li
+                key={n.id}
+                className={`flex items-start gap-3 px-4 py-3 transition-colors ${
                   !n.read ? "bg-white/5" : "hover:bg-white/5"
                 }`}
-                onClick={() => markRead(n.id)}
               >
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{n.title}</p>
-                  <p className="text-xs text-zinc-500 truncate">{n.body}</p>
-                </div>
                 <button
                   type="button"
-                  onClick={(e) => { e.stopPropagation(); dismiss(n.id); }}
+                  className="flex-1 min-w-0 text-left"
+                  onClick={() => markRead(n.id)}
+                  aria-label={`Mark "${n.title}" as read`}
+                >
+                  <p className="text-sm font-medium truncate">{n.title}</p>
+                  <p className="text-xs text-zinc-500 truncate">{n.body}</p>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => dismiss(n.id)}
                   className="shrink-0 text-zinc-600 hover:text-zinc-400 transition-colors"
                   aria-label={`Dismiss notification: ${n.title}`}
                 >
                   ✕
                 </button>
-              </button>
               </li>
             ))}
           </ul>

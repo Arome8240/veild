@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { Check, Loader2, AlertCircle, CheckCircle2, Info } from "lucide-react";
 import { useAccount } from "wagmi";
 import { CREATOR_CATEGORIES, MAX_USERNAME_CHARS, MAX_ERROR_DISPLAY_CHARS } from "@/constants/config";
 import { useVeildContracts, useIsRegistered, useCreatorByUsername } from "@/hooks/useVeildContracts";
+import { useDebounce } from "@/hooks/useDebounce";
 import { AvatarUpload } from "@/components/creator/avatar-upload";
 import type { RegisterFormState } from "@/types";
 import type { Address } from "viem";
@@ -49,11 +50,12 @@ function friendlyError(msg: string): string {
  */
 export function RegisterForm({ onSuccess }: RegisterFormProps) {
   const { address } = useAccount();
-  const [form, setForm]         = useState<RegisterFormState>(INITIAL_STATE);
-  const [usernameQuery, setUsernameQuery] = useState(""); // debounced
+  const [form, setForm] = useState<RegisterFormState>(INITIAL_STATE);
 
   const { registerCreator, isPending, isConfirming, isConfirmed, error, reset } =
     useVeildContracts();
+
+  const usernameQuery = useDebounce(form.username, 600);
 
   // ── Preflight checks ─────────────────────────────────────────────────────────
   const { data: alreadyRegistered, isLoading: checkingWallet } = useIsRegistered(
@@ -69,14 +71,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
     !!usernameAddr &&
     usernameAddr !== "0x0000000000000000000000000000000000000000";
 
-  // Debounce username availability check
-  useEffect(() => {
-    if (!form.username) { setUsernameQuery(""); return; }
-    const t = setTimeout(() => setUsernameQuery(form.username), 600);
-    return () => clearTimeout(t);
-  }, [form.username]);
-
-  const isBusy    = isPending || isConfirming;
+  const isBusy = isPending || isConfirming;
 
   const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();

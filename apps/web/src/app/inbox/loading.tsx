@@ -1,6 +1,6 @@
 export default function InboxLoading() {
   return (
-    <div className="min-h-screen bg-[#0a0a0a] pb-24">
+    <div className="min-h-screen bg-background pb-24">
       {/* TOP BAR */}
       <header className="border-b border-white/5 h-14" />
 
@@ -8,21 +8,21 @@ export default function InboxLoading() {
         {/* Stats */}
         <div className="grid grid-cols-3 gap-2 mb-4">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="bg-[#111] rounded-xl h-14" />
+            <div key={i} className="bg-surface-1 rounded-xl h-14" />
           ))}
         </div>
 
         {/* Search */}
-        <div className="bg-[#111] rounded-xl h-10 mb-3" />
+        <div className="bg-surface-1 rounded-xl h-10 mb-3" />
 
         {/* Tabs */}
-        <div className="bg-[#111] rounded-xl h-10 mb-4" />
+        <div className="bg-surface-1 rounded-xl h-10 mb-4" />
 
         {/* Message cards */}
         {[0, 1, 2, 3, 4].map((i) => (
           <div
             key={i}
-            className="bg-[#111] border border-white/5 rounded-2xl p-4 space-y-2"
+            className="bg-surface-1 border border-white/5 rounded-2xl p-4 space-y-2"
           >
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-full bg-white/5" />

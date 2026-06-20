@@ -13,7 +13,7 @@ import type { Address } from "viem";
 
 function WallSkeleton() {
   return (
-    <div className="min-h-screen bg-[#0a0a0a] pb-16 animate-pulse">
+    <div className="min-h-screen bg-background pb-16 animate-pulse">
       <div className="border-b border-white/5 h-14" />
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="flex items-center gap-4 mb-8">
@@ -21,7 +21,7 @@ function WallSkeleton() {
           <div className="space-y-2"><div className="h-5 bg-white/5 rounded-full w-32" /><div className="h-3 bg-white/5 rounded-full w-24" /></div>
         </div>
         <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
-          {[0,1,2,3,4].map(i => <div key={i} className="break-inside-avoid bg-[#111] rounded-2xl h-40" />)}
+          {[0,1,2,3,4].map(i => <div key={i} className="break-inside-avoid bg-surface-1 rounded-2xl h-40" />)}
         </div>
       </div>
     </div>
@@ -64,7 +64,7 @@ function WallPostCard({
       id={post.id.toString()}
       initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.4 }}
-      className="break-inside-avoid bg-[#111] border border-white/5 rounded-2xl p-5 hover:border-white/10 transition-all group"
+      className="break-inside-avoid bg-surface-1 border border-white/5 rounded-2xl p-5 hover:border-white/10 transition-all group"
     >
       {/* Question */}
       <div className="mb-4">
@@ -127,7 +127,7 @@ export default function WallPage({ params }: { params: { username: string } }) {
   if (isLoading || loadingPosts) return <WallSkeleton />;
   if (!creator || !creatorAddr || creatorAddr === "0x0000000000000000000000000000000000000000")
     return (
-      <div className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center">
+      <div className="min-h-screen bg-background text-white flex items-center justify-center">
         <div className="text-center">
           <p className="text-zinc-500 text-sm mb-4">Creator not found</p>
           <Link href="/" className="text-violet-400 text-sm">← Home</Link>
@@ -137,9 +137,9 @@ export default function WallPage({ params }: { params: { username: string } }) {
 
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
+    <div className="min-h-screen bg-background text-white">
       {/* NAV */}
-      <nav className="sticky top-0 z-50 border-b border-white/5 bg-[#0a0a0a]/80 backdrop-blur-xl">
+      <nav className="sticky top-0 z-50 border-b border-white/5 bg-background/80 backdrop-blur-xl">
         <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
           <Link href={`/${creator.username}`} className="flex items-center gap-1.5 text-zinc-400 hover:text-white transition-colors text-sm">
             <ArrowLeft className="w-4 h-4" /><span>Profile</span>
@@ -175,7 +175,7 @@ export default function WallPage({ params }: { params: { username: string } }) {
         <div
           role="group"
           aria-label="Sort Q&As"
-          className="flex gap-1 mb-6 bg-[#111] border border-white/5 rounded-xl p-1 w-fit"
+          className="flex gap-1 mb-6 bg-surface-1 border border-white/5 rounded-xl p-1 w-fit"
         >
           {(["top","new"] as const).map(s => (
             <button key={s} type="button" onClick={() => setSortBy(s)}

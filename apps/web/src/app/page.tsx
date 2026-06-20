@@ -53,7 +53,7 @@ export default function HomePage() {
   // ── Not connected ────────────────────────────────────────────────────────────
   if (!isConnected) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] text-white pb-24 flex flex-col items-center justify-center px-4">
+      <div className="min-h-screen bg-background text-white pb-24 flex flex-col items-center justify-center px-4">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-sm">
           <div className="text-5xl mb-4">👁️</div>
           <h1 className="font-bold text-xl mb-2">Welcome to Veild</h1>
@@ -75,10 +75,10 @@ export default function HomePage() {
   // ── Loading ──────────────────────────────────────────────────────────────────
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] pb-24 animate-pulse">
+      <div className="min-h-screen bg-background pb-24 animate-pulse">
         <div className="border-b border-white/5 h-14" />
         <div className="max-w-lg mx-auto px-4 pt-4 space-y-3">
-          <div className="bg-[#111] rounded-2xl p-4 space-y-3">
+          <div className="bg-surface-1 rounded-2xl p-4 space-y-3">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-white/5 shrink-0" />
               <div className="space-y-1.5 flex-1">
@@ -89,9 +89,9 @@ export default function HomePage() {
             <div className="h-8 bg-white/4 rounded-xl" />
           </div>
           <div className="grid grid-cols-3 gap-2">
-            {[0,1,2].map(i => <div key={i} className="bg-[#111] rounded-xl h-14" />)}
+            {[0,1,2].map(i => <div key={i} className="bg-surface-1 rounded-xl h-14" />)}
           </div>
-          {[0,1,2].map(i => <div key={i} className="bg-[#111] rounded-2xl h-28" />)}
+          {[0,1,2].map(i => <div key={i} className="bg-surface-1 rounded-2xl h-28" />)}
         </div>
         <BottomNav />
       </div>
@@ -101,7 +101,7 @@ export default function HomePage() {
   // ── Not registered ───────────────────────────────────────────────────────────
   if (!isRegistered) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] text-white pb-24 flex flex-col items-center justify-center px-4">
+      <div className="min-h-screen bg-background text-white pb-24 flex flex-col items-center justify-center px-4">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-sm">
           <div className="text-5xl mb-4">✨</div>
           <h1 className="font-bold text-xl mb-2">Set up your Veild</h1>
@@ -120,9 +120,9 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white pb-24">
+    <div className="min-h-screen bg-background text-white pb-24">
       {/* TOP BAR */}
-      <header className="sticky top-0 z-40 bg-[#0a0a0a]/90 backdrop-blur-xl border-b border-white/5">
+      <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-lg mx-auto px-4 h-14 flex items-center justify-between">
           <span className="font-bold text-base tracking-tight flex items-center gap-1.5">
             <span>👁️</span> veild
@@ -143,7 +143,7 @@ export default function HomePage() {
       <div className="max-w-lg mx-auto px-4">
         {/* CREATOR CARD */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
-          className="mt-4 mb-4 bg-[#111] border border-white/5 rounded-2xl p-4"
+          className="mt-4 mb-4 bg-surface-1 border border-white/5 rounded-2xl p-4"
         >
           <div className="flex items-center gap-3 mb-4">
             <CreatorAvatar
@@ -168,7 +168,7 @@ export default function HomePage() {
           </div>
 
           {/* Share link */}
-          <div className="flex items-center gap-2 bg-[#0a0a0a] border border-white/8 rounded-xl px-3 py-2.5 mb-3">
+          <div className="flex items-center gap-2 bg-background border border-white/8 rounded-xl px-3 py-2.5 mb-3">
             <span className="text-zinc-500 text-xs font-mono flex-1 truncate">{profileUrl}</span>
             <button type="button" onClick={copyLink}
               className={`shrink-0 text-xs font-medium px-2.5 py-1 rounded-lg transition-all ${
@@ -199,7 +199,7 @@ export default function HomePage() {
             { value: earnings > 0n ? `${formatCELO(earnings)} CELO` : "0 CELO", label: "earned", green: true },
             { value: stats ? `${stats.unread}` : "0", label: "unread" },
           ].map((s, i) => (
-            <div key={i} className="bg-[#111] border border-white/5 rounded-xl p-3 text-center">
+            <div key={i} className="bg-surface-1 border border-white/5 rounded-xl p-3 text-center">
               <p className={`font-bold text-base leading-none mb-0.5 ${s.green ? "text-green-400" : ""}`}>{s.value}</p>
               <p className="text-zinc-600 text-[10px]">{s.label}</p>
             </div>
@@ -236,7 +236,7 @@ export default function HomePage() {
         </div>
 
         {wallPosts.length === 0 ? (
-          <div className="bg-[#111] border border-white/5 rounded-2xl p-8 text-center">
+          <div className="bg-surface-1 border border-white/5 rounded-2xl p-8 text-center">
             <MessageCircle className="w-6 h-6 mx-auto mb-2 text-zinc-700" />
             <p className="text-zinc-600 text-sm">No published Q&As yet.</p>
             <p className="text-zinc-700 text-xs mt-1">Reply to messages and publish them to fill your wall.</p>
@@ -247,7 +247,7 @@ export default function HomePage() {
               <motion.div key={post.id.toString()}
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.15 + i * 0.07, duration: 0.35 }}
-                className="bg-[#111] border border-white/5 rounded-2xl p-4 hover:border-white/10 transition-colors"
+                className="bg-surface-1 border border-white/5 rounded-2xl p-4 hover:border-white/10 transition-colors"
               >
                 <div className="flex items-start gap-2 mb-3">
                   <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-[10px] font-medium text-zinc-500 shrink-0 mt-0.5">?</div>

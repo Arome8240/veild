@@ -84,7 +84,7 @@ export function ManageTiers({ creatorAddress }: ManageTiersProps) {
       ) : (
         <ul className="divide-y divide-border" aria-label="Your subscription tiers">
           {tiers.map((tier, i) => (
-            <li key={i} className={`px-4 py-3 flex items-center justify-between gap-3 ${!tier.isActive ? "opacity-40" : ""}`}>
+            <li key={tier.label} className={`px-4 py-3 flex items-center justify-between gap-3 ${!tier.isActive ? "opacity-40" : ""}`}>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium truncate">{tier.label}</p>
                 <p className="text-xs text-muted-foreground">

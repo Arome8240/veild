@@ -24,7 +24,7 @@ export function SubscriptionTierCard({ creator, subscriber, onSubscribe }: Props
       <div className="space-y-2">
         {activeTiers.map((tier: SubscriptionTier, i: number) => (
           <div
-            key={i}
+            key={tier.label}
             className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3"
           >
             <div>

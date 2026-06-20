@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { COPY_FEEDBACK_MS } from "@/constants/config";
 
 interface Props {
   url:    string;
@@ -14,7 +15,7 @@ export function ShareSheet({ url, title }: Props) {
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setTimeout(() => setCopied(false), COPY_FEEDBACK_MS);
     } catch {
       const input = document.querySelector<HTMLInputElement>(`input[value="${CSS.escape(url)}"]`);
       input?.select();

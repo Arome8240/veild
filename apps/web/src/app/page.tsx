@@ -8,6 +8,7 @@ import {
   Bell, ChevronRight, ExternalLink, Loader2,
 } from "lucide-react";
 import { useCurrentCreator } from "@/hooks/useCurrentCreator";
+import { COPY_FEEDBACK_MS } from "@/constants/config";
 import { useMiniPay } from "@/hooks/useMiniPay";
 import { CreatorSearch } from "@/components/creator/creator-search";
 import { CreatorAvatar } from "@/components/creator/creator-avatar";
@@ -32,7 +33,7 @@ export default function HomePage() {
     if (navigator.clipboard && profile?.username)
       navigator.clipboard.writeText(`https://veild.vercel.app/${profile.username}`);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), COPY_FEEDBACK_MS);
   }, [profile?.username]);
 
   const shareLink = useCallback(async () => {

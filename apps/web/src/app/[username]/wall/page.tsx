@@ -7,6 +7,7 @@ import { ArrowLeft, Heart, Share2, MessageCircle, Flame, Clock, Loader2 } from "
 import { useAccount } from "wagmi";
 import { useCreatorByUsername, useWallPosts, useHasLiked, useVeildContracts } from "@/hooks/useVeildContracts";
 import { formatNumber, timeAgo } from "@/lib/utils";
+import { COPY_FEEDBACK_MS } from "@/constants/config";
 import { CreatorAvatar } from "@/components/creator/creator-avatar";
 import type { Address } from "viem";
 
@@ -55,7 +56,7 @@ function WallPostCard({
     const url = `${window.location.origin}/${creatorAddr}/wall#${post.id}`;
     navigator.clipboard?.writeText(url);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), COPY_FEEDBACK_MS);
   }, [creatorAddr, post.id]);
 
   return (

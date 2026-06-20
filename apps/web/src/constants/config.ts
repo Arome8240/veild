@@ -60,6 +60,8 @@ export const PARTICLE_COLORS = [
 ] as const;
 
 // ─── Timing ───────────────────────────────────────────────────────────────────
-export const TOAST_DURATION_MS = 3000;
-export const COPY_FEEDBACK_MS  = 2000;
-export const PARTICLE_DECAY_MS = 900;
+export const TOAST_DURATION_MS         = 3000;
+export const COPY_FEEDBACK_MS          = 2000;
+export const PARTICLE_DECAY_MS         = 900;
+export const REPLY_CONFIRMATION_MS     = 800;
+export const TRANSACTION_TOAST_AUTO_MS = 4000;

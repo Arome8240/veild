@@ -5,6 +5,7 @@ import { X, Eye, Reply, Check, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Toggle } from "@/components/ui/toggle";
 import { useVeildContracts } from "@/hooks/useVeildContracts";
+import { REPLY_CONFIRMATION_MS } from "@/constants/config";
 import type { IndexedMessage } from "@/types";
 
 interface ReplySheetProps {
@@ -24,7 +25,7 @@ export function ReplySheet({ message, onClose }: ReplySheetProps) {
 
   useEffect(() => {
     if (isConfirmed) {
-      const t = setTimeout(() => { reset(); onClose(); }, 800);
+      const t = setTimeout(() => { reset(); onClose(); }, REPLY_CONFIRMATION_MS);
       return () => clearTimeout(t);
     }
   }, [isConfirmed, onClose, reset]);

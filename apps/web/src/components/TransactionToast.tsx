@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { TRANSACTION_TOAST_AUTO_MS } from "@/constants/config";
 import type { Hash } from "viem";
 
 interface Props {
@@ -35,7 +36,7 @@ export function TransactionToast({
 
   useEffect(() => {
     if (status === "confirmed" || status === "error") {
-      const t = setTimeout(() => { setShow(false); onClose?.(); }, 4000);
+      const t = setTimeout(() => { setShow(false); onClose?.(); }, TRANSACTION_TOAST_AUTO_MS);
       return () => clearTimeout(t);
     }
   }, [status, onClose]);

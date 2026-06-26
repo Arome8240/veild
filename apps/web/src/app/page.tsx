@@ -50,23 +50,146 @@ export default function HomePage() {
 
   const unread = stats ? Number(stats.unread) : 0;
 
-  // ── Not connected ────────────────────────────────────────────────────────────
+  // ── Not connected — Landing Page ─────────────────────────────────────────────
   if (!isConnected) {
     return (
-      <div className="min-h-screen bg-background text-white pb-24 flex flex-col items-center justify-center px-4">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-sm">
-          <div className="text-5xl mb-4">👁️</div>
-          <h1 className="font-bold text-xl mb-2">Welcome to Veild</h1>
-          <p className="text-zinc-500 text-sm mb-8 leading-relaxed">
-            Connect your wallet or open in MiniPay to access your creator inbox.
-          </p>
-          <button type="button" onClick={connectWallet} disabled={isConnecting}
-            className="flex items-center justify-center gap-2 bg-violet-700 hover:bg-violet-600 text-white text-sm font-semibold px-6 py-3 rounded-full transition-all disabled:opacity-60 mx-auto"
+      <div className="min-h-screen bg-background text-foreground">
+        {/* HEADER */}
+        <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-xl border-b border-white/5">
+          <div className="max-w-lg mx-auto px-4 h-14 flex items-center justify-between">
+            <span className="font-bold text-base tracking-tight flex items-center gap-1.5">
+              <span>👁️</span> veild
+            </span>
+            <button
+              type="button"
+              onClick={connectWallet}
+              disabled={isConnecting}
+              className="flex items-center gap-1.5 bg-violet-700 hover:bg-violet-600 text-white text-xs font-semibold px-4 py-2 rounded-full transition-all disabled:opacity-60"
+            >
+              {isConnecting ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
+              {isConnecting ? "Connecting…" : "Connect wallet"}
+            </button>
+          </div>
+        </header>
+
+        {/* HERO */}
+        <section className="max-w-lg mx-auto px-4 pt-16 pb-12 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
           >
-            {isConnecting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-            {isConnecting ? "Connecting…" : "Connect Wallet"}
-          </button>
-        </motion.div>
+            <div className="text-6xl mb-6">👁️</div>
+            <h1 className="text-4xl font-bold leading-tight mb-4 tracking-tight">
+              The on-chain<br />
+              <span className="text-violet-400">creator economy</span>
+            </h1>
+            <p className="text-zinc-400 text-base leading-relaxed mb-8">
+              Tip, subscribe, and send anonymous messages to your favorite creators — directly on CELO. No middlemen. No censorship.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                type="button"
+                onClick={connectWallet}
+                disabled={isConnecting}
+                className="flex items-center justify-center gap-2 bg-violet-700 hover:bg-violet-600 text-white text-sm font-semibold px-6 py-3 rounded-full transition-all disabled:opacity-60"
+              >
+                {isConnecting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                {isConnecting ? "Connecting…" : "Get started →"}
+              </button>
+              <Link
+                href="/discover"
+                className="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/8 border border-white/10 text-zinc-300 text-sm font-medium px-6 py-3 rounded-full transition-all"
+              >
+                Explore creators
+              </Link>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* FEATURES */}
+        <section className="max-w-lg mx-auto px-4 pb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+          >
+            <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-widest mb-4 text-center">
+              What you can do
+            </h2>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { icon: "💬", title: "Anonymous Q&A", desc: "Ask anything without revealing your identity." },
+                { icon: "💸", title: "Tip with CELO", desc: "Send crypto tips directly on-chain." },
+                { icon: "🔐", title: "Subscribe", desc: "Unlock exclusive content from creators." },
+                { icon: "🏛️", title: "Governance", desc: "Vote on platform decisions with your stake." },
+              ].map((f, i) => (
+                <motion.div
+                  key={f.title}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35, delay: 0.2 + i * 0.06 }}
+                  className="bg-surface-1 border border-white/5 rounded-2xl p-4"
+                >
+                  <div className="text-2xl mb-2">{f.icon}</div>
+                  <p className="font-semibold text-sm mb-1">{f.title}</p>
+                  <p className="text-zinc-500 text-xs leading-relaxed">{f.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </section>
+
+        {/* HOW IT WORKS */}
+        <section className="max-w-lg mx-auto px-4 pb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-widest mb-4 text-center">
+              How it works
+            </h2>
+            <div className="space-y-3">
+              {[
+                { step: "01", title: "Connect your wallet", desc: "Link your CELO wallet or open in MiniPay." },
+                { step: "02", title: "Create your profile", desc: "Get a personalized link — share it anywhere." },
+                { step: "03", title: "Start earning", desc: "Receive tips, messages, and subscriptions on-chain." },
+              ].map((s, i) => (
+                <motion.div
+                  key={s.step}
+                  initial={{ opacity: 0, x: -12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.35, delay: 0.35 + i * 0.08 }}
+                  className="flex items-start gap-4 bg-surface-1 border border-white/5 rounded-2xl px-4 py-3.5"
+                >
+                  <span className="text-violet-500 font-bold text-xs font-mono shrink-0 mt-0.5">{s.step}</span>
+                  <div>
+                    <p className="font-semibold text-sm mb-0.5">{s.title}</p>
+                    <p className="text-zinc-500 text-xs">{s.desc}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </section>
+
+        {/* BUILT ON */}
+        <section className="max-w-lg mx-auto px-4 pb-20">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.55 }}
+            className="flex items-center justify-center gap-2 text-xs text-zinc-600"
+          >
+            <span>⛓️</span>
+            <span>Built on</span>
+            <span className="text-zinc-400 font-semibold">CELO</span>
+            <span>·</span>
+            <span>Powered by MiniPay</span>
+          </motion.div>
+        </section>
+
         <BottomNav />
       </div>
     );

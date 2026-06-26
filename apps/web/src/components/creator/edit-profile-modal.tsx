@@ -74,7 +74,7 @@ export function EditProfileModal({ profile, open, onClose, onSaved }: Props) {
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
               {/* Avatar */}
               <AvatarUpload
                 currentCID={avatarCID}

@@ -59,6 +59,7 @@ export default function GovernancePage() {
               type="button"
               onClick={handleCreate}
               disabled={isPending || !title.trim() || !description.trim()}
+              aria-busy={isPending}
               className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-black hover:bg-white/90 disabled:opacity-40 transition-colors"
             >
               {isPending ? "Submitting…" : "Submit Proposal"}

@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import {
   Copy, Check, Share2, MessageCircle,
   Bell, ChevronRight, ExternalLink, Loader2,
+  Eye, MessagesSquare, Coins, Lock, Landmark, Link2,
 } from "lucide-react";
 import { useCurrentCreator } from "@/hooks/useCurrentCreator";
 import { COPY_FEEDBACK_MS } from "@/constants/config";
@@ -58,7 +59,7 @@ export default function HomePage() {
         <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-xl border-b border-white/5">
           <div className="max-w-lg mx-auto px-4 h-14 flex items-center justify-between">
             <span className="font-bold text-base tracking-tight flex items-center gap-1.5">
-              <span>👁️</span> veild
+              <Eye className="w-4 h-4 text-violet-400" /> veild
             </span>
             <button
               type="button"
@@ -79,7 +80,11 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="text-6xl mb-6">👁️</div>
+            <div className="flex justify-center mb-6">
+              <div className="w-16 h-16 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
+                <Eye className="w-8 h-8 text-violet-400" />
+              </div>
+            </div>
             <h1 className="text-4xl font-bold leading-tight mb-4 tracking-tight">
               The on-chain<br />
               <span className="text-violet-400">creator economy</span>
@@ -119,10 +124,10 @@ export default function HomePage() {
             </h2>
             <div className="grid grid-cols-2 gap-3">
               {[
-                { icon: "💬", title: "Anonymous Q&A", desc: "Ask anything without revealing your identity." },
-                { icon: "💸", title: "Tip with CELO", desc: "Send crypto tips directly on-chain." },
-                { icon: "🔐", title: "Subscribe", desc: "Unlock exclusive content from creators." },
-                { icon: "🏛️", title: "Governance", desc: "Vote on platform decisions with your stake." },
+                { Icon: MessagesSquare, title: "Anonymous Q&A", desc: "Ask anything without revealing your identity." },
+                { Icon: Coins, title: "Tip with CELO", desc: "Send crypto tips directly on-chain." },
+                { Icon: Lock, title: "Subscribe", desc: "Unlock exclusive content from creators." },
+                { Icon: Landmark, title: "Governance", desc: "Vote on platform decisions with your stake." },
               ].map((f, i) => (
                 <motion.div
                   key={f.title}
@@ -131,7 +136,7 @@ export default function HomePage() {
                   transition={{ duration: 0.35, delay: 0.2 + i * 0.06 }}
                   className="bg-surface-1 border border-white/5 rounded-2xl p-4"
                 >
-                  <div className="text-2xl mb-2">{f.icon}</div>
+                  <f.Icon className="w-5 h-5 text-violet-400 mb-3" />
                   <p className="font-semibold text-sm mb-1">{f.title}</p>
                   <p className="text-zinc-500 text-xs leading-relaxed">{f.desc}</p>
                 </motion.div>
@@ -182,7 +187,7 @@ export default function HomePage() {
             transition={{ duration: 0.5, delay: 0.55 }}
             className="flex items-center justify-center gap-2 text-xs text-zinc-600"
           >
-            <span>⛓️</span>
+            <Link2 className="w-3.5 h-3.5" />
             <span>Built on</span>
             <span className="text-zinc-400 font-semibold">CELO</span>
             <span>·</span>
@@ -226,7 +231,11 @@ export default function HomePage() {
     return (
       <div className="min-h-screen bg-background text-white pb-24 flex flex-col items-center justify-center px-4">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-sm">
-          <div className="text-5xl mb-4">✨</div>
+          <div className="flex justify-center mb-4">
+              <div className="w-14 h-14 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
+                <Eye className="w-7 h-7 text-violet-400" />
+              </div>
+            </div>
           <h1 className="font-bold text-xl mb-2">Set up your Veild</h1>
           <p className="text-zinc-500 text-sm mb-6 leading-relaxed">
             Register as a creator to get your personal link and start receiving anonymous messages.
@@ -248,7 +257,7 @@ export default function HomePage() {
       <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-lg mx-auto px-4 h-14 flex items-center justify-between">
           <span className="font-bold text-base tracking-tight flex items-center gap-1.5">
-            <span>👁️</span> veild
+            <Eye className="w-4 h-4 text-violet-400" /> veild
           </span>
           <div className="flex items-center gap-2">
             {unread > 0 && (

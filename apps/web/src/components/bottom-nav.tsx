@@ -8,7 +8,7 @@ import { useInboxStats } from "@/hooks/useVeildContracts";
 import type { Address } from "viem";
 
 const tabs = [
-  { href: "/", icon: Home, label: "Home" },
+  { href: "/home", icon: Home, label: "Home" },
   { href: "/inbox", icon: Inbox, label: "Inbox" },
   { href: "/profile", icon: User, label: "Profile" },
 ];
@@ -28,8 +28,7 @@ export function BottomNav() {
     >
       <div className="max-w-lg mx-auto flex items-stretch">
         {tabs.map(({ href, icon: Icon, label }) => {
-          const active =
-            href === "/" ? pathname === "/" : pathname.startsWith(href);
+          const active = pathname === href;
           const badge =
             href === "/inbox" && unreadCount > 0 ? unreadCount : null;
 

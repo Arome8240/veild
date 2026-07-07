@@ -153,8 +153,8 @@ export default function GuidePage() {
                 Create up to three subscription tiers from your profile settings — each with a monthly CELO price and a short description of perks. Subscribers unlock exclusive access: priority replies, gated content, or any benefit you define. Payments are handled automatically on-chain.
               </p>
               <div className="bg-background border border-white/5 rounded-xl px-3 py-2.5 space-y-1.5">
-                <Tip icon={Lightbulb}>Start with one tier (e.g. "Supporter — 1 CELO/month") to keep it simple.</Tip>
-                <Tip icon={BadgeCheck}>Be specific about perks — "reply within 24 h" converts better than vague descriptions.</Tip>
+                <Tip icon={Lightbulb}>Start with one tier (e.g. &ldquo;Supporter — 1 CELO/month&rdquo;) to keep it simple.</Tip>
+                <Tip icon={BadgeCheck}>Be specific about perks — &ldquo;reply within 24 h&rdquo; converts better than vague descriptions.</Tip>
                 <Tip icon={TrendingUp}>Subscriptions give you predictable recurring income vs. one-off tips.</Tip>
               </div>
             </Card>
@@ -180,7 +180,7 @@ export default function GuidePage() {
                 Create a funding pool for a specific goal — a project, event, or campaign. Set a target CELO amount and deadline. Your community contributes directly. If the goal is met, funds are released to you. Pools are fully transparent on-chain.
               </p>
               <div className="bg-background border border-white/5 rounded-xl px-3 py-2.5 space-y-1.5">
-                <Tip icon={Lightbulb}>Use pools for one-time projects rather than ongoing income (that's what subscriptions are for).</Tip>
+                <Tip icon={Lightbulb}>Use pools for one-time projects rather than ongoing income (that&apos;s what subscriptions are for).</Tip>
                 <Tip icon={Zap}>Share your pool link as soon as it goes live to build early momentum.</Tip>
               </div>
             </Card>

@@ -61,15 +61,23 @@ export default function HomePage() {
             <span className="font-bold text-base tracking-tight flex items-center gap-1.5">
               <Eye className="w-4 h-4 text-violet-400" /> veild
             </span>
-            <button
-              type="button"
-              onClick={connectWallet}
-              disabled={isConnecting}
-              className="flex items-center gap-1.5 bg-violet-700 hover:bg-violet-600 text-white text-xs font-semibold px-4 py-2 rounded-full transition-all disabled:opacity-60"
-            >
-              {isConnecting ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
-              {isConnecting ? "Connecting…" : "Connect wallet"}
-            </button>
+            <div className="flex items-center gap-2">
+              <Link
+                href="/guide"
+                className="text-xs text-zinc-400 hover:text-zinc-200 transition-colors px-2 py-1"
+              >
+                Guide
+              </Link>
+              <button
+                type="button"
+                onClick={connectWallet}
+                disabled={isConnecting}
+                className="flex items-center gap-1.5 bg-violet-700 hover:bg-violet-600 text-white text-xs font-semibold px-4 py-2 rounded-full transition-all disabled:opacity-60"
+              >
+                {isConnecting ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
+                {isConnecting ? "Connecting…" : "Connect wallet"}
+              </button>
+            </div>
           </div>
         </header>
 
@@ -176,6 +184,31 @@ export default function HomePage() {
                 </motion.div>
               ))}
             </div>
+          </motion.div>
+        </section>
+
+        {/* GUIDE CTA */}
+        <section className="max-w-lg mx-auto px-4 pb-10">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.5 }}
+          >
+            <Link
+              href="/guide"
+              className="flex items-center justify-between bg-surface-1 border border-violet-500/20 hover:border-violet-500/40 rounded-2xl px-4 py-4 group transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center shrink-0">
+                  <Lightbulb className="w-4 h-4 text-violet-400" />
+                </div>
+                <div>
+                  <p className="font-semibold text-sm">Guide &amp; Tips</p>
+                  <p className="text-zinc-500 text-xs">Step-by-step walkthroughs, feature explanations &amp; FAQs</p>
+                </div>
+              </div>
+              <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-violet-400 group-hover:translate-x-0.5 transition-all shrink-0" />
+            </Link>
           </motion.div>
         </section>
 

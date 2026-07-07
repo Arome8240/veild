@@ -6,7 +6,7 @@ import {
   Eye, ArrowLeft, Wallet, UserCircle, Share2,
   MessagesSquare, Coins, Lock, Landmark, Trophy,
   Users, Ticket, Gift, ChevronRight, Zap, ShieldCheck,
-  BadgeCheck, TrendingUp, Lightbulb, CircleHelp,
+  BadgeCheck, TrendingUp, Lightbulb, HelpCircle,
 } from "lucide-react";
 import { BottomNav } from "@/components/bottom-nav";
 
@@ -276,7 +276,7 @@ export default function GuidePage() {
               <motion.div key={i} {...fade(0.5 + i * 0.05)}>
                 <Card>
                   <div className="flex items-start gap-2.5">
-                    <CircleHelp className="w-3.5 h-3.5 text-violet-400 shrink-0 mt-0.5" />
+                    <HelpCircle className="w-3.5 h-3.5 text-violet-400 shrink-0 mt-0.5" />
                     <div>
                       <p className="font-semibold text-sm mb-1">{q}</p>
                       <p className="text-zinc-400 text-xs leading-relaxed">{a}</p>

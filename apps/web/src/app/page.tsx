@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import {
   Copy, Check, Share2, MessageCircle,
   Bell, ChevronRight, ExternalLink, Loader2,
-  Eye, MessagesSquare, Coins, Lock, Landmark, Link2,
+  Eye, MessagesSquare, Coins, Lock, Landmark, Link2, Lightbulb,
 } from "lucide-react";
 import { useCurrentCreator } from "@/hooks/useCurrentCreator";
 import { COPY_FEEDBACK_MS } from "@/constants/config";
